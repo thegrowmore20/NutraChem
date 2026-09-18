@@ -1,0 +1,271 @@
+{%- comment -%}
+  Homepage "featured blog" teaser. Renders the same snippets/article-card.liquid
+  used by sections/main-blog.liquid (the full blog listing page) so every
+  article card in the theme shares one visual style, with the same
+  show_image/show_excerpt/show_date/show_author/show_comments toggles.
+{%- endcomment -%}
+
+<section
+  class="blogs-section section-padding"
+  style="--padding-top: {{ section.settings.padding_top }}px; --padding-bottom: {{ section.settings.padding_bottom }}px; --blog-columns-desktop: {{ section.settings.columns_desktop }};"
+>
+  <div class="container">
+    <h2 class="section-heading">{{ section.settings.heading | default: 'Blogs' }}</h2>
+
+    {%- assign blog = blogs[section.settings.blog] -%}
+    <div class="blogs-section__grid">
+      {%- if blog != blank and blog.articles.size > 0 -%}
+        {%- for article in blog.articles limit: section.settings.articles_count -%}
+          {%- render 'article-card',
+            article: article,
+            blog: blog,
+            show_image: section.settings.show_image,
+            show_excerpt: section.settings.show_excerpt,
+            show_date: section.settings.show_date,
+            show_author: section.settings.show_author,
+            show_comments: section.settings.show_comments
+          -%}
+        {%- endfor -%}
+      {%- else -%}
+        {%- assign placeholder_titles = 'Discover Natural Skincare Secrets,The Truth About Active Ingredients,Building a Routine That Actually Works' | split: ',' -%}
+        {%- for placeholder_title in placeholder_titles limit: section.settings.articles_count -%}
+          <article class="blog-listing-card">
+            <span class="blog-listing-card__media">{{ 'lifestyle-2' | placeholder_svg_tag: 'blog-listing-card__placeholder' }}</span>
+            <div class="blog-listing-card__body">
+              {%- if section.settings.show_date or section.settings.show_author -%}
+                <p class="blog-listing-card__meta">
+                  {%- if section.settings.show_date -%}<span>{{ 'now' | date: '%B %d, %Y' }}</span>{%- endif -%}
+                  {%- if section.settings.show_date and section.settings.show_author -%}<span aria-hidden="true">&middot;</span>{%- endif -%}
+                  {%- if section.settings.show_author -%}<span>{{ shop.name }}</span>{%- endif -%}
+                </p>
+              {%- endif -%}
+              <h3 class="blog-listing-card__title"><a href="{{ routes.root_url }}blogs">{{ placeholder_title }}</a></h3>
+              {%- if section.settings.show_excerpt -%}
+                <p class="blog-listing-card__excerpt">Explore expert skincare tips, ingredient insights, and simple routines to help your skin look and feel its best.</p>
+              {%- endif -%}
+              <div class="blog-listing-card__footer">
+                <a class="blog-listing-card__link" href="{{ routes.root_url }}blogs">
+                  {{ 'blogs.article.read_more' | t }}<span class="visually-hidden"> &ndash; {{ placeholder_title }}</span>
+                </a>
+                {%- if section.settings.show_comments -%}
+                  <span class="blog-listing-card__comments">
+                    {% render 'icon', name: 'message-chat-circle' %}
+                    {{ 'blogs.article.comments' | t: count: 0 }}
+                  </span>
+                {%- endif -%}
+              </div>
+            </div>
+          </article>
+        {%- endfor -%}
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+.blogs-section__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 28px;
+}
+
+@media screen and (min-width: 750px) {
+  .blogs-section__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media screen and (min-width: 990px) {
+  .blogs-section__grid {
+    grid-template-columns: repeat(var(--blog-columns-desktop, 3), minmax(0, 1fr));
+  }
+}
+
+.blog-listing-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.blog-listing-card__media {
+  display: block;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border-radius: var(--radius-m);
+  background: var(--color-surface);
+}
+
+.blog-listing-card__media img,
+.blog-listing-card__media svg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.blog-listing-card__body {
+  padding-top: 16px;
+}
+
+.blog-listing-card__meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #7c8a90;
+  margin: 0 0 8px;
+}
+
+.blog-listing-card__title {
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.35;
+  margin: 0 0 10px;
+}
+
+.blog-listing-card__title a {
+  color: var(--color-primary);
+}
+
+.blog-listing-card__title a:hover {
+  color: var(--color-secondary);
+}
+
+.blog-listing-card__excerpt {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #55636b;
+  margin: 0 0 14px;
+}
+
+.blog-listing-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.blog-listing-card__link {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-secondary);
+  text-decoration: underline;
+}
+
+.blog-listing-card__comments {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #7c8a90;
+}
+
+.blog-listing-card__comments svg {
+  width: 15px;
+  height: 15px;
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Blog posts",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Blogs"
+    },
+    {
+      "type": "blog",
+      "id": "blog",
+      "label": "Blog"
+    },
+    {
+      "type": "select",
+      "id": "columns_desktop",
+      "label": "Columns on desktop",
+      "options": [
+        { "value": "2", "label": "2" },
+        { "value": "3", "label": "3" },
+        { "value": "4", "label": "4" }
+      ],
+      "default": "3"
+    },
+    {
+      "type": "range",
+      "id": "articles_count",
+      "label": "Articles to show",
+      "min": 1,
+      "max": 12,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "header",
+      "content": "Article card"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_image",
+      "label": "Show featured image",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_excerpt",
+      "label": "Show excerpt",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_date",
+      "label": "Show date",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_author",
+      "label": "Show author",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_comments",
+      "label": "Show comment count",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    }
+  ],
+  "presets": [
+    {
+      "name": "Blog posts"
+    }
+  ]
+}
+{% endschema %}

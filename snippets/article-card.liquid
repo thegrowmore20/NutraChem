@@ -1,0 +1,65 @@
+{%- comment -%}
+  Blog listing card, rendered by sections/main-blog.liquid.
+
+  Uses the `.blog-listing-card` namespace rather than `.blog-card` (already
+  owned by sections/blog-posts.liquid) since Shopify bundles every section's
+  CSS theme-wide regardless of which sections a given page actually renders -
+  reusing a class name across two unrelated sections has repeatedly caused
+  style collisions in this theme.
+
+  Accepts:
+    article       - {Object} Article
+    blog          - {Object} Blog
+    show_image    - {Boolean}
+    show_excerpt  - {Boolean}
+    show_date     - {Boolean}
+    show_author   - {Boolean}
+    show_comments - {Boolean}
+
+  Usage:
+  {% render 'article-card', article: article, blog: blog, show_image: true, show_excerpt: true, show_date: true, show_author: false, show_comments: true %}
+{%- endcomment -%}
+
+<article class="blog-listing-card">
+  <a class="blog-listing-card__media" href="{{ article.url }}">
+    {%- if show_image and article.image -%}
+      {{
+        article.image
+        | image_url: width: 700
+        | image_tag:
+          loading: 'lazy',
+          widths: '350, 500, 700',
+          sizes: '(min-width: 750px) 33vw, 100vw',
+          width: 700,
+          height: 460,
+          alt: article.title
+      }}
+    {%- else -%}
+      {{ 'lifestyle-2' | placeholder_svg_tag: 'blog-listing-card__placeholder' }}
+    {%- endif -%}
+  </a>
+  <div class="blog-listing-card__body">
+    {%- if show_date or show_author -%}
+      <p class="blog-listing-card__meta">
+        {%- if show_date -%}<span>{{ article.published_at | date: '%B %d, %Y' }}</span>{%- endif -%}
+        {%- if show_date and show_author -%}<span aria-hidden="true">&middot;</span>{%- endif -%}
+        {%- if show_author -%}<span>{{ article.author }}</span>{%- endif -%}
+      </p>
+    {%- endif -%}
+    <h3 class="blog-listing-card__title"><a href="{{ article.url }}">{{ article.title }}</a></h3>
+    {%- if show_excerpt -%}
+      <p class="blog-listing-card__excerpt">{{ article.excerpt_or_content | strip_html | truncatewords: 24 }}</p>
+    {%- endif -%}
+    <div class="blog-listing-card__footer">
+      <a class="blog-listing-card__link" href="{{ article.url }}">
+        {{ 'blogs.article.read_more' | t }}<span class="visually-hidden"> &ndash; {{ article.title }}</span>
+      </a>
+      {%- if show_comments -%}
+        <span class="blog-listing-card__comments">
+          {% render 'icon', name: 'message-chat-circle' %}
+          {{ 'blogs.article.comments' | t: count: article.comments_count }}
+        </span>
+      {%- endif -%}
+    </div>
+  </div>
+</article>

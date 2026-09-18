@@ -1,0 +1,190 @@
+{
+  "sections": {
+    "hero": {
+      "type": "about-hero",
+      "settings": {
+        "eyebrow": "Our Story",
+        "heading": "Science is Our Foundation",
+        "description": "<p>NutraChem was born from a simple belief: skincare should work. Not just feel good, work. We combine cutting-edge dermatological research with the most potent bioactive ingredients on earth.</p>",
+        "button_1_label": "Explore Our Products",
+        "button_1_link": "/collections/all",
+        "button_2_label": "Our Science",
+        "button_2_link": "#mission",
+        "padding_top": 60,
+        "padding_bottom": 60
+      }
+    },
+    "mission": {
+      "type": "about-mission",
+      "blocks": {
+        "feature-1": {
+          "type": "feature",
+          "settings": { "icon": "🔬", "heading": "Lab Tested", "text": "Every product is checked for safety." }
+        },
+        "feature-2": {
+          "type": "feature",
+          "settings": { "icon": "💧", "heading": "High Potency", "text": "We use strong, active ingredients that actually work." }
+        },
+        "feature-3": {
+          "type": "feature",
+          "settings": { "icon": "🌿", "heading": "Cruelty Free", "text": "100% natural extracts. No animal testing." }
+        }
+      },
+      "block_order": ["feature-1", "feature-2", "feature-3"],
+      "settings": {
+        "quote": "<p>We believe in results, not marketing promises.</p>",
+        "quote_attribution": "Formulated by industry specialists",
+        "eyebrow": "Our Mission",
+        "heading": "Built to Perform",
+        "description": "<p>Every ingredient we use has been selected for one reason: clinical proof of efficacy. We work directly with dermatologists, biochemists, and researchers at leading institutions.</p><p>Our formulations are never diluted for cost, never padded with filler. Every concentration is set at the level shown to produce measurable results in peer-reviewed studies.</p>",
+        "padding_top": 60,
+        "padding_bottom": 60
+      }
+    },
+    "stats": {
+      "type": "about-stats",
+      "blocks": {
+        "stat-1": {
+          "type": "stat",
+          "settings": { "icon": "🔬", "number": "95%", "label": "Clinical Efficacy", "description": "Average results across all product lines in independent trials." }
+        },
+        "stat-2": {
+          "type": "stat",
+          "settings": { "icon": "🌍", "number": "5+", "label": "Countries Served", "description": "Trusted by customers on every continent." }
+        },
+        "stat-3": {
+          "type": "stat",
+          "settings": { "icon": "💬", "number": "1500+", "label": "Happy Customers", "description": "With a 4.9-star average across 1500+ reviews." }
+        },
+        "stat-4": {
+          "type": "stat",
+          "settings": { "icon": "📋", "number": "12+", "label": "Clinical Studies", "description": "Published in peer-reviewed dermatology journals worldwide." }
+        }
+      },
+      "block_order": ["stat-1", "stat-2", "stat-3", "stat-4"],
+      "settings": {
+        "heading": "",
+        "padding_top": 60,
+        "padding_bottom": 60
+      }
+    },
+    "story": {
+      "type": "about-story",
+      "blocks": {
+        "milestone-2022": {
+          "type": "milestone",
+          "settings": { "year": "2022", "title": "The Idea", "description": "Dr. Elena Vasquez begins formulating in her UCL research lab, frustrated by the gap between dermatological science and consumer skincare." }
+        },
+        "milestone-2023": {
+          "type": "milestone",
+          "settings": { "year": "2023", "title": "First Formula", "description": "The Radiance Serum prototype is validated in a double-blind study with 120 participants. 91% show measurable improvement in 28 days." }
+        },
+        "milestone-2024": {
+          "type": "milestone",
+          "settings": { "year": "2024", "title": "NutraChem Launches", "description": "Brand launches online with three products. Sells out in 72 hours." }
+        },
+        "milestone-2025": {
+          "type": "milestone",
+          "settings": { "year": "2025", "title": "Pharmacy Trusted", "description": "NutraChem products become available in pharmacies, reflecting our commitment to quality, safety, and real results you can trust." }
+        },
+        "milestone-2026": {
+          "type": "milestone",
+          "settings": { "year": "2026", "title": "Today", "description": "A team of scientists, formulators, and clinicians continuing to push the boundary of what premium skincare can be." }
+        }
+      },
+      "block_order": ["milestone-2022", "milestone-2023", "milestone-2024", "milestone-2025", "milestone-2026"],
+      "settings": {
+        "eyebrow": "The Founder Story",
+        "heading": "A Lab, a Conviction, a Brand",
+        "description": "<p>NutraChem began driven by a growing frustration with skincare products that overpromised but failed to deliver real results.</p><p>Working closely with experienced formulation chemists, the brand was built on a simple standard: every product should meet high-performance benchmarks inspired by clinical research and real-world effectiveness.</p>",
+        "founder_name": "Dr. Elena Vasquez",
+        "founder_role": "Co-Founder & Chief Scientist",
+        "padding_top": 60,
+        "padding_bottom": 60
+      }
+    },
+    "values": {
+      "type": "about-values",
+      "blocks": {
+        "value-1": { "type": "value", "settings": { "icon": "🔬", "heading": "Science First", "text": "Every formula starts in the lab, not the marketing suite. If it cannot be clinically proven, it does not get made." } },
+        "value-2": { "type": "value", "settings": { "icon": "💎", "heading": "Uncompromised Purity", "text": "No fillers, no artificial fragrances, no greenwashing. Every ingredient earns its place at clinical-grade concentrations." } },
+        "value-3": { "type": "value", "settings": { "icon": "🌿", "heading": "Planet Positive", "text": "Cruelty-free, vegan, and sustainably packaged. We believe premium and responsibility are not mutually exclusive." } },
+        "value-4": { "type": "value", "settings": { "icon": "🤝", "heading": "Radical Transparency", "text": "Full ingredient lists, clinical data, and honest photography. We hide nothing because we have nothing to hide." } },
+        "value-5": { "type": "value", "settings": { "icon": "♾️", "heading": "Continuous Research", "text": "Our lab never stops. We reinvest into dermatological research every year to ensure our formulas stay at the scientific frontier." } },
+        "value-6": { "type": "value", "settings": { "icon": "❤️", "heading": "Community Trust", "text": "We earn trust through results, not promises. Our Glow Guarantee exists because we believe every customer should see a real difference." } }
+      },
+      "block_order": ["value-1", "value-2", "value-3", "value-4", "value-5", "value-6"],
+      "settings": {
+        "eyebrow": "What We Stand For",
+        "heading": "Our Core Values",
+        "description": "<p>Six principles that shape every formula, every decision, and every interaction with our community.</p>",
+        "padding_top": 60,
+        "padding_bottom": 60
+      }
+    },
+    "process": {
+      "type": "about-process",
+      "blocks": {
+        "step-1": { "type": "step", "settings": { "icon": "📚", "heading": "Literature Review", "text": "Our scientists review thousands of peer-reviewed papers to identify the most clinically supported actives.", "caption": "200+ studies reviewed per formula" } },
+        "step-2": { "type": "step", "settings": { "icon": "⚗️", "heading": "Compound Selection", "text": "We select only the most bioavailable form of each active, proven to penetrate the skin barrier.", "caption": "FDA GRAS & EU approved ingredients only" } },
+        "step-3": { "type": "step", "settings": { "icon": "🧪", "heading": "Lab Formulation", "text": "Compounds are combined at peer-reviewed concentrations. pH and delivery system are optimised for absorption.", "caption": "100+ iterations before finalised" } },
+        "step-4": { "type": "step", "settings": { "icon": "🔬", "heading": "Clinical Validation", "text": "Double-blind clinical testing with 100+ participants. No passing data means back to the lab.", "caption": "Independent CRO testing, no internal bias" } },
+        "step-5": { "type": "step", "settings": { "icon": "✅", "heading": "Safety & Stability", "text": "Patch testing, dermatologist review, and 12-month accelerated stability testing before any product ships.", "caption": "Dermatologist-tested, hypoallergenic" } },
+        "step-6": { "type": "step", "settings": { "icon": "📦", "heading": "Sustainable Launch", "text": "Recyclable packaging, fulfilled with care from our warehouse.", "caption": "Carbon-neutral shipping on all orders" } }
+      },
+      "block_order": ["step-1", "step-2", "step-3", "step-4", "step-5", "step-6"],
+      "settings": {
+        "eyebrow": "How We Formulate",
+        "heading": "From Research to Your Skin",
+        "description": "<p>Every NutraChem formula undergoes a rigorous multi-stage development process before it earns the right to exist. Here is exactly how a product is born.</p>",
+        "padding_top": 60,
+        "padding_bottom": 60
+      }
+    },
+    "certifications": {
+      "type": "about-certifications",
+      "blocks": {
+        "badge-1": { "type": "badge", "settings": { "icon": "🐰", "heading": "Cruelty-Free", "text": "Certified by Leaping Bunny. No animal testing at any stage." } },
+        "badge-2": { "type": "badge", "settings": { "icon": "🌿", "heading": "Vegan", "text": "Certified by The Vegan Society. Zero animal-derived ingredients." } },
+        "badge-3": { "type": "badge", "settings": { "icon": "🔬", "heading": "Clinically Proven", "text": "Clinically tested formula. Proven results for visible skin improvement." } },
+        "badge-4": { "type": "badge", "settings": { "icon": "🏥", "heading": "Dermatologist Tested", "text": "Signed off by board-certified dermatologists before every release." } },
+        "compliance-1": { "type": "compliance_item", "settings": { "text": "EU Cosmetics Regulation 1223/2009" } },
+        "compliance-2": { "type": "compliance_item", "settings": { "text": "FDA 21 CFR Cosmetics" } },
+        "compliance-3": { "type": "compliance_item", "settings": { "text": "ISO 22716 GMP" } },
+        "compliance-4": { "type": "compliance_item", "settings": { "text": "Leaping Bunny" } },
+        "compliance-5": { "type": "compliance_item", "settings": { "text": "The Vegan Society" } }
+      },
+      "block_order": ["badge-1", "badge-2", "badge-3", "badge-4", "compliance-1", "compliance-2", "compliance-3", "compliance-4", "compliance-5"],
+      "settings": {
+        "eyebrow": "Certifications & Standards",
+        "heading": "Held to the Highest Standard",
+        "description": "<p>Every product meets or exceeds the strictest international safety, efficacy, and environmental standards.</p>",
+        "compliance_label": "Compliant With",
+        "padding_top": 60,
+        "padding_bottom": 60
+      }
+    },
+    "cta": {
+      "type": "about-cta",
+      "blocks": {
+        "badge-1": { "type": "badge", "settings": { "icon": "🚚", "label": "Free Shipping" } },
+        "badge-2": { "type": "badge", "settings": { "icon": "↩️", "label": "Glow Guarantee" } },
+        "badge-3": { "type": "badge", "settings": { "icon": "🔬", "label": "Clinically Proven" } },
+        "badge-4": { "type": "badge", "settings": { "icon": "🌿", "label": "Vegan & Cruelty-Free" } }
+      },
+      "block_order": ["badge-1", "badge-2", "badge-3", "badge-4"],
+      "settings": {
+        "eyebrow": "Ready to Experience the Difference",
+        "heading": "Your Skin Deserves Real Science",
+        "description": "<p>Browse our full collection and find your perfect formula. Every product ships with our Glow Guarantee, see real results or your money back.</p>",
+        "button_1_label": "Shop All Products",
+        "button_1_link": "/collections/all",
+        "button_2_label": "",
+        "button_2_link": "",
+        "padding_top": 60,
+        "padding_bottom": 80
+      }
+    }
+  },
+  "order": ["hero", "mission", "stats", "story", "values", "process", "certifications", "cta"]
+}

@@ -1,0 +1,21 @@
+{%- comment -%}
+  Renders a 5-star rating row.
+  Accepts: rating (float, e.g. 4.7)
+{%- endcomment -%}
+{%- liquid
+  assign full_stars = rating | floor
+  assign has_half = false
+  assign remainder = rating | minus: full_stars
+  if remainder >= 0.5
+    assign has_half = true
+  endif
+-%}
+<span class="star-rating" aria-hidden="true">
+  {%- for i in (1..5) -%}
+    {%- if i <= full_stars -%}
+      {% render 'icon', name: 'star' %}
+    {%- else -%}
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:.35"><polygon points="12 2 15 9 22 9.5 16.5 14 18.5 21 12 17 5.5 21 7.5 14 2 9.5 9 9"/></svg>
+    {%- endif -%}
+  {%- endfor -%}
+</span>

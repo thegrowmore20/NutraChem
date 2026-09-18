@@ -1,0 +1,171 @@
+{%- comment -%}
+  Fixed bar above the header. Each block is one slide (richtext); with more
+  than one slide and auto-rotate enabled, it crossfades between them on a
+  timer. Rendered in the header-group, before "header" - header.liquid reads
+  --announcement-height (set by this section's own script) to offset itself
+  below it instead of the two overlapping, and folds it into --header-height
+  so body padding / the search popup / sticky product info all stay correct
+  without needing their own awareness of this section.
+{%- endcomment -%}
+
+{%- if section.blocks.size > 0 -%}
+  <announcement-bar
+    class="announcement-bar"
+    data-auto-rotate="{{ section.settings.enable_auto_rotate }}"
+    data-interval="{{ section.settings.rotate_interval }}"
+    style="--announcement-bg: {{ section.settings.background_color }}; --announcement-text: {{ section.settings.text_color }};"
+  >
+    {%- for block in section.blocks -%}
+      <div
+        class="announcement-bar__slide{% if forloop.first %} is-active{% endif %}"
+        data-announcement-slide
+        {% unless forloop.first %}hidden{% endunless %}
+        {{ block.shopify_attributes }}
+      >
+        <div class="container announcement-bar__content rte">{{ block.settings.content }}</div>
+      </div>
+    {%- endfor -%}
+  </announcement-bar>
+{%- endif -%}
+
+{% stylesheet %}
+.announcement-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 31;
+  background: var(--announcement-bg, var(--color-primary));
+  color: var(--announcement-text, #ffffff);
+}
+
+.announcement-bar__slide {
+  animation: announcement-bar-fade-in 0.3s ease;
+}
+
+@keyframes announcement-bar-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.announcement-bar__content {
+  padding: 10px 44px;
+  text-align: center;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.announcement-bar__content,
+.announcement-bar__content :is(p, a, strong, em, span) {
+  color: inherit;
+}
+
+.announcement-bar__content p {
+  margin: 0;
+}
+
+.announcement-bar__content a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+{% endstylesheet %}
+
+{% javascript %}
+class AnnouncementBar extends HTMLElement {
+  #slides
+  #index = 0
+  #timer
+
+  constructor() {
+    super()
+    this.#slides = Array.from(this.querySelectorAll('[data-announcement-slide]'))
+    if (this.#slides.length <= 1 || this.dataset.autoRotate !== 'true') return
+
+    const interval = (Number(this.dataset.interval) || 5) * 1000
+    this.#timer = window.setInterval(() => this.#next(), interval)
+  }
+
+  #next() {
+    const current = this.#slides[this.#index]
+    const nextIndex = (this.#index + 1) % this.#slides.length
+    const next = this.#slides[nextIndex]
+
+    current.hidden = true
+    current.classList.remove('is-active')
+    next.hidden = false
+    next.classList.add('is-active')
+    this.#index = nextIndex
+  }
+}
+
+if (!customElements.get('announcement-bar')) {
+  customElements.define('announcement-bar', AnnouncementBar)
+}
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Announcement bar",
+  "class": "section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "enable_auto_rotate",
+      "label": "Change messages automatically",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "rotate_interval",
+      "label": "Change message every",
+      "min": 3,
+      "max": 10,
+      "step": 1,
+      "unit": "s",
+      "default": 5
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#18252B"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#FFFFFF"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "message",
+      "name": "Message",
+      "settings": [
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Message",
+          "default": "<p>Free shipping on orders over $100</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Announcement bar",
+      "blocks": [
+        { "type": "message" }
+      ]
+    }
+  ]
+}
+{% endschema %}

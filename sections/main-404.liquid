@@ -1,0 +1,70 @@
+{%- comment -%}
+  404 (page not found) template section.
+{%- endcomment -%}
+
+<section
+  class="error-404 section-padding"
+  style="--padding-top: {{ section.settings.padding_top }}px; --padding-bottom: {{ section.settings.padding_bottom }}px;"
+>
+  <div class="container error-404__inner">
+    <h1 class="error-404__title h2">{{ 'templates.404.title' | t }}</h1>
+    <p class="error-404__subtext">{{ 'templates.404.subtext' | t }}</p>
+    <a href="{{ routes.all_products_collection_url }}" class="button button--accent">
+      {{ 'general.continue_shopping' | t }}
+    </a>
+  </div>
+</section>
+
+{% stylesheet %}
+.error-404__inner {
+  max-width: 480px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.error-404__title {
+  margin: 0 0 12px;
+  color: var(--color-primary);
+}
+
+.error-404__subtext {
+  margin: 0 0 28px;
+  color: var(--color-text);
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "404 page",
+  "class": "section",
+  "enabled_on": {
+    "templates": ["404"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 200,
+      "step": 10,
+      "unit": "px",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 200,
+      "step": 10,
+      "unit": "px",
+      "default": 100
+    }
+  ]
+}
+{% endschema %}

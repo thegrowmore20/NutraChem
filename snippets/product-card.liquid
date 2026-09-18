@@ -1,0 +1,56 @@
+{%- comment -%}
+  Accepts: product, rating (float), review_count (int)
+{%- endcomment -%}
+{%- liquid
+  assign rating = rating | default: 5.0
+  assign review_count = review_count | default: 53
+-%}
+<div class="product-card">
+  <a href="{{ product.url | default: routes.all_products_collection_url }}" class="product-card__media">
+    {%- if product.featured_image -%}
+      {{ product.featured_image | image_url: width: 600 | image_tag: loading: 'lazy', widths: '300, 450, 600', sizes: '(min-width: 750px) 300px, 45vw', width: 600, height: 600, alt: product.title, class: 'product-card__image product-card__image--primary' }}
+    {%- else -%}
+      {{ 'product-1' | placeholder_svg_tag }}
+    {%- endif -%}
+    {%- if product.images[1] -%}
+      {{ product.images[1] | image_url: width: 600 | image_tag: loading: 'lazy', widths: '300, 450, 600', sizes: '(min-width: 750px) 300px, 45vw', width: 600, height: 600, alt: product.title, class: 'product-card__image product-card__image--secondary' }}
+    {%- endif -%}
+    {%- if product != blank and product.available == false -%}
+      <span class="product-card__badge product-card__badge--soldout">Sold Out</span>
+    {%- elsif product.compare_at_price > product.price -%}
+      <span class="product-card__badge">Save {{ product.compare_at_price | minus: product.price | money }}</span>
+    {%- endif -%}
+  </a>
+  <div class="product-card__body">
+    <h3 class="product-card__title">
+      <a href="{{ product.url | default: routes.all_products_collection_url }}">{{ product.title | default: 'Creamy Face Wash - Gluta Cure' }}</a>
+    </h3>
+    {%- if product != blank -%}
+      <div
+        class="AirReviews-Widget AirReviews-Widget--Stars"
+        style="margin-top:0.7rem"
+        data-review-avg="{{ product.metafields.air_reviews_product.review_avg }}"
+        data-review-count="{{ product.metafields.air_reviews_product.review_count }}"
+      ></div>
+    {%- else -%}
+      <div class="product-card__rating">
+        {% render 'star-rating', rating: rating %}
+        <span>{{ rating }} ({{ review_count }} Reviews)</span>
+      </div>
+    {%- endif -%}
+    {% render 'price', product: product %}
+    {%- if product != blank -%}
+      {%- form 'product', product, data-product-form: true -%}
+        <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+        <input type="hidden" name="sections" value="cart-drawer,header">
+        <button type="submit" class="button button--accent">
+          {% render 'icon', name: 'cart' %} Add to Cart
+        </button>
+      {%- endform -%}
+    {%- else -%}
+      <button type="button" class="button button--accent">
+        {% render 'icon', name: 'cart' %} Add to Cart
+      </button>
+    {%- endif -%}
+  </div>
+</div>

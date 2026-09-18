@@ -1,0 +1,1867 @@
+{%- comment -%}
+  Main Product Section. Product information is composed from reorderable
+  blocks (title, price, variant picker, quantity + buy buttons, rich text,
+  accordion, icons with text, share, app blocks) inside a single
+  {% form 'product', product %} so the native accelerated-checkout payment
+  button and the quantity/variant inputs share one form.
+
+  <product-info> is the single owner of variant-selection state: it parses
+  the embedded product-variants JSON once, and every dependent piece (price,
+  gallery, availability, quantity rules, sticky cart) reacts to the variant
+  it resolves - nothing else re-derives the selected variant independently.
+{%- endcomment -%}
+
+{%- liquid
+  assign current_variant = product.selected_or_first_available_variant
+  assign form_id = 'ProductForm-' | append: section.id
+
+  case section.settings.container_width
+    when 'full'
+      assign container_width_css = '100%'
+    when 'wide'
+      assign container_width_css = '1600px'
+    else
+      assign container_width_css = '1320px'
+  endcase
+
+  assign layout_classes = 'product-layout product-layout--gallery-desktop-' | append: section.settings.desktop_thumbnail_position
+  assign layout_classes = layout_classes | append: ' product-layout--gallery-mobile-' | append: section.settings.mobile_thumbnail_position
+  if section.settings.enable_sticky_info
+    assign layout_classes = layout_classes | append: ' product-layout--sticky-info'
+  endif
+  if section.settings.enable_sticky_info_mobile
+    assign layout_classes = layout_classes | append: ' product-layout--sticky-info-mobile'
+  endif
+-%}
+
+<product-info
+  class="product-info-section section-padding"
+  data-section-id="{{ section.id }}"
+  data-product-url="{{ product.url }}"
+  data-money-format="{{ shop.money_format | escape }}"
+  data-label-cart-error="{{ 'products.product.cart_error' | t }}"
+  style="--padding-top: {{ section.settings.padding_top }}px; --padding-bottom: {{ section.settings.padding_bottom }}px; --media-width: {{ section.settings.media_width }}%;"
+>
+  <div class="container" style="--container-width: {{ container_width_css }};">
+    {%- if product == blank -%}
+      <p class="product-info-section__empty">{{ 'collections.general.empty' | t }}</p>
+    {%- else -%}
+      <div class="{{ layout_classes }}">
+        <div class="product-layout__media" data-product-media>
+          {% render 'product-media-gallery', product: product, section: section %}
+        </div>
+
+        <div class="product-layout__info">
+          {%- form 'product', product, id: form_id, data-product-form: true -%}
+            <input type="hidden" name="id" value="{{ current_variant.id }}" data-product-form-variant-id>
+            <input type="hidden" name="sections" value="cart-drawer,header">
+
+            {%- for block in section.blocks -%}
+              {%- case block.type -%}
+
+                {%- when 'title' -%}
+                  {%- if product.title != blank -%}
+                    <{{ block.settings.heading_level }} class="product-title {{ block.settings.size }} product-title--{{ block.settings.alignment }}" {{ block.shopify_attributes }}>
+                      {{ product.title }}
+                    </{{ block.settings.heading_level }}>
+                  {%- endif -%}
+
+                {%- when 'price' -%}
+                  <div {{ block.shopify_attributes }}>
+                    {%- render 'price',
+                      product: product,
+                      variant: current_variant,
+                      show_badge: block.settings.show_savings_badge,
+                      savings_format: block.settings.savings_format,
+                      data_attributes: true
+                    -%}
+                  </div>
+
+                {%- when 'variant_picker' -%}
+                  <div {{ block.shopify_attributes }}>
+                    {%- render 'product-variant-picker', product: product -%}
+                  </div>
+
+                {%- when 'quantity_buy_buttons' -%}
+                  <div {{ block.shopify_attributes }}>
+                    {%- render 'product-buy-buttons',
+                      product: product,
+                      current_variant: current_variant,
+                      section: section,
+                      form: form,
+                      block: block
+                    -%}
+                  </div>
+
+                {%- when 'rich_text' -%}
+                  {%- if block.settings.content != blank -%}
+                    <div class="product-rich-text rte" {{ block.shopify_attributes }}>{{ block.settings.content }}</div>
+                  {%- endif -%}
+
+                {%- when 'accordion' -%}
+                  {%- if block.settings.content != blank -%}
+                    {%- capture accordion_panel_id -%}AccordionPanel-{{ section.id }}-{{ forloop.index }}{%- endcapture -%}
+                    <div
+                      class="product-accordion"
+                      data-accordion-item
+                      {% if block.settings.open_by_default %}data-accordion-open{% endif %}
+                      {{ block.shopify_attributes }}
+                    >
+                      <button
+                        type="button"
+                        class="product-accordion__summary"
+                        data-accordion-trigger
+                        aria-expanded="{% if block.settings.open_by_default %}true{% else %}false{% endif %}"
+                        aria-controls="{{ accordion_panel_id }}"
+                      >
+                        <span>{{ block.settings.heading }}</span>
+                        {% render 'icon', name: 'chevron-down' %}
+                      </button>
+                      <div class="product-accordion__panel" id="{{ accordion_panel_id }}" data-accordion-panel>
+                        <div class="product-accordion__panel-inner">
+                          <div class="product-accordion__content rte">{{ block.settings.content }}</div>
+                        </div>
+                      </div>
+                    </div>
+                  {%- endif -%}
+
+                {%- when 'icons_with_text' -%}
+                  <div
+                    class="icons-with-text icons-with-text--{{ block.settings.layout }} icons-with-text--columns-{{ block.settings.columns }}"
+                    style="--icons-icon-size: {{ block.settings.icon_size }}px; --icons-bg: {{ block.settings.background_color }};"
+                    {{ block.shopify_attributes }}
+                  >
+                    {%- for i in (1..4) -%}
+                      {%- capture icon_key -%}icon_{{ i }}{%- endcapture -%}
+                      {%- capture heading_key -%}heading_{{ i }}{%- endcapture -%}
+                      {%- capture text_key -%}text_{{ i }}{%- endcapture -%}
+                      {%- assign item_icon = block.settings[icon_key] -%}
+                      {%- assign item_heading = block.settings[heading_key] -%}
+                      {%- assign item_text = block.settings[text_key] -%}
+                      {%- if item_heading != blank or item_text != blank -%}
+                        <div class="icons-with-text__item">
+                          {%- if item_icon != blank -%}
+                            <div class="icons-with-text__icon">
+                              {{ item_icon | image_url: width: 80 | image_tag: loading: 'lazy', width: 40, height: 40, alt: item_heading | default: '' }}
+                            </div>
+                          {%- endif -%}
+                          <div class="icons-with-text__copy">
+                            {%- if item_heading != blank -%}<p class="icons-with-text__heading">{{ item_heading }}</p>{%- endif -%}
+                            {%- if item_text != blank -%}<p class="icons-with-text__text">{{ item_text }}</p>{%- endif -%}
+                          </div>
+                        </div>
+                      {%- endif -%}
+                    {%- endfor -%}
+                  </div>
+
+                {%- when 'share' -%}
+                  <share-button
+                    class="product-share"
+                    data-share-url="{{ shop.url }}{{ product.url }}"
+                    data-share-title="{{ product.title | escape }}"
+                    {{ block.shopify_attributes }}
+                  >
+                    <button type="button" class="product-share__button" data-share-button>
+                      {% render 'icon', name: 'share' %}
+                      <span>
+                        {%- if block.settings.label != blank -%}{{ block.settings.label }}{%- else -%}{{ 'products.product.share' | t }}{%- endif -%}
+                      </span>
+                    </button>
+                    <span class="product-share__copied" data-share-copied hidden>{{ 'products.product.share_copied' | t }}</span>
+                  </share-button>
+
+                {%- when '@app' -%}
+                  {% render block %}
+
+              {%- endcase -%}
+            {%- endfor -%}
+          {%- endform -%}
+
+          {%- if section.settings.enable_sticky_cart -%}
+            {% render 'product-sticky-cart', product: product, current_variant: current_variant, section: section %}
+          {%- endif -%}
+        </div>
+      </div>
+
+      <script type="application/json" data-product-variants>
+        {{ product.variants | json }}
+      </script>
+    {%- endif -%}
+  </div>
+</product-info>
+
+{% render 'product-schema', product: product %}
+
+{% stylesheet %}
+.product-info-section {
+  /* Custom elements default to display: inline, which lets vertical padding
+     apply without actually pushing surrounding content - the section's own
+     top/bottom padding silently collapsed until this was set explicitly. */
+  display: block;
+}
+
+.product-info-section__empty {
+  text-align: center;
+  color: var(--color-text);
+}
+
+.product-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
+}
+
+@media screen and (min-width: 990px) {
+  .product-layout {
+    grid-template-columns: var(--media-width, 50%) 1fr;
+    align-items: start;
+    gap: 48px;
+  }
+}
+
+/* Gallery */
+.product-gallery {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.product-gallery__stage {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  border-radius: var(--radius-m, 12px);
+  background: var(--color-surface);
+  /* Let the track's pointer handlers own horizontal movement; still allow
+     the page to scroll vertically when a touch starts on the image. */
+  touch-action: pan-y;
+  cursor: grab;
+}
+
+.product-gallery__stage:active {
+  cursor: grabbing;
+}
+
+/* All slides sit side by side in one row; only the active one is scrolled
+   into view via the track's transform. This is what makes an in-between,
+   finger-following drag position possible - a display:none/block toggle
+   has no "in between" state to animate through. */
+.product-gallery__track {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.3s ease;
+}
+
+.product-gallery__track.is-dragging {
+  transition: none;
+}
+
+.product-gallery__slide {
+  flex: 0 0 100%;
+  width: 100%;
+  height: 100%;
+}
+
+.product-gallery__image,
+.product-gallery__placeholder {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.product-gallery__media-wrap {
+  width: 100%;
+  height: 100%;
+}
+
+.product-gallery__media-wrap video,
+.product-gallery__media-wrap model-viewer,
+.product-gallery__media-wrap iframe {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border: 0;
+}
+
+.product-gallery__nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--color-background);
+  border: 1px solid #e2e6e8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--color-primary);
+}
+
+.product-gallery__nav--prev {
+  left: 12px;
+}
+
+.product-gallery__nav--prev svg {
+  transform: rotate(180deg);
+}
+
+.product-gallery__nav--next {
+  right: 12px;
+}
+
+.product-gallery__thumbs {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+}
+
+.product-gallery__thumb {
+  flex: 0 0 auto;
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-s, 8px);
+  overflow: hidden;
+  border: 2px solid transparent;
+  padding: 0;
+  cursor: pointer;
+  position: relative;
+  scroll-snap-align: start;
+  background: none;
+}
+
+.product-gallery__thumb.is-active {
+  border-color: var(--color-secondary);
+}
+
+.product-gallery__thumb-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.product-gallery__thumb-badge {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.35);
+  color: #fff;
+}
+
+@media screen and (min-width: 990px) {
+  .product-layout--gallery-desktop-left .product-gallery,
+  .product-layout--gallery-desktop-right .product-gallery {
+    flex-direction: row;
+  }
+
+  .product-layout--gallery-desktop-right .product-gallery {
+    flex-direction: row-reverse;
+  }
+
+  .product-layout--gallery-desktop-left .product-gallery__thumbs,
+  .product-layout--gallery-desktop-right .product-gallery__thumbs {
+    flex-direction: column;
+    width: 76px;
+    flex: 0 0 76px;
+    max-height: 560px;
+  }
+
+  .product-layout--gallery-desktop-left .product-gallery__stage,
+  .product-layout--gallery-desktop-right .product-gallery__stage {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+}
+
+@media screen and (max-width: 749px) {
+  .product-layout--gallery-mobile-left .product-gallery,
+  .product-layout--gallery-mobile-right .product-gallery {
+    flex-direction: row;
+  }
+
+  .product-layout--gallery-mobile-right .product-gallery {
+    flex-direction: row-reverse;
+  }
+
+  .product-layout--gallery-mobile-left .product-gallery__thumbs,
+  .product-layout--gallery-mobile-right .product-gallery__thumbs {
+    flex-direction: column;
+    width: 56px;
+    flex: 0 0 56px;
+    max-height: 400px;
+  }
+
+  .product-layout--gallery-mobile-left .product-gallery__stage,
+  .product-layout--gallery-mobile-right .product-gallery__stage {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+}
+
+/* Sticky product media column: the gallery is normally the shorter of the
+   two columns (a single image/short carousel vs. a description, accordions,
+   etc. that can run long), so it's the media column that stays in view while
+   the info column scrolls past it - not the other way around. */
+@media screen and (min-width: 990px) {
+  .product-layout--sticky-info .product-layout__media {
+    position: sticky;
+    top: calc(var(--header-height, 76px) + 24px);
+    align-self: start;
+  }
+}
+
+@media screen and (max-width: 989px) {
+  .product-layout--sticky-info-mobile .product-layout__media {
+    position: sticky;
+    top: calc(var(--header-height, 60px) + 12px);
+    align-self: start;
+  }
+}
+
+/* Title / price / rich text */
+.product-title {
+  margin: 0 0 12px;
+}
+
+.product-title--center {
+  text-align: center;
+}
+
+.product-title--right {
+  text-align: right;
+}
+
+/* Price otherwise reuses base.css's .price / .price-item--regular /
+   .price-item--compare as-is (the same rules the product card uses) - only
+   the breathing room below the title and these two font sizes are
+   product-page-specific overrides. Scoped under .product-info-section (a
+   bare .price rule would win on product cards too, once this stylesheet is
+   on the page - it isn't reliably absent there in practice). */
+.product-info-section .price {
+  margin: 8px 0 0;
+  flex-wrap: wrap;
+  font-size: 18px;
+}
+
+.product-info-section .price .price-item--compare {
+  font-size: 15px;
+}
+
+.price__badge {
+  display: inline-flex;
+  width: fit-content;
+  background: var(--color-secondary);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 3px 8px;
+  border-radius: var(--radius-s, 4px);
+}
+
+/* An explicit display value (needed for layout) beats the UA [hidden]
+   stylesheet rule at equal specificity, since this rule comes later in the
+   cascade - so [hidden] needs to be restated here to actually hide it. */
+.price__badge[hidden] {
+  display: none;
+}
+
+.product-rich-text {
+  margin: 16px 0;
+  color: var(--color-text);
+  line-height: 1.7;
+}
+
+/* Variant picker */
+.variant-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 20px 0;
+}
+
+.variant-picker__option {
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+
+.variant-picker__label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 8px;
+  padding: 0;
+  color: var(--color-primary);
+}
+
+.variant-picker__selected-value {
+  font-weight: 400;
+  color: var(--color-text);
+}
+
+.variant-picker__values {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.variant-picker__value {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #d8dfe2;
+  border-radius: var(--radius-m, 10px);
+  background: var(--color-background);
+  cursor: pointer;
+  font: inherit;
+  color: var(--color-text);
+  transition: border-color 0.15s ease;
+}
+
+.variant-picker__value--pill {
+  padding: 10px 16px;
+}
+
+.variant-picker__value--color {
+  padding: 4px;
+}
+
+.variant-picker__value--image {
+  padding: 6px;
+  flex-direction: column;
+  text-align: center;
+}
+
+.variant-picker__value-swatch {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: block;
+}
+
+.variant-picker__value-image {
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: var(--radius-s, 6px);
+  display: block;
+}
+
+.variant-picker__value.is-selected {
+  border-color: var(--color-secondary);
+  border-width: 2px;
+}
+
+.variant-picker__value.is-unavailable {
+  color: #9aa5ab;
+}
+
+.variant-picker__value.is-unavailable .variant-picker__value-text {
+  text-decoration: line-through;
+}
+
+.variant-picker__value.is-unavailable .variant-picker__value-image,
+.variant-picker__value.is-unavailable .variant-picker__value-swatch {
+  opacity: 0.4;
+}
+
+/* Quantity + buy buttons */
+.product-buy-box {
+  margin: 20px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.product-buy-box__row {
+  display: flex;
+  /* Same 16px as .product-buy-box's own gap (qty-to-button and
+     row-to-Buy-it-now are now equal, instead of 12px vs 16px). */
+  gap: 16px;
+  align-items: stretch;
+  /* Apps (e.g. a wishlist button) can inject their own element into this row
+     via JS; wrapping keeps that extra item from squeezing "Add to Cart"'s
+     text onto two lines instead of taking space from it. */
+  flex-wrap: wrap;
+}
+
+.product-buy-box__row [class*="vensa-wl"] {
+  /* Forces an app-injected element (e.g. the wishlist button) onto its own
+     row every time, so it's never competing with "Add to Cart" for the same
+     line's width - that competition was why Add to Cart wasn't reliably
+     reaching the row's full remaining width. */
+  flex-basis: 100%;
+  /* The app's own stylesheet puts a 10px margin-top on this element
+     unconditionally - it's still applied even while the element is visually
+     empty (its own button starts out `hidden`), which read as an extra,
+     unexplained gap below Add to Cart. */
+  margin: 0;
+}
+
+.product-buy-box__row [class*="vensa-wl"]:empty {
+  /* The app renders this element before its own script populates it
+     asynchronously - while empty, forcing it onto its own flex line (above)
+     still reserves a visible gap for nothing. Collapsing it while empty
+     removes that phantom gap; it reappears automatically once the app fills
+     it in. */
+  display: none;
+}
+
+.quantity-selector {
+  /* Same border color/radius as the cart drawer's quantity stepper. Height is
+     pinned to .button's own two breakpoint values (below) rather than left
+     to flex-stretch, since an app (e.g. the wishlist button) can also land in
+     this row with a taller intrinsic height than "Add to Cart" and would
+     otherwise become the tallest item stretch measures against. */
+  display: flex;
+  align-items: stretch;
+  height: 48px;
+  border: 1px solid var(--color-surface);
+  border-radius: var(--radius-m);
+  overflow: hidden;
+  flex: 0 0 auto;
+}
+
+@media screen and (max-width: 749px) {
+  .quantity-selector {
+    height: 40px;
+  }
+}
+
+.quantity-selector__btn {
+  width: 40px;
+  height: auto;
+  min-width: 40px;
+  border: 0;
+  background: none;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-primary);
+}
+
+.quantity-selector__btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.quantity-selector__input {
+  width: 44px;
+  border: 0;
+  text-align: center;
+  font-size: 13px;
+  color: var(--color-primary);
+  -moz-appearance: textfield;
+}
+
+.quantity-selector__input::-webkit-outer-spin-button,
+.quantity-selector__input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.product-buy-box__submit {
+  /* Fills all width remaining next to the quantity box - safe to grow with
+     no minimum basis now that the wishlist button above is always forced
+     onto its own row instead of sharing this one. */
+  flex: 1 1 auto;
+}
+
+@media screen and (max-width: 400px) {
+  /* The shared .button padding (34px) leaves too little room for "Add to
+     Cart" next to the quantity stepper on very narrow screens. */
+  .product-buy-box__submit {
+    padding: 0 16px;
+    font-size: 0.9rem;
+  }
+}
+
+.product-buy-box__error {
+  color: #c0392b;
+  font-size: 0.875rem;
+  background: #fdecea;
+  border: 1px solid #f3c6c1;
+  border-radius: var(--radius-s, 8px);
+  padding: 10px 14px;
+}
+
+.product-buy-box__payment {
+  min-height: 44px;
+  margin-top: -1rem;
+}
+
+.product-buy-box__waitlist {
+  width: 100%;
+}
+
+/* .button (base.css) sets display: inline-flex, which otherwise beats the UA
+   [hidden] rule at equal specificity since it comes later in the cascade. */
+.product-buy-box__waitlist[hidden] {
+  display: none;
+}
+
+/* Accordion */
+.product-accordion {
+  border-top: 1px solid #e2e6e8;
+}
+
+.product-accordion:last-of-type {
+  border-bottom: 1px solid #e2e6e8;
+}
+
+.product-accordion__summary {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 0;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 600;
+  color: var(--color-primary);
+  background: none;
+  border: 0;
+  text-align: left;
+}
+
+.product-accordion__summary svg {
+  transition: transform 0.25s ease;
+  flex-shrink: 0;
+}
+
+.product-accordion[data-accordion-open] > .product-accordion__summary svg {
+  transform: rotate(180deg);
+}
+
+/* grid-template-rows 0fr -> 1fr (with an inner overflow: hidden wrapper)
+   animates open/close smoothly without a JS-measured max-height. */
+.product-accordion__panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.25s ease;
+}
+
+.product-accordion[data-accordion-open] > .product-accordion__panel {
+  grid-template-rows: 1fr;
+}
+
+.product-accordion__panel-inner {
+  overflow: hidden;
+}
+
+.product-accordion__content {
+  padding: 0 0 16px;
+  color: var(--color-text);
+  line-height: 1.7;
+}
+
+/* Icons with text */
+.icons-with-text {
+  display: grid;
+  gap: 0.8rem;
+  margin: 1.5rem 0;
+}
+
+.icons-with-text--columns-1 {
+  grid-template-columns: 1fr;
+}
+
+.icons-with-text--columns-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.icons-with-text--columns-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.icons-with-text--columns-4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.icons-with-text__item {
+  display: flex;
+  gap: 10px;
+  /* Horizontal layout: center the icon and heading/text against each other
+     on the cross axis, not top-align them. */
+  align-items: center;
+  background: var(--icons-bg, transparent);
+  border-radius: var(--radius-m);
+  padding: 12px 14px;
+}
+
+.icons-with-text--vertical .icons-with-text__item {
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.icons-with-text__icon {
+  flex-shrink: 0;
+}
+
+.icons-with-text__icon img {
+  width: var(--icons-icon-size, 32px);
+  height: var(--icons-icon-size, 32px);
+  object-fit: contain;
+  display: block;
+}
+
+.icons-with-text__heading {
+  font-weight: 600;
+  margin: 0px;
+  font-size: 0.9rem;
+  color: var(--color-primary);
+}
+
+.icons-with-text__text {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--color-text);
+}
+
+@media screen and (max-width: 749px) {
+  .icons-with-text--columns-4,
+  .icons-with-text--columns-3,
+  .icons-with-text--columns-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Share */
+.product-share {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 16px 0;
+  position: relative;
+}
+
+.product-share__button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: 0;
+  font: inherit;
+  color: var(--color-primary);
+  cursor: pointer;
+  padding: 0;
+}
+
+.product-share__copied {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 6px;
+  font-size: 0.8rem;
+  background: var(--color-dark);
+  color: #fff;
+  padding: 4px 10px;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+
+/* Sticky add-to-cart bar: a full-width bottom bar on mobile, but a small,
+   horizontally-centered floating card (not edge-to-edge) on desktop. */
+.sticky-cart-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 40;
+  background: var(--color-background);
+  border-top: 1px solid #e2e6e8;
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.06);
+  transform: translateY(100%);
+  transition: transform 0.25s ease;
+}
+
+.sticky-cart-bar.is-visible {
+  transform: translateY(0);
+}
+
+@media screen and (min-width: 750px) {
+  .sticky-cart-bar {
+    left: 50%;
+    right: auto;
+    bottom: 20px;
+    width: min(480px, calc(100% - 32px));
+    border: 1px solid #e2e6e8;
+    border-radius: var(--radius-m, 12px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    transform: translate(-50%, 150%);
+  }
+
+  .sticky-cart-bar.is-visible {
+    transform: translate(-50%, 0);
+  }
+}
+
+.sticky-cart-bar__inner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 16px;
+}
+
+.sticky-cart-bar__media {
+  flex: 0 0 auto;
+}
+
+.sticky-cart-bar__image {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: var(--radius-s, 8px);
+  display: block;
+}
+
+.sticky-cart-bar__info {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.sticky-cart-bar__title {
+  margin: 0;
+  font-weight: 600;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--color-primary);
+}
+
+.sticky-cart-bar__variant {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #7c8a90;
+}
+
+.sticky-cart-bar__price {
+  flex: 0 0 auto;
+}
+
+.sticky-cart-bar__price .price {
+  font-size: 1rem;
+  margin: 0;
+}
+
+.sticky-cart-bar__submit {
+  flex: 0 0 auto;
+  padding: 0 20px;
+  height: 40px;
+}
+
+@media screen and (max-width: 600px) {
+  .sticky-cart-bar__variant {
+    display: none;
+  }
+}
+{% endstylesheet %}
+
+{% javascript %}
+// Built via fromCharCode, not a literal, so this section's own script block
+// doesn't mistake this fallback money-format placeholder for a Liquid output
+// tag - a literal double-brace pair anywhere in this block breaks the parser.
+const DEFAULT_MONEY_FORMAT = '$' + String.fromCharCode(123, 123) + 'amount' + String.fromCharCode(125, 125)
+
+class ProductInfo extends HTMLElement {
+  #form
+  #variantIdInput
+  #variants
+  #currentVariant
+  #sectionId
+  #url
+  #moneyFormat
+  #gallery
+  #pendingSubmit = false
+  #syncTimer
+  #stickyObserver
+  #footerObserver
+
+  constructor() {
+    super()
+    this.#form = this.querySelector('[data-product-form]')
+    if (!this.#form) return
+
+    this.#variantIdInput = this.#form.querySelector('[data-product-form-variant-id]')
+    this.#sectionId = this.dataset.sectionId
+    this.#url = this.dataset.productUrl
+    this.#moneyFormat = this.dataset.moneyFormat || DEFAULT_MONEY_FORMAT
+    this.#gallery = this.querySelector('product-gallery')
+
+    const variantsScript = this.querySelector('[data-product-variants]')
+    this.#variants = variantsScript ? JSON.parse(variantsScript.textContent) : []
+    this.#currentVariant =
+      this.#variants.find((variant) => String(variant.id) === this.#variantIdInput.value) || this.#variants[0]
+
+    this.addEventListener('click', (event) => this.#onClick(event))
+    this.addEventListener('change', (event) => this.#onChange(event))
+    this.addEventListener('input', (event) => this.#onInput(event))
+    this.#form.addEventListener('submit', () => {
+      this.#pendingSubmit = true
+    })
+
+    document.addEventListener('cart:updated', () => this.#onCartUpdated())
+    document.addEventListener('cart:error', (event) => this.#onCartError(event))
+
+    this.#initStickyCartBar()
+    this.#syncQuantityButtonStates()
+  }
+
+  #onClick(event) {
+    const valueButton = event.target.closest('[data-variant-value]')
+    if (valueButton) {
+      this.#onVariantValueClick(valueButton)
+      return
+    }
+    const decrease = event.target.closest('[data-quantity-decrease]')
+    if (decrease) {
+      this.#stepQuantity(decrease, -1)
+      return
+    }
+    const increase = event.target.closest('[data-quantity-increase]')
+    if (increase) {
+      this.#stepQuantity(increase, 1)
+      return
+    }
+    const accordionTrigger = event.target.closest('[data-accordion-trigger]')
+    if (accordionTrigger) {
+      this.#onAccordionTriggerClick(accordionTrigger)
+    }
+  }
+
+  #onAccordionTriggerClick(trigger) {
+    const item = trigger.closest('[data-accordion-item]')
+    const willOpen = !item.hasAttribute('data-accordion-open')
+
+    // Only one accordion item open at a time: close every sibling first.
+    for (const other of this.querySelectorAll('[data-accordion-item]')) {
+      if (other === item) continue
+      other.removeAttribute('data-accordion-open')
+      other.querySelector('[data-accordion-trigger]')?.setAttribute('aria-expanded', 'false')
+    }
+
+    item.toggleAttribute('data-accordion-open', willOpen)
+    trigger.setAttribute('aria-expanded', willOpen ? 'true' : 'false')
+  }
+
+  #onChange(event) {
+    if (event.target.matches('[data-quantity-input]')) {
+      this.#clampQuantityInput(event.target)
+      this.#clearCartError()
+    }
+  }
+
+  #onInput(event) {
+    if (event.target.matches('[data-quantity-input]')) {
+      this.#clearCartError()
+    }
+  }
+
+  #onVariantValueClick(button) {
+    if (button.classList.contains('is-selected')) return
+
+    const position = Number(button.dataset.optionPosition)
+    const value = button.dataset.value
+    const group = button.closest('.variant-picker__option')
+
+    for (const other of group.querySelectorAll('[data-variant-value]')) {
+      const isThis = other === button
+      other.classList.toggle('is-selected', isThis)
+      other.setAttribute('aria-pressed', isThis ? 'true' : 'false')
+    }
+    const label = group.querySelector('[data-selected-value]')
+    if (label) label.textContent = value
+
+    const selectedOptions = this.#getSelectedOptions()
+    selectedOptions[position - 1] = value
+
+    this.#updateValueAvailability(selectedOptions)
+
+    const matchedVariant = this.#variants.find((variant) =>
+      variant.options.every((optionValue, index) => optionValue === selectedOptions[index])
+    )
+    if (matchedVariant) this.#setVariant(matchedVariant)
+  }
+
+  #getSelectedOptions() {
+    const options = []
+    for (const group of this.querySelectorAll('.variant-picker__option')) {
+      const position = Number(group.dataset.optionPosition)
+      const selected = group.querySelector('[data-variant-value].is-selected')
+      options[position - 1] = selected ? selected.dataset.value : this.#currentVariant.options[position - 1]
+    }
+    return options
+  }
+
+  #updateValueAvailability(selectedOptions) {
+    for (const button of this.querySelectorAll('[data-variant-value]')) {
+      const position = Number(button.dataset.optionPosition)
+      const candidate = selectedOptions.slice()
+      candidate[position - 1] = button.dataset.value
+      const match = this.#variants.find((variant) =>
+        variant.options.every((optionValue, index) => optionValue === candidate[index])
+      )
+      const available = !match || match.available
+      button.classList.toggle('is-unavailable', !available)
+    }
+  }
+
+  #setVariant(variant) {
+    this.#currentVariant = variant
+    this.#variantIdInput.value = variant.id
+    this.#variantIdInput.dispatchEvent(new Event('change', { bubbles: true }))
+
+    if (this.#url) {
+      const url = new URL(this.#url, window.location.origin)
+      url.searchParams.set('variant', variant.id)
+      window.history.replaceState({}, '', `${url.pathname}${url.search}`)
+    }
+
+    this.#updatePrice(variant)
+    this.#updateAvailability(variant)
+    this.#updateStickyCart(variant)
+    this.#gallery?.onVariantChange(variant)
+    this.#queueServerSync(variant.id)
+
+    this.dispatchEvent(new CustomEvent('variant:change', { bubbles: true, detail: { variant } }))
+  }
+
+  #updatePrice(variant) {
+    const onSale = variant.compare_at_price > variant.price
+    for (const wrapper of this.querySelectorAll('[data-product-price]')) {
+      wrapper.classList.toggle('price--on-sale', onSale)
+
+      const current = wrapper.querySelector('[data-price-current]')
+      if (current) current.textContent = this.#formatMoney(variant.price)
+
+      const compare = wrapper.querySelector('[data-price-compare]')
+      if (compare) {
+        compare.textContent = this.#formatMoney(variant.compare_at_price)
+        compare.hidden = !onSale
+      }
+
+      const badge = wrapper.querySelector('[data-price-badge]')
+      if (badge) {
+        badge.hidden = !onSale
+        if (onSale) {
+          const format = wrapper.dataset.savingsFormat
+          badge.textContent =
+            format === 'amount'
+              ? this.#formatMoney(variant.compare_at_price - variant.price)
+              : `${Math.round(((variant.compare_at_price - variant.price) / variant.compare_at_price) * 100)}%`
+        }
+      }
+    }
+  }
+
+  #updateAvailability(variant) {
+    for (const box of this.querySelectorAll('[data-buy-box]')) {
+      const submit = box.querySelector('[data-add-to-cart]')
+      if (submit) {
+        submit.disabled = !variant.available
+        const text = submit.querySelector('[data-add-to-cart-text]')
+        if (text) text.textContent = variant.available ? submit.dataset.labelAvailable : submit.dataset.labelUnavailable
+      }
+      const payment = box.querySelector('[data-payment-button]')
+      if (payment) payment.hidden = !variant.available
+      const waitlist = box.querySelector('[data-waitlist-button]')
+      if (waitlist) waitlist.hidden = variant.available
+    }
+  }
+
+  #updateStickyCart(variant) {
+    const bar = this.querySelector('[data-sticky-cart]')
+    if (!bar) return
+    const variantLabel = bar.querySelector('[data-sticky-variant]')
+    if (variantLabel) variantLabel.textContent = variant.title === 'Default Title' ? '' : variant.title
+    const submit = bar.querySelector('[data-sticky-add-to-cart]')
+    if (submit) {
+      submit.disabled = !variant.available
+      const text = submit.querySelector('[data-sticky-add-to-cart-text]')
+      if (text) text.textContent = variant.available ? submit.dataset.labelAvailable : submit.dataset.labelUnavailable
+    }
+  }
+
+  #queueServerSync(variantId) {
+    window.clearTimeout(this.#syncTimer)
+    this.#syncTimer = window.setTimeout(() => this.#syncFromServer(variantId), 300)
+  }
+
+  async #syncFromServer(variantId) {
+    if (!this.#url) return
+    try {
+      const response = await fetch(`${this.#url}?variant=${variantId}&section_id=${this.#sectionId}`)
+      if (!response.ok) return
+      const text = await response.text()
+      if (this.#currentVariant.id !== variantId) return
+
+      const doc = new DOMParser().parseFromString(text, 'text/html')
+      const freshBox = doc.querySelector('[data-buy-box]')
+      if (!freshBox) return
+
+      for (const input of this.querySelectorAll('[data-quantity-input]')) {
+        if (freshBox.dataset.qtyMin) input.min = freshBox.dataset.qtyMin
+        if (freshBox.dataset.qtyMax) {
+          input.max = freshBox.dataset.qtyMax
+        } else {
+          input.removeAttribute('max')
+        }
+        if (freshBox.dataset.qtyIncrement) input.step = freshBox.dataset.qtyIncrement
+        this.#clampQuantityInput(input)
+      }
+      this.#syncQuantityButtonStates()
+
+      const freshPayment = freshBox.querySelector('[data-payment-button]')
+      if (freshPayment && this.#currentVariant.available) {
+        for (const wrap of this.querySelectorAll('[data-payment-button]')) {
+          wrap.innerHTML = freshPayment.innerHTML
+        }
+      }
+    } catch (error) {
+      /* silent: the payment button/quantity rules simply keep their last-known state */
+    }
+  }
+
+  #stepQuantity(button, direction) {
+    const wrap = button.closest('[data-quantity-selector]')
+    const input = wrap.querySelector('[data-quantity-input]')
+    const step = Number(input.step) || 1
+    input.value = Number(input.value || 0) + step * direction
+    this.#clampQuantityInput(input)
+    this.#clearCartError()
+  }
+
+  #clampQuantityInput(input) {
+    const min = Number(input.min) || 1
+    const max = input.max !== '' ? Number(input.max) : null
+    const step = Number(input.step) || 1
+    let value = Number(input.value) || min
+    if (value < min) value = min
+    if (max !== null && value > max) value = max
+    const stepsFromMin = Math.round((value - min) / step)
+    value = min + stepsFromMin * step
+    if (max !== null && value > max) value -= step
+    input.value = value
+    this.#syncQuantityButtonStates()
+  }
+
+  #syncQuantityButtonStates() {
+    for (const wrap of this.querySelectorAll('[data-quantity-selector]')) {
+      const input = wrap.querySelector('[data-quantity-input]')
+      const decrease = wrap.querySelector('[data-quantity-decrease]')
+      const increase = wrap.querySelector('[data-quantity-increase]')
+      const min = Number(input.min) || 1
+      const max = input.max !== '' ? Number(input.max) : null
+      const value = Number(input.value)
+      if (decrease) decrease.disabled = value <= min
+      if (increase) increase.disabled = max !== null && value >= max
+    }
+  }
+
+  #clearCartError() {
+    for (const error of this.querySelectorAll('[data-cart-error]')) {
+      error.hidden = true
+      error.textContent = ''
+    }
+  }
+
+  #onCartUpdated() {
+    if (!this.#pendingSubmit) return
+    this.#pendingSubmit = false
+    this.#clearCartError()
+  }
+
+  #onCartError(event) {
+    if (!this.#pendingSubmit) return
+    this.#pendingSubmit = false
+    const detail = event.detail
+    const message = detail?.description || detail?.message || this.dataset.labelCartError
+    for (const error of this.querySelectorAll('[data-cart-error]')) {
+      error.textContent = message
+      error.hidden = false
+    }
+  }
+
+  #formatMoney(cents) {
+    const amount = (cents / 100).toFixed(2)
+    const [dollars, decimalPart] = amount.split('.')
+    const withComma = dollars.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+    return this.#moneyFormat
+      .replace(/\{\{\s*amount\s*\}\}/, amount)
+      .replace(/\{\{\s*amount_no_decimals\s*\}\}/, Math.round(cents / 100).toString())
+      .replace(/\{\{\s*amount_with_comma_separator\s*\}\}/, `${withComma}.${decimalPart}`)
+      .replace(/\{\{\s*amount_no_decimals_with_comma_separator\s*\}\}/, withComma)
+  }
+
+  #initStickyCartBar() {
+    const bar = this.querySelector('[data-sticky-cart]')
+    const buyBox = this.querySelector('[data-buy-box]')
+    if (!bar || !buyBox || !('IntersectionObserver' in window)) return
+
+    let pastBuyBox = false
+    let footerVisible = false
+    const render = () => this.#toggleStickyCart(bar, pastBuyBox && !footerVisible)
+
+    this.#stickyObserver = new IntersectionObserver(
+      (entries) => {
+        const [entry] = entries
+        pastBuyBox = !entry.isIntersecting && entry.boundingClientRect.top < 0
+        render()
+      },
+      { threshold: 0 }
+    )
+    this.#stickyObserver.observe(buyBox)
+
+    // Hide the bar once the footer scrolls into view so it never sits on top
+    // of it, and bring it back once the footer scrolls back out of view.
+    const footer = document.querySelector('.shopify-section-group-footer-group')
+    if (footer) {
+      this.#footerObserver = new IntersectionObserver(
+        (entries) => {
+          const [entry] = entries
+          footerVisible = entry.isIntersecting
+          render()
+        },
+        { threshold: 0 }
+      )
+      this.#footerObserver.observe(footer)
+    }
+  }
+
+  #toggleStickyCart(bar, show) {
+    if (show) {
+      bar.hidden = false
+      window.requestAnimationFrame(() => bar.classList.add('is-visible'))
+    } else {
+      bar.classList.remove('is-visible')
+      window.setTimeout(() => {
+        if (!bar.classList.contains('is-visible')) bar.hidden = true
+      }, 250)
+    }
+  }
+}
+
+class ProductGallery extends HTMLElement {
+  #stage
+  #track
+  #slides
+  #thumbs
+  #variantMedia
+  #activeIndex = 0
+  #dragStartX = 0
+  #dragDeltaX = 0
+  #isDragging = false
+  #pointerId = null
+  #suppressClick = false
+
+  constructor() {
+    super()
+    this.#stage = this.querySelector('[data-gallery-stage]')
+    this.#track = this.querySelector('[data-gallery-track]')
+    this.#slides = Array.from(this.querySelectorAll('[data-gallery-slide]'))
+    this.#thumbs = Array.from(this.querySelectorAll('[data-gallery-thumb]'))
+    const mediaScript = this.querySelector('[data-variant-media]')
+    this.#variantMedia = mediaScript ? JSON.parse(mediaScript.textContent) : {}
+
+    this.addEventListener('click', (event) => this.#onClick(event))
+
+    if (this.#track && this.#slides.length > 1) {
+      this.#track.addEventListener('pointerdown', (event) => this.#onPointerDown(event))
+      this.#track.addEventListener('pointermove', (event) => this.#onPointerMove(event))
+      this.#track.addEventListener('pointerup', (event) => this.#onPointerEnd(event))
+      this.#track.addEventListener('pointercancel', (event) => this.#onPointerEnd(event))
+    }
+  }
+
+  #onClick(event) {
+    // A drag gesture also fires a click on release; swallow just that one so
+    // it doesn't land on a thumb/nav button under the pointer.
+    if (this.#suppressClick) {
+      this.#suppressClick = false
+      return
+    }
+    const thumb = event.target.closest('[data-gallery-thumb]')
+    if (thumb) {
+      this.showMedia(thumb.dataset.mediaId)
+      return
+    }
+    if (event.target.closest('[data-gallery-prev]')) {
+      this.#step(-1)
+      return
+    }
+    if (event.target.closest('[data-gallery-next]')) {
+      this.#step(1)
+    }
+  }
+
+  #onPointerDown(event) {
+    if (event.pointerType === 'mouse' && event.button !== 0) return
+    this.#isDragging = true
+    this.#pointerId = event.pointerId
+    this.#dragStartX = event.clientX
+    this.#dragDeltaX = 0
+    this.#track.classList.add('is-dragging')
+    this.#track.setPointerCapture(event.pointerId)
+  }
+
+  #onPointerMove(event) {
+    if (!this.#isDragging || event.pointerId !== this.#pointerId) return
+    this.#dragDeltaX = event.clientX - this.#dragStartX
+    const percent = (this.#dragDeltaX / this.#stage.getBoundingClientRect().width) * 100
+    this.#track.style.transform = `translateX(calc(${-this.#activeIndex * 100}% + ${percent}%))`
+  }
+
+  #onPointerEnd(event) {
+    if (!this.#isDragging || event.pointerId !== this.#pointerId) return
+    this.#isDragging = false
+    this.#track.classList.remove('is-dragging')
+    this.#track.releasePointerCapture(event.pointerId)
+
+    const width = this.#stage.getBoundingClientRect().width
+    const threshold = width * 0.15
+    if (this.#dragDeltaX > threshold) {
+      this.#step(-1)
+    } else if (this.#dragDeltaX < -threshold) {
+      this.#step(1)
+    } else {
+      this.#renderPosition()
+    }
+
+    if (Math.abs(this.#dragDeltaX) > 5) this.#suppressClick = true
+    this.#dragDeltaX = 0
+  }
+
+  #step(direction) {
+    const nextIndex = (this.#activeIndex + direction + this.#slides.length) % this.#slides.length
+    this.#setActiveIndex(nextIndex)
+  }
+
+  #renderPosition() {
+    this.#track.style.transform = `translateX(${-this.#activeIndex * 100}%)`
+  }
+
+  #setActiveIndex(index) {
+    this.#activeIndex = index
+    const slide = this.#slides[index]
+    this.#renderPosition()
+    for (const candidate of this.#slides) {
+      candidate.classList.toggle('product-gallery__slide--active', candidate === slide)
+    }
+    for (const thumb of this.#thumbs) {
+      const active = thumb.dataset.mediaId === slide.dataset.mediaId
+      thumb.classList.toggle('is-active', active)
+      thumb.setAttribute('aria-selected', active ? 'true' : 'false')
+    }
+  }
+
+  showMedia(mediaId) {
+    if (!mediaId || mediaId === '0') return
+    const index = this.#slides.findIndex((candidate) => candidate.dataset.mediaId === mediaId)
+    if (index === -1) return
+    this.#setActiveIndex(index)
+  }
+
+  onVariantChange(variant) {
+    const mediaId = this.#variantMedia[String(variant.id)]
+    if (mediaId) this.showMedia(String(mediaId))
+  }
+}
+
+class ShareButton extends HTMLElement {
+  constructor() {
+    super()
+    const button = this.querySelector('[data-share-button]')
+    if (!button) return
+    button.addEventListener('click', () => this.#onShare())
+  }
+
+  async #onShare() {
+    const url = this.dataset.shareUrl
+    const title = this.dataset.shareTitle
+    if (navigator.share) {
+      try {
+        await navigator.share({ title, url })
+      } catch (error) {
+        /* user dismissed the native share sheet */
+      }
+      return
+    }
+    try {
+      await navigator.clipboard.writeText(url)
+      const copied = this.querySelector('[data-share-copied]')
+      if (copied) {
+        copied.hidden = false
+        window.setTimeout(() => {
+          copied.hidden = true
+        }, 2000)
+      }
+    } catch (error) {
+      /* clipboard unavailable; no further fallback */
+    }
+  }
+}
+
+if (!customElements.get('product-gallery')) {
+  customElements.define('product-gallery', ProductGallery)
+}
+if (!customElements.get('share-button')) {
+  customElements.define('share-button', ShareButton)
+}
+if (!customElements.get('product-info')) {
+  customElements.define('product-info', ProductInfo)
+}
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Main product",
+  "class": "section",
+  "tag": "section",
+  "enabled_on": {
+    "templates": ["product"]
+  },
+  "settings": [
+    {
+      "type": "select",
+      "id": "container_width",
+      "label": "Container width",
+      "options": [
+        { "value": "medium", "label": "Medium" },
+        { "value": "wide", "label": "Wide" },
+        { "value": "full", "label": "Full width" }
+      ],
+      "default": "medium"
+    },
+    {
+      "type": "range",
+      "id": "media_width",
+      "label": "Media width (desktop)",
+      "min": 30,
+      "max": 70,
+      "step": 5,
+      "unit": "%",
+      "default": 50
+    },
+    {
+      "type": "select",
+      "id": "desktop_thumbnail_position",
+      "label": "Desktop thumbnail position",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "right", "label": "Right" },
+        { "value": "bottom", "label": "Bottom" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "select",
+      "id": "mobile_thumbnail_position",
+      "label": "Mobile thumbnail position",
+      "options": [
+        { "value": "bottom", "label": "Bottom" },
+        { "value": "left", "label": "Left" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "bottom"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_sticky_info",
+      "label": "Sticky product media (desktop)",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_sticky_info_mobile",
+      "label": "Sticky product media (mobile)",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_sticky_cart",
+      "label": "Sticky add to cart bar",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    }
+  ],
+  "blocks": [
+    {
+      "type": "title",
+      "name": "Title",
+      "settings": [
+        {
+          "type": "select",
+          "id": "heading_level",
+          "label": "Heading tag",
+          "options": [
+            { "value": "h1", "label": "H1" },
+            { "value": "h2", "label": "H2" },
+            { "value": "h3", "label": "H3" }
+          ],
+          "default": "h1"
+        },
+        {
+          "type": "select",
+          "id": "size",
+          "label": "Size",
+          "options": [
+            { "value": "h0", "label": "H0" },
+            { "value": "h1", "label": "H1" },
+            { "value": "h2", "label": "H2" },
+            { "value": "h3", "label": "H3" },
+            { "value": "h4", "label": "H4" }
+          ],
+          "default": "h3"
+        },
+        {
+          "type": "select",
+          "id": "alignment",
+          "label": "Alignment",
+          "options": [
+            { "value": "left", "label": "Left" },
+            { "value": "center", "label": "Center" },
+            { "value": "right", "label": "Right" }
+          ],
+          "default": "left"
+        }
+      ]
+    },
+    {
+      "type": "price",
+      "name": "Price",
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "show_savings_badge",
+          "label": "Show savings badge",
+          "default": true
+        },
+        {
+          "type": "select",
+          "id": "savings_format",
+          "label": "Savings format",
+          "options": [
+            { "value": "percentage", "label": "Percentage off" },
+            { "value": "amount", "label": "Amount off" }
+          ],
+          "default": "amount"
+        }
+      ]
+    },
+    {
+      "type": "variant_picker",
+      "name": "Variant picker",
+      "settings": []
+    },
+    {
+      "type": "quantity_buy_buttons",
+      "name": "Quantity + Buy buttons",
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "show_quantity_selector",
+          "label": "Show quantity selector",
+          "default": true
+        },
+        {
+          "type": "select",
+          "id": "button_style",
+          "label": "Add to cart button style",
+          "options": [
+            { "value": "accent", "label": "Accent" },
+            { "value": "dark", "label": "Dark" },
+            { "value": "light", "label": "Light" }
+          ],
+          "default": "accent"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_dynamic_checkout",
+          "label": "Show dynamic checkout buttons",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "enable_waitlist",
+          "label": "Enable Join Waitlist for sold-out variants",
+          "default": true
+        },
+        {
+          "type": "text",
+          "id": "waitlist_text",
+          "label": "Waitlist button text",
+          "default": "Join Waitlist"
+        },
+        {
+          "type": "select",
+          "id": "waitlist_style",
+          "label": "Waitlist button style",
+          "options": [
+            { "value": "dark", "label": "Dark" },
+            { "value": "accent", "label": "Accent" },
+            { "value": "light", "label": "Light" }
+          ],
+          "default": "dark"
+        }
+      ]
+    },
+    {
+      "type": "rich_text",
+      "name": "Rich text",
+      "settings": [
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Content"
+        }
+      ]
+    },
+    {
+      "type": "accordion",
+      "name": "Accordion",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Description"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Content"
+        },
+        {
+          "type": "checkbox",
+          "id": "open_by_default",
+          "label": "Open by default",
+          "default": false
+        }
+      ]
+    },
+    {
+      "type": "icons_with_text",
+      "name": "Icons with text",
+      "settings": [
+        {
+          "type": "select",
+          "id": "layout",
+          "label": "Layout",
+          "options": [
+            { "value": "horizontal", "label": "Horizontal" },
+            { "value": "vertical", "label": "Vertical" }
+          ],
+          "default": "horizontal"
+        },
+        {
+          "type": "select",
+          "id": "columns",
+          "label": "Columns",
+          "options": [
+            { "value": "1", "label": "1" },
+            { "value": "2", "label": "2" },
+            { "value": "3", "label": "3" },
+            { "value": "4", "label": "4" }
+          ],
+          "default": "2"
+        },
+        {
+          "type": "range",
+          "id": "icon_size",
+          "label": "Icon size",
+          "min": 16,
+          "max": 64,
+          "step": 2,
+          "unit": "px",
+          "default": 24
+        },
+        {
+          "type": "color",
+          "id": "background_color",
+          "label": "Item background",
+          "default": "#F4F6F7"
+        },
+        { "type": "header", "content": "Item 1" },
+        { "type": "image_picker", "id": "icon_1", "label": "Icon" },
+        { "type": "text", "id": "heading_1", "label": "Heading" },
+        { "type": "text", "id": "text_1", "label": "Text" },
+        { "type": "header", "content": "Item 2" },
+        { "type": "image_picker", "id": "icon_2", "label": "Icon" },
+        { "type": "text", "id": "heading_2", "label": "Heading" },
+        { "type": "text", "id": "text_2", "label": "Text" },
+        { "type": "header", "content": "Item 3" },
+        { "type": "image_picker", "id": "icon_3", "label": "Icon" },
+        { "type": "text", "id": "heading_3", "label": "Heading" },
+        { "type": "text", "id": "text_3", "label": "Text" },
+        { "type": "header", "content": "Item 4" },
+        { "type": "image_picker", "id": "icon_4", "label": "Icon" },
+        { "type": "text", "id": "heading_4", "label": "Heading" },
+        { "type": "text", "id": "text_4", "label": "Text" }
+      ]
+    },
+    {
+      "type": "share",
+      "name": "Share",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Share"
+        }
+      ]
+    },
+    {
+      "type": "@app"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Main product",
+      "blocks": [
+        { "type": "title" },
+        { "type": "price" },
+        { "type": "variant_picker" },
+        { "type": "quantity_buy_buttons" },
+        { "type": "rich_text" },
+        { "type": "accordion" },
+        { "type": "icons_with_text" },
+        { "type": "share" }
+      ]
+    }
+  ]
+}
+{% endschema %}

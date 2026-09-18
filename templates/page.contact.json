@@ -1,0 +1,110 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "hero": {
+      "type": "hero-banner",
+      "settings": {
+        "image": "shopify://shop_images/nutra_chem_banner.webp",
+        "height": "custom",
+        "custom_height": 300,
+        "content_position_x": "left",
+        "content_position_y": "center",
+        "content_position_x_mobile": "center",
+        "content_position_y_mobile": "center",
+        "heading": "Contact Us",
+        "heading_color": "#18252b",
+        "heading_size": "h2",
+        "text": "",
+        "button_label": "",
+        "button_link": ""
+      }
+    },
+    "contact": {
+      "type": "contact",
+      "blocks": {
+        "subheading": {
+          "type": "subheading",
+          "settings": {
+            "text": "Got any questions?"
+          }
+        },
+        "heading": {
+          "type": "heading",
+          "settings": {
+            "text": "Get in touch"
+          }
+        },
+        "description": {
+          "type": "description",
+          "settings": {
+            "text": "<p>Your feedback is important to us. Whatever your needs, please don't hesitate to reach out.</p>"
+          }
+        },
+        "cards": {
+          "type": "cards",
+          "settings": {
+            "card_1_bg": "#18252b",
+            "card_1_color": "#ffffff",
+            "card_1_heading": "Location",
+            "card_1_body": "<p>Apollo Design &amp; Tech Inc. 16133 Ventura Blvd., Floor 7, Encino CA 91436</p>",
+            "card_1_link": "https://maps.app.goo.gl/t6hB2zv2AivNDs9i9",
+            "card_2_bg": "#18252b",
+            "card_2_color": "#ffffff",
+            "card_2_heading": "Email",
+            "card_2_body": "<p>support@nutrachem.store</p>",
+            "card_2_link": "mailto:support@nutrachem.store"
+          }
+        },
+        "social": {
+          "type": "social",
+          "settings": {
+            "label": "Our social media",
+            "social_facebook_url": "https://www.facebook.com/p/Nutra-Chem-61587738555299/",
+            "social_instagram_url": "https://www.instagram.com/nutrachem.official/",
+            "social_youtube_url": "",
+            "social_tiktok_url": "https://www.tiktok.com/@nutrachem.official",
+            "social_x_url": "",
+            "social_pinterest_url": "",
+            "social_linkedin_url": ""
+          }
+        }
+      },
+      "block_order": [
+        "subheading",
+        "heading",
+        "description",
+        "cards",
+        "social"
+      ],
+      "settings": {
+        "show_left_content": true,
+        "form_heading": "Contact Us",
+        "padding_top": 80,
+        "padding_bottom": 40
+      }
+    },
+    "map": {
+      "type": "custom-section",
+      "settings": {
+        "heading": "",
+        "full_width": false,
+        "embed_code": "<iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3301.5932184375492!2d-118.48755332595366!3d34.15674781220776!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80c29789ecb089d7%3A0x2a751daf9daf3265!2s16133%20Ventura%20Blvd%20Fl%207%2C%20Encino%2C%20CA%2091436%2C%20USA!5e0!3m2!1sen!2s!4v1788341396524!5m2!1sen!2s\" width=\"100%\" height=\"450\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"strict-origin-when-cross-origin\"></iframe>",
+        "padding_top": 40,
+        "padding_bottom": 80
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "contact",
+    "map"
+  ]
+}

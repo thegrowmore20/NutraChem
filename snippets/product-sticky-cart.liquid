@@ -1,0 +1,51 @@
+{%- comment -%}
+  Renders the sticky mini Add to Cart bar shown once the main buy box has
+  scrolled out of view. Its submit button targets the main product form via
+  the HTML `form` attribute instead of owning a second form/JS handler, so
+  there remains exactly one source of truth for cart submission.
+
+  Its price/title nodes are updated by the same variant-change handler that
+  updates the main price block (matched via shared [data-price-current] /
+  [data-price-compare] hooks), so there is no second price-calculation path.
+
+  Accepts:
+  - product, current_variant, section
+
+  Usage:
+  {% render 'product-sticky-cart', product: product, current_variant: current_variant, section: section %}
+{%- endcomment -%}
+
+{%- liquid
+  assign is_available = current_variant.available
+  assign sticky_media = current_variant.featured_media | default: product.featured_media
+-%}
+
+<div class="sticky-cart-bar" data-sticky-cart hidden>
+  <div class="container sticky-cart-bar__inner">
+    <div class="sticky-cart-bar__media">
+      {%- if sticky_media -%}
+        {{ sticky_media.preview_image | image_url: width: 120 | image_tag: loading: 'lazy', width: 60, height: 60, class: 'sticky-cart-bar__image', alt: '' }}
+      {%- endif -%}
+    </div>
+    <div class="sticky-cart-bar__info">
+      <p class="sticky-cart-bar__title">{{ product.title }}</p>
+      <p class="sticky-cart-bar__variant" data-sticky-variant{% if product.has_only_default_variant %} hidden{% endif %}>{{ current_variant.title }}</p>
+    </div>
+    <div class="sticky-cart-bar__price">
+      {% render 'price', product: product, variant: current_variant, data_attributes: true %}
+    </div>
+    <button
+      type="submit"
+      form="ProductForm-{{ section.id }}"
+      class="button button--accent sticky-cart-bar__submit"
+      data-sticky-add-to-cart
+      data-label-available="{{ 'products.product.add_to_cart' | t }}"
+      data-label-unavailable="{{ 'products.product.sold_out' | t }}"
+      {% unless is_available %}disabled{% endunless %}
+    >
+      <span data-sticky-add-to-cart-text>
+        {%- if is_available -%}{{ 'products.product.add_to_cart' | t }}{%- else -%}{{ 'products.product.sold_out' | t }}{%- endif -%}
+      </span>
+    </button>
+  </div>
+</div>

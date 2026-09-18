@@ -1,0 +1,77 @@
+{%- comment -%}
+  Generic content page (About, Contact, policies written as pages, etc.) -
+  just the page's own title and rich-text content, no special layout.
+{%- endcomment -%}
+
+<section
+  class="page-content section-padding"
+  style="--padding-top: {{ section.settings.padding_top }}px; --padding-bottom: {{ section.settings.padding_bottom }}px;"
+>
+  <div class="container page-content__inner">
+    <h1 class="page-content__title h1">{{ page.title }}</h1>
+    <div class="page-content__body rte">{{ page.content }}</div>
+  </div>
+</section>
+
+{% stylesheet %}
+.page-content__inner {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.page-content__title {
+  margin: 0 0 24px;
+  text-align: center;
+  color: var(--color-primary);
+}
+
+.page-content__body {
+  color: var(--color-text);
+  line-height: 1.7;
+}
+
+.page-content__body :is(h1, h2, h3, h4, h5, h6) {
+  color: var(--color-primary);
+}
+
+.page-content__body img {
+  max-width: 100%;
+  height: auto;
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Page",
+  "class": "section",
+  "enabled_on": {
+    "templates": ["page"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 60
+    }
+  ]
+}
+{% endschema %}

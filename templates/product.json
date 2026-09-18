@@ -1,0 +1,140 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "title": {
+          "type": "title",
+          "settings": {
+            "heading_level": "h1",
+            "size": "h3",
+            "alignment": "left"
+          }
+        },
+        "ag_product_reviews_app_summary_block_EyMpM8": {
+          "type": "shopify://apps/ag-product-reviews/blocks/app-summary-block/c4e1e9ca-4d46-4e76-bc39-7e42417cb327",
+          "settings": {}
+        },
+        "price": {
+          "type": "price",
+          "settings": {
+            "show_savings_badge": true,
+            "savings_format": "amount"
+          }
+        },
+        "variant-picker": {
+          "type": "variant_picker",
+          "settings": {}
+        },
+        "quantity-buy-buttons": {
+          "type": "quantity_buy_buttons",
+          "settings": {
+            "show_quantity_selector": true,
+            "button_style": "accent",
+            "show_dynamic_checkout": true,
+            "enable_waitlist": true,
+            "waitlist_text": "Join Waitlist",
+            "waitlist_style": "dark"
+          }
+        },
+        "icons-with-text": {
+          "type": "icons_with_text",
+          "settings": {
+            "layout": "horizontal",
+            "columns": "2",
+            "icon_size": 24,
+            "background_color": "#f4f6f7",
+            "icon_1": "shopify://shop_images/Secure_Checkout.svg",
+            "heading_1": "Secure Checkout",
+            "text_1": "",
+            "icon_2": "shopify://shop_images/Fast_Shipping.svg",
+            "heading_2": "Fast Shipping",
+            "text_2": "",
+            "icon_3": "shopify://shop_images/Multiple_Payment_Options.svg",
+            "heading_3": "Multiple Payment Options",
+            "text_3": "",
+            "icon_4": "shopify://shop_images/Easy_Returns.svg",
+            "heading_4": "Easy Return",
+            "text_4": ""
+          }
+        },
+        "accordion-description": {
+          "type": "accordion",
+          "settings": {
+            "heading": "Product Description",
+            "content": "{{ product.description }}",
+            "open_by_default": false
+          }
+        },
+        "accordion-shipping": {
+          "type": "accordion",
+          "settings": {
+            "heading": "Shipping & Returns Policy",
+            "content": "<p>At <strong>Nutrachem</strong>, we are committed to providing a smooth, reliable, and transparent shopping experience across Pakistan. By placing an order on our website, you agree to the terms outlined in this policy.<br/><br/><a href=\"https://nutrachem.store/pages/shipping-policy\" title=\"https://nutrachem.store/pages/shipping-policy\">Shipping Policy</a></p>",
+            "open_by_default": false
+          }
+        },
+        "accordion_cgDkN3": {
+          "type": "accordion",
+          "settings": {
+            "heading": "Privacy Policy",
+            "content": "<p>At <strong>Nutrachem</strong>, we value your privacy and are committed to protecting your personal information. This Privacy Policy explains how we collect, use, and safeguard your data when you visit or make a purchase from our website.<br/><br/><a href=\"https://nutrachem.store/pages/privacy-policy\" title=\"https://nutrachem.store/pages/privacy-policy\"><strong>Privacy Policy</strong></a></p>",
+            "open_by_default": false
+          }
+        },
+        "share": {
+          "type": "share",
+          "settings": {
+            "label": "Share"
+          }
+        }
+      },
+      "block_order": [
+        "title",
+        "ag_product_reviews_app_summary_block_EyMpM8",
+        "price",
+        "variant-picker",
+        "quantity-buy-buttons",
+        "icons-with-text",
+        "accordion-description",
+        "accordion-shipping",
+        "accordion_cgDkN3",
+        "share"
+      ],
+      "settings": {
+        "container_width": "medium",
+        "media_width": 55,
+        "desktop_thumbnail_position": "right",
+        "mobile_thumbnail_position": "bottom",
+        "enable_sticky_info": true,
+        "enable_sticky_info_mobile": false,
+        "enable_sticky_cart": true,
+        "padding_top": 40,
+        "padding_bottom": 40
+      }
+    },
+    "related-products": {
+      "type": "related-products",
+      "settings": {
+        "heading": "You may also like",
+        "products_to_show": 4,
+        "columns_desktop": "4",
+        "padding_top": 40,
+        "padding_bottom": 60
+      }
+    }
+  },
+  "order": [
+    "main",
+    "related-products"
+  ]
+}

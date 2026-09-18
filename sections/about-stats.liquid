@@ -1,0 +1,141 @@
+{%- comment -%}
+  About page stats row: up to 6 stat cards (icon, big number, label,
+  description).
+{%- endcomment -%}
+
+<section
+  class="about-stats section-padding"
+  style="--padding-top: {{ section.settings.padding_top }}px; --padding-bottom: {{ section.settings.padding_bottom }}px;"
+>
+  <div class="container">
+    {%- if section.settings.heading != blank -%}
+      <h2 class="about-stats__heading h2">{{ section.settings.heading }}</h2>
+    {%- endif -%}
+
+    {%- if section.blocks.size > 0 -%}
+      <div class="about-stats__grid">
+        {%- for block in section.blocks -%}
+          <div class="about-stats__item" {{ block.shopify_attributes }}>
+            {%- if block.settings.icon != blank -%}
+              <span class="about-stats__icon" aria-hidden="true">{{ block.settings.icon }}</span>
+            {%- endif -%}
+            {%- if block.settings.number != blank -%}
+              <p class="about-stats__number">{{ block.settings.number }}</p>
+            {%- endif -%}
+            {%- if block.settings.label != blank -%}
+              <p class="about-stats__label">{{ block.settings.label }}</p>
+            {%- endif -%}
+            {%- if block.settings.description != blank -%}
+              <p class="about-stats__description">{{ block.settings.description }}</p>
+            {%- endif -%}
+          </div>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% stylesheet %}
+.about-stats__heading {
+  text-align: center;
+  color: var(--color-primary);
+  margin: 0 0 40px;
+}
+
+.about-stats__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+
+@media screen and (min-width: 550px) {
+  .about-stats__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media screen and (min-width: 990px) {
+  .about-stats__grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.about-stats__item {
+  text-align: center;
+  padding: 28px 20px;
+  border-radius: var(--radius-m);
+  background: var(--color-surface);
+}
+
+.about-stats__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  font-size: 22px;
+  border-radius: 50%;
+  background: var(--color-background);
+  margin-bottom: 14px;
+}
+
+.about-stats__number {
+  font-family: var(--font-heading);
+  font-size: clamp(28px, 24px + 1.5vw, 40px);
+  font-weight: 600;
+  color: var(--color-primary);
+  margin: 0 0 6px;
+}
+
+.about-stats__label {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-secondary);
+  margin: 0 0 8px;
+}
+
+.about-stats__description {
+  font-size: 13px;
+  line-height: 1.6;
+  color: #55636b;
+  margin: 0;
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "About stats",
+  "class": "section",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "info": "Optional - leave blank to hide." },
+    { "type": "header", "content": "Padding" },
+    { "type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 60 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 60 }
+  ],
+  "blocks": [
+    {
+      "type": "stat",
+      "name": "Stat",
+      "settings": [
+        { "type": "text", "id": "icon", "label": "Icon (emoji)", "default": "🔬" },
+        { "type": "text", "id": "number", "label": "Number", "default": "95%" },
+        { "type": "text", "id": "label", "label": "Label", "default": "Clinical Efficacy" },
+        { "type": "text", "id": "description", "label": "Description", "default": "Average results across all product lines in independent trials." }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "About stats",
+      "blocks": [
+        { "type": "stat", "settings": { "icon": "🔬", "number": "95%", "label": "Clinical Efficacy", "description": "Average results across all product lines in independent trials." } },
+        { "type": "stat", "settings": { "icon": "🌍", "number": "5+", "label": "Countries Served", "description": "Trusted by customers on every continent." } },
+        { "type": "stat", "settings": { "icon": "💬", "number": "1500+", "label": "Happy Customers", "description": "With a 4.9-star average across 1500+ reviews." } },
+        { "type": "stat", "settings": { "icon": "📋", "number": "12+", "label": "Clinical Studies", "description": "Published in peer-reviewed dermatology journals worldwide." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

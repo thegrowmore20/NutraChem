@@ -1,0 +1,209 @@
+{%- comment -%}
+  All-collections grid (image card + title below).
+
+  Card classes are namespaced .collection-directory-* (not .collection-card),
+  since .collection-card is already owned by sections/collection-list.liquid
+  ("Shop by Concern" on the homepage) - CSS bundles across the whole theme,
+  not per page, so reusing that name silently fought its styling on both
+  pages instead of just failing to apply on this one.
+{%- endcomment -%}
+
+{%- liquid
+  assign sorted_collections = collections
+  case section.settings.sort
+    when 'alphabetical'
+      assign sorted_collections = collections | sort: 'title'
+    when 'alphabetical_reversed'
+      assign sorted_collections = collections | sort: 'title' | reverse
+    when 'date'
+      assign sorted_collections = collections | sort: 'published_at'
+    when 'date_reversed'
+      assign sorted_collections = collections | sort: 'published_at' | reverse
+    when 'products_high'
+      assign sorted_collections = collections | sort: 'all_products_count' | reverse
+    when 'products_low'
+      assign sorted_collections = collections | sort: 'all_products_count'
+  endcase
+-%}
+
+<section
+  class="collection-list-section section-padding"
+  style="--padding-top: {{ section.settings.padding_top }}px; --padding-bottom: {{ section.settings.padding_bottom }}px; --grid-columns-desktop: {{ section.settings.columns_desktop }}; --grid-columns-mobile: {{ section.settings.columns_mobile }};"
+>
+  <div class="container">
+    <h2 class="collection-list-section__title h2">{{ section.settings.title }}</h2>
+
+    {%- if sorted_collections.size == 0 -%}
+      <p class="collection-list-section__empty">{{ 'collections.general.empty' | t }}</p>
+    {%- else -%}
+      <ul class="collection-directory-grid">
+        {%- for collection in sorted_collections -%}
+          <li class="collection-directory-grid__item">
+            <a href="{{ collection.url }}" class="collection-directory-card">
+              <div class="collection-directory-card__media">
+                {%- if collection.featured_image -%}
+                  {{
+                    collection.featured_image
+                    | image_url: width: 600
+                    | image_tag:
+                      loading: 'lazy',
+                      widths: '300, 450, 600',
+                      sizes: '(min-width: 1200px) 20vw, (min-width: 768px) 33vw, 50vw',
+                      class: 'collection-directory-card__image',
+                      alt: collection.featured_image.alt | default: collection.title
+                  }}
+                {%- else -%}
+                  {{ 'collection-1' | placeholder_svg_tag: 'collection-directory-card__image collection-directory-card__image--placeholder' }}
+                {%- endif -%}
+              </div>
+              <p class="collection-directory-card__title">{{ collection.title }}</p>
+            </a>
+          </li>
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+  </div>
+</section>
+
+{% stylesheet %}
+.collection-list-section__title {
+  margin: 0 0 32px;
+  text-align: center;
+  color: var(--color-primary);
+}
+
+.collection-list-section__empty {
+  text-align: center;
+  color: var(--color-text);
+  padding: 40px 0;
+}
+
+.collection-directory-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-columns-mobile, 2), minmax(0, 1fr));
+  gap: 20px;
+}
+
+@media screen and (min-width: 768px) and (max-width: 1199px) {
+  .collection-directory-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media screen and (min-width: 1200px) {
+  .collection-directory-grid {
+    grid-template-columns: repeat(var(--grid-columns-desktop, 4), minmax(0, 1fr));
+  }
+}
+
+.collection-directory-card {
+  display: block;
+  border: 1px solid #eceff1;
+  border-radius: var(--radius-m);
+  overflow: hidden;
+  color: inherit;
+  transition: box-shadow 0.2s ease;
+}
+
+.collection-directory-card:hover {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.collection-directory-card__media {
+  aspect-ratio: 1 / 1;
+  background: var(--color-surface);
+  overflow: hidden;
+}
+
+.collection-directory-card__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.collection-directory-card__title {
+  margin: 0;
+  padding: 12px 14px;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+  color: var(--color-primary);
+  border-top: 1px solid #eceff1;
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "All collections",
+  "class": "section",
+  "enabled_on": {
+    "templates": ["list-collections"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Collections"
+    },
+    {
+      "type": "select",
+      "id": "sort",
+      "label": "Sort collections by",
+      "options": [
+        { "value": "alphabetical", "label": "Alphabetically, A-Z" },
+        { "value": "alphabetical_reversed", "label": "Alphabetically, Z-A" },
+        { "value": "date", "label": "Date, old to new" },
+        { "value": "date_reversed", "label": "Date, new to old" },
+        { "value": "products_high", "label": "Product count, high to low" },
+        { "value": "products_low", "label": "Product count, low to high" }
+      ],
+      "default": "alphabetical"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "label": "Columns (desktop, 1200px+)",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "label": "Columns (mobile, under 768px)",
+      "default": "2",
+      "options": [
+        { "value": "1", "label": "1 column" },
+        { "value": "2", "label": "2 columns" }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    }
+  ]
+}
+{% endschema %}

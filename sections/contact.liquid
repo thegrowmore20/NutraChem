@@ -1,0 +1,625 @@
+{%- comment -%}
+  Contact page: left info column (subheading/heading/description/info cards/
+  social) + a native Shopify contact form on the right. Adapted to this
+  theme's own conventions (flat color settings, .button/.container/
+  .section-padding, snippets/icon.liquid for social + card icons) rather than
+  a color-scheme-group architecture this theme doesn't have.
+
+  Accepts blocks: subheading, heading, description, cards, social, richtext.
+{%- endcomment -%}
+
+{%- liquid
+  assign show_left = section.settings.show_left_content
+-%}
+
+<section
+  class="contact-section section-padding"
+  style="--padding-top: {{ section.settings.padding_top }}px; --padding-bottom: {{ section.settings.padding_bottom }}px;"
+>
+  <div class="container">
+    <div class="contact-section__layout{% unless show_left %} contact-section__layout--form-only{% endunless %}">
+      {%- if show_left -%}
+        <div class="contact-section__left">
+          {%- for block in section.blocks -%}
+            {%- case block.type -%}
+              {%- when 'subheading' -%}
+                {%- if block.settings.text != blank -%}
+                  <p class="contact-section__subheading" {{ block.shopify_attributes }}>{{ block.settings.text }}</p>
+                {%- endif -%}
+
+              {%- when 'heading' -%}
+                {%- if block.settings.text != blank -%}
+                  <h2 class="contact-section__heading" {{ block.shopify_attributes }}>{{ block.settings.text }}</h2>
+                {%- endif -%}
+
+              {%- when 'description' -%}
+                {%- if block.settings.text != blank -%}
+                  <div class="contact-section__description" {{ block.shopify_attributes }}>{{ block.settings.text }}</div>
+                {%- endif -%}
+
+              {%- when 'cards' -%}
+                <div class="contact-cards" {{ block.shopify_attributes }}>
+                  {%- for i in (1..2) -%}
+                    {%- liquid
+                      if i == 1
+                        assign card_bg = block.settings.card_1_bg
+                        assign card_color = block.settings.card_1_color
+                        assign card_image = block.settings.card_1_image
+                        assign card_icon = 'marker-pin'
+                        assign card_head = block.settings.card_1_heading
+                        assign card_body = block.settings.card_1_body
+                        assign card_link = block.settings.card_1_link
+                      else
+                        assign card_bg = block.settings.card_2_bg
+                        assign card_color = block.settings.card_2_color
+                        assign card_image = block.settings.card_2_image
+                        assign card_icon = 'mail'
+                        assign card_head = block.settings.card_2_heading
+                        assign card_body = block.settings.card_2_body
+                        assign card_link = block.settings.card_2_link
+                      endif
+
+                      assign card_tag = 'div'
+                      if card_link != blank
+                        assign card_tag = 'a'
+                      endif
+                    -%}
+                    {%- if card_head != blank or card_body != blank -%}
+                      <{{ card_tag }}
+                        class="contact-card"
+                        style="background-color: {{ card_bg }}; color: {{ card_color }};"
+                        {%- if card_link != blank %}
+                          href="{{ card_link }}"
+                          {% unless card_link contains 'mailto:' or card_link contains 'tel:' %}target="_blank" rel="noopener noreferrer"{% endunless %}
+                        {%- endif %}
+                      >
+                        <div class="contact-card__header">
+                          <div class="contact-card__icon">
+                            {%- if card_image != blank -%}
+                              {{ card_image | image_url: width: 48 | image_tag: loading: 'lazy', width: 24, height: 24, alt: '' }}
+                            {%- else -%}
+                              {% render 'icon', name: card_icon %}
+                            {%- endif -%}
+                          </div>
+                          {%- if card_head != blank -%}
+                            <p class="contact-card__heading">{{ card_head }}</p>
+                          {%- endif -%}
+                        </div>
+                        {%- if card_body != blank -%}
+                          <div class="contact-card__body">{{ card_body }}</div>
+                        {%- endif -%}
+                      </{{ card_tag }}>
+                    {%- endif -%}
+                  {%- endfor -%}
+                </div>
+
+              {%- when 'social' -%}
+                {%- liquid
+                  assign social_keys = 'facebook,instagram,youtube,tiktok,x,pinterest,linkedin' | split: ','
+                  assign has_social = false
+                  for key in social_keys
+                    assign url_key = 'social_' | append: key | append: '_url'
+                    if block.settings[url_key] != blank
+                      assign has_social = true
+                    endif
+                  endfor
+                -%}
+                {%- if has_social -%}
+                  <div class="contact-social" {{ block.shopify_attributes }}>
+                    {%- if block.settings.label != blank -%}
+                      <p class="contact-social__label">{{ block.settings.label }}</p>
+                    {%- endif -%}
+                    <div class="contact-social__icons">
+                      {%- for key in social_keys -%}
+                        {%- assign url_key = 'social_' | append: key | append: '_url' -%}
+                        {%- assign url_val = block.settings[url_key] -%}
+                        {%- if url_val != blank -%}
+                          <a
+                            href="{{ url_val }}"
+                            class="contact-social__link"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label="{{ key | capitalize }}"
+                          >
+                            {% render 'icon', name: key %}
+                          </a>
+                        {%- endif -%}
+                      {%- endfor -%}
+                    </div>
+                  </div>
+                {%- endif -%}
+
+              {%- when 'richtext' -%}
+                {%- if block.settings.text != blank -%}
+                  <div class="contact-section__richtext" {{ block.shopify_attributes }}>{{ block.settings.text }}</div>
+                {%- endif -%}
+            {%- endcase -%}
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+
+      <div class="contact-section__form">
+        <div class="contact-form">
+          {%- if section.settings.form_heading != blank -%}
+            <h3 class="contact-form__heading h3">{{ section.settings.form_heading }}</h3>
+          {%- endif -%}
+
+          {%- form 'contact', id: 'ContactForm', class: 'contact-form__fields' -%}
+            {%- if form.posted_successfully? -%}
+              <p class="contact-form__success" role="status">{{ 'sections.contact.form.post_success' | t }}</p>
+            {%- endif -%}
+
+            {%- if form.errors -%}
+              <div class="contact-form__error" role="alert">
+                <p>{{ 'sections.contact.form.error_heading' | t }}</p>
+                {{ form.errors | default_errors }}
+              </div>
+            {%- endif -%}
+
+            <div class="contact-form__row">
+              <div class="contact-form__field">
+                <label for="ContactForm-first-name">{{ 'sections.contact.form.first_name' | t }}</label>
+                <input type="text" id="ContactForm-first-name" name="contact[first_name]" autocomplete="given-name" value="{{ form.first_name }}">
+              </div>
+              <div class="contact-form__field">
+                <label for="ContactForm-last-name">{{ 'sections.contact.form.last_name' | t }}</label>
+                <input type="text" id="ContactForm-last-name" name="contact[last_name]" autocomplete="family-name" value="{{ form.last_name }}">
+              </div>
+            </div>
+
+            <div class="contact-form__row">
+              <div class="contact-form__field">
+                <label for="ContactForm-email">
+                  {{ 'sections.contact.form.email' | t }} <span aria-hidden="true">*</span>
+                </label>
+                <input
+                  type="email"
+                  id="ContactForm-email"
+                  name="contact[email]"
+                  autocomplete="email"
+                  autocorrect="off"
+                  autocapitalize="off"
+                  required
+                  value="{{ form.email }}"
+                >
+              </div>
+              <div class="contact-form__field">
+                <label for="ContactForm-phone">{{ 'sections.contact.form.phone' | t }}</label>
+                <input type="tel" id="ContactForm-phone" name="contact[phone]" autocomplete="tel" value="{{ form.phone }}">
+              </div>
+            </div>
+
+            <div class="contact-form__field">
+              <label for="ContactForm-body">
+                {{ 'sections.contact.form.message' | t }} <span aria-hidden="true">*</span>
+              </label>
+              <textarea id="ContactForm-body" name="contact[body]" rows="4" required>{{ form.body }}</textarea>
+            </div>
+
+            <button type="submit" class="button button--dark contact-form__submit">
+              {{ 'sections.contact.form.send' | t }}
+            </button>
+          {%- endform -%}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+.contact-section__layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: start;
+}
+
+.contact-section__layout--form-only {
+  grid-template-columns: 1fr;
+  max-width: 600px;
+  margin-inline: auto;
+}
+
+@media screen and (max-width: 989px) {
+  .contact-section__layout {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+}
+
+.contact-section__subheading {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin: 0 0 12px;
+  color: #7c8a90;
+}
+
+.contact-section__heading {
+  margin: 0 0 16px;
+  color: var(--color-primary);
+}
+
+.contact-section__description {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--color-text);
+  margin-bottom: 24px;
+}
+
+.contact-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+@media screen and (max-width: 479px) {
+  .contact-cards {
+    grid-template-columns: 1fr;
+  }
+}
+
+.contact-card {
+  padding: 20px;
+  border-radius: var(--radius-m);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-decoration: none;
+}
+
+a.contact-card {
+  transition: opacity 0.2s ease;
+}
+
+a.contact-card:hover,
+a.contact-card:focus-visible {
+  opacity: 0.85;
+}
+
+.contact-card__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.contact-card__icon {
+  display: flex;
+  align-items: center;
+}
+
+.contact-card__icon img,
+.contact-card__icon svg {
+  width: 24px;
+  height: 24px;
+  display: block;
+}
+
+.contact-card__heading {
+  font-size: 15px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.contact-card__body {
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.contact-card__body p {
+  margin: 0;
+}
+
+.contact-card__body a {
+  color: inherit;
+  text-decoration: underline;
+}
+
+.contact-social {
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.contact-social__label {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin: 0;
+  color: #7c8a90;
+  white-space: nowrap;
+}
+
+.contact-social__icons {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.contact-social__link {
+  display: flex;
+  align-items: center;
+  color: var(--color-primary);
+  opacity: 0.75;
+  transition: opacity 0.2s ease;
+}
+
+.contact-social__link:hover {
+  opacity: 1;
+}
+
+.contact-section__richtext {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--color-text);
+}
+
+.contact-section__richtext p {
+  margin: 0 0 12px;
+}
+
+.contact-section__richtext p:last-child {
+  margin-bottom: 0;
+}
+
+.contact-form {
+  border: 1px solid #eceff1;
+  border-radius: var(--radius-m);
+  padding: 32px;
+}
+
+@media screen and (max-width: 749px) {
+  .contact-form {
+    padding: 20px;
+  }
+}
+
+.contact-form__heading {
+  margin: 0 0 24px;
+  color: var(--color-primary);
+}
+
+.contact-form__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+@media screen and (max-width: 479px) {
+  .contact-form__row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.contact-form__field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.contact-form__field:last-of-type {
+  margin-bottom: 20px;
+}
+
+.contact-form__field label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-primary);
+}
+
+.contact-form__field input,
+.contact-form__field textarea {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #eceff1;
+  border-radius: var(--radius-s);
+  font-family: var(--font-body);
+  font-size: 15px;
+  color: var(--color-primary);
+  background: var(--color-background);
+}
+
+.contact-form__field input:focus,
+.contact-form__field textarea:focus {
+  outline: none;
+  border-color: var(--color-secondary);
+}
+
+.contact-form__field textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.contact-form__submit {
+  width: 100%;
+}
+
+.contact-form__success {
+  color: #1e7e34;
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0 0 16px;
+}
+
+.contact-form__error {
+  color: #c0392b;
+  font-size: 13px;
+  margin: 0 0 16px;
+  background: #fdecea;
+  border: 1px solid #f3c6c1;
+  border-radius: var(--radius-s);
+  padding: 10px 14px;
+}
+
+.contact-form__error p {
+  margin: 0 0 4px;
+  font-weight: 600;
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Contact",
+  "class": "section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_left_content",
+      "label": "Show left content panel",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "form_heading",
+      "label": "Form heading",
+      "default": "Contact Us"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 60
+    }
+  ],
+  "blocks": [
+    {
+      "type": "subheading",
+      "name": "Subheading",
+      "limit": 1,
+      "settings": [
+        { "type": "text", "id": "text", "label": "Subheading", "default": "Got any questions?" }
+      ]
+    },
+    {
+      "type": "heading",
+      "name": "Heading",
+      "limit": 1,
+      "settings": [
+        { "type": "text", "id": "text", "label": "Heading", "default": "Get in touch" }
+      ]
+    },
+    {
+      "type": "description",
+      "name": "Description",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Description",
+          "default": "<p>Your feedback is important to us. Whatever your needs, please don't hesitate to reach out.</p>"
+        }
+      ]
+    },
+    {
+      "type": "cards",
+      "name": "Info cards",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "Each card falls back to a location/mail icon automatically when no icon image is set."
+        },
+        { "type": "header", "content": "Card 1" },
+        { "type": "color", "id": "card_1_bg", "label": "Background", "default": "#18252B" },
+        { "type": "color", "id": "card_1_color", "label": "Text color", "default": "#FFFFFF" },
+        { "type": "image_picker", "id": "card_1_image", "label": "Icon (optional)" },
+        { "type": "text", "id": "card_1_heading", "label": "Heading", "default": "Location" },
+        {
+          "type": "richtext",
+          "id": "card_1_body",
+          "label": "Content",
+          "default": "<p>123 Example Street, Suite 1, City, State 00000</p>"
+        },
+        {
+          "type": "url",
+          "id": "card_1_link",
+          "label": "Link",
+          "info": "Optional - makes the whole card clickable (e.g. a Google Maps link)."
+        },
+        { "type": "header", "content": "Card 2" },
+        { "type": "color", "id": "card_2_bg", "label": "Background", "default": "#18252B" },
+        { "type": "color", "id": "card_2_color", "label": "Text color", "default": "#FFFFFF" },
+        { "type": "image_picker", "id": "card_2_image", "label": "Icon (optional)" },
+        { "type": "text", "id": "card_2_heading", "label": "Heading", "default": "Email" },
+        {
+          "type": "richtext",
+          "id": "card_2_body",
+          "label": "Content",
+          "default": "<p>hello@example.com</p>"
+        },
+        {
+          "type": "url",
+          "id": "card_2_link",
+          "label": "Link",
+          "info": "Optional - makes the whole card clickable (e.g. a mailto: link)."
+        }
+      ]
+    },
+    {
+      "type": "social",
+      "name": "Social media",
+      "limit": 1,
+      "settings": [
+        { "type": "text", "id": "label", "label": "Label", "default": "Our social media" },
+        { "type": "url", "id": "social_facebook_url", "label": "Facebook URL" },
+        { "type": "url", "id": "social_instagram_url", "label": "Instagram URL" },
+        { "type": "url", "id": "social_youtube_url", "label": "YouTube URL" },
+        { "type": "url", "id": "social_tiktok_url", "label": "TikTok URL" },
+        { "type": "url", "id": "social_x_url", "label": "X (Twitter) URL" },
+        { "type": "url", "id": "social_pinterest_url", "label": "Pinterest URL" },
+        { "type": "url", "id": "social_linkedin_url", "label": "LinkedIn URL" }
+      ]
+    },
+    {
+      "type": "richtext",
+      "name": "Text / Disclaimer",
+      "settings": [
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Content",
+          "default": "<p>Add a disclaimer or extra information here.</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Contact",
+      "blocks": [
+        { "type": "subheading" },
+        { "type": "heading" },
+        { "type": "description" },
+        { "type": "cards" },
+        { "type": "social" }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,1377 @@
+<header class="header{% if template.name == 'index' %} header--transparent{% endif %}">
+  <div class="container header__inner">
+    <button class="header__menu-toggle" aria-label="Menu" aria-expanded="false" aria-controls="HeaderNav" type="button">
+      {% render 'icon', name: 'menu' %}
+    </button>
+
+    <a href="{{ routes.root_url }}" class="header__logo{% if section.settings.logo_inverse != blank %} header__logo--has-inverse{% endif %}">
+      {%- if section.settings.logo != blank -%}
+        <img class="header__logo-img header__logo-img--default" src="{{ section.settings.logo | image_url: width: 140 }}" alt="{{ shop.name }}" width="80" height="44" loading="eager">
+        {%- if section.settings.logo_inverse != blank -%}
+          <img class="header__logo-img header__logo-img--inverse" src="{{ section.settings.logo_inverse | image_url: width: 140 }}" alt="{{ shop.name }}" width="80" height="44" loading="eager">
+        {%- endif -%}
+      {%- else -%}
+        <span class="header__logo-text">
+          <strong>{{ section.settings.brand_name | default: 'Nutra' }}</strong>
+          <span>{{ section.settings.brand_subtitle | default: 'Chem' }}</span>
+        </span>
+      {%- endif -%}
+    </a>
+
+    <nav class="header__nav" id="HeaderNav">
+      <button type="button" class="header__nav-close" id="HeaderNavClose" aria-label="{{ 'general.accessibility.close' | t }}">
+        {% render 'icon', name: 'close' %}
+      </button>
+      {%- for link in section.settings.menu.links -%}
+        {%- if link.links != blank -%}
+          <div class="header__nav-item has-menu">
+            <a href="{{ link.url }}" class="header__nav-link header__menu-trigger" aria-haspopup="true" aria-expanded="false" aria-controls="Menu-{{ forloop.index }}">
+              <span class="header__menu-trigger-label">
+                {{ link.title }}
+                <span class="header__menu-count">({{ link.links.size }})</span>
+              </span>
+              {% render 'icon', name: 'chevron-down' %}
+            </a>
+
+            {%- comment -%}
+              One panel, two presentations driven purely by CSS: a full-width card
+              dropdown on desktop, a collapsible accordion row-list on mobile.
+              See CLAUDE.md — only one .header__menu-panel may be open at a time.
+            {%- endcomment -%}
+            <div class="header__menu-panel" id="Menu-{{ forloop.index }}">
+              <div class="header__menu-panel-inner">
+                <div class="mega-menu__inner container">
+                  <div class="mega-menu__cards">
+                    {%- for sub in link.links limit: 6 -%}
+                      {%- if sub.type == 'product_link' and sub.object -%}
+                        {% render 'mega-menu-product-card', product: sub.object %}
+                      {%- else -%}
+                        <a class="mega-menu__text-link" href="{{ sub.url }}">{{ sub.title }}</a>
+                      {%- endif -%}
+                    {%- endfor -%}
+                    {%- if link.links.size > 6 -%}
+                      <a class="mega-menu__view-all" href="{{ link.url }}">
+                        <span>{{ 'general.navigation.view_all' | t }}</span>
+                        {% render 'icon', name: 'arrow-right' %}
+                      </a>
+                    {%- endif -%}
+                  </div>
+                </div>
+                <div class="header__accordion-rows">
+                  {%- for sub in link.links -%}
+                    <a class="header__accordion-row" href="{{ sub.url }}">
+                      {%- if sub.type == 'product_link' and sub.object and sub.object.featured_image -%}
+                        {{ sub.object.featured_image | image_url: width: 64 | image_tag: loading: 'lazy', width: 32, height: 32, alt: '' }}
+                      {%- endif -%}
+                      <span>{{ sub.title }}</span>
+                    </a>
+                  {%- endfor -%}
+                  {%- if link.links.size > 10 -%}
+                    <a class="header__accordion-row header__accordion-row--view-all" href="{{ link.url }}">
+                      <span>{{ 'general.navigation.view_all' | t }}</span>
+                      {% render 'icon', name: 'arrow-right' %}
+                    </a>
+                  {%- endif -%}
+                </div>
+              </div>
+            </div>
+          </div>
+        {%- else -%}
+          <a class="header__nav-link" href="{{ link.url }}"{% if link.url == request.path %} aria-current="page"{% endif %}>
+            {{ link.title }}
+          </a>
+        {%- endif -%}
+      {%- else -%}
+        <a class="header__nav-link" href="{{ routes.root_url }}"{% if request.path == routes.root_url %} aria-current="page"{% endif %}>Home</a>
+        <a class="header__nav-link" href="{{ routes.all_products_collection_url }}">Shop Products</a>
+        <a class="header__nav-link" href="{{ routes.root_url }}">Shop Bundles</a>
+      {%- endfor -%}
+
+      <a class="header__nav-link header__nav-account" href="{{ routes.account_url }}">
+        {% render 'icon', name: 'account' %}
+        <span>Account</span>
+      </a>
+    </nav>
+
+    <div class="header__icons">
+      <button type="button" id="SearchToggle" aria-label="{{ 'general.search.placeholder' | t }}" aria-expanded="false" aria-controls="HeaderSearchPopup">
+        {% render 'icon', name: 'search' %}
+      </button>
+      <!-- Vensa Wishlist icon. The app binds the click and the counter. -->
+      <button type="button" class="vensa-wl-header-btn" id="WishlistToggle" aria-label="Open wishlist">
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" preserveAspectRatio="xMidYMid meet">
+          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="none" stroke="currentColor" stroke-width="1.8"/>
+        </svg>
+        <span class="vensa-wl-badge" hidden>0</span>
+      </button>
+      <div class="header__account-wrapper">
+        {%- if shop.customer_accounts_enabled -%}
+          <shopify-account class="header__account" menu="{{ settings.customer_account_menu | default: 'customer-account-main-menu' }}">
+            <span slot="signed-out-avatar">{% render 'icon', name: 'account' %}</span>
+            <span slot="signed-out-avatar" class="visually-hidden">Account</span>
+          </shopify-account>
+        {%- else -%}
+          <a href="{{ routes.account_url }}" aria-label="Account">{% render 'icon', name: 'account' %}</a>
+        {%- endif -%}
+      </div>
+      <a href="{{ routes.cart_url }}" id="CartToggle" aria-label="{{ 'general.cart.title' | t }}" aria-haspopup="dialog">
+        {% render 'icon', name: 'cart' %}
+        {% render 'cart-icon-bubble' %}
+      </a>
+    </div>
+  </div>
+
+  <div class="menu-drawer-backdrop" id="MenuDrawerBackdrop" hidden></div>
+
+  <div class="header__search-popup-backdrop" id="SearchPopupBackdrop" hidden></div>
+
+  <div class="header__search-popup" id="HeaderSearchPopup" hidden>
+    <div class="header__search-popup-inner container">
+      <div class="header__search-bar">
+        <form action="{{ routes.search_url }}" method="get" role="search" class="header__search-form">
+          {%- comment -%}
+            Restricted to products (not the predictive dropdown's broader
+            product/collection/page/article mix below) because Search &
+            Discovery facets/filters only populate for a product-only search -
+            the full results page reuses the same filter sidebar as collection
+            pages, which needs that.
+          {%- endcomment -%}
+          <input type="hidden" name="type" value="product">
+          <div class="header__search-field">
+            <button type="submit" class="header__search-submit" aria-label="{{ 'general.search.submit' | t }}">
+              {% render 'icon', name: 'search' %}
+            </button>
+            <input
+              type="search"
+              name="q"
+              id="HeaderSearchInput"
+              class="header__search-input"
+              placeholder="{{ 'general.search.placeholder' | t }}"
+              autocomplete="off"
+              aria-label="{{ 'general.search.placeholder' | t }}"
+            >
+          </div>
+        </form>
+        <button type="button" class="header__search-popup-close" id="HeaderSearchClose" aria-label="{{ 'general.accessibility.close' | t }}">
+          {% render 'icon', name: 'close' %}
+        </button>
+      </div>
+      <div id="PredictiveSearchResults" class="header__search-results" aria-live="polite"></div>
+    </div>
+  </div>
+</header>
+
+<div class="mega-menu-backdrop" id="MegaMenuBackdrop" hidden></div>
+
+{% stylesheet %}
+.header {
+  position: fixed;
+  /* Sits right below the announcement bar (0px when there isn't one) instead
+     of a hardcoded 0, so the two don't overlap - see HeaderScroll below,
+     which measures the announcement bar and sets this var. */
+  top: var(--announcement-height, 0px);
+  left: 0;
+  width: 100%;
+  z-index: 30;
+  background: var(--color-background);
+  transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.header--hidden {
+  /* translateY(-100%) alone only clears the header's own height - since it
+     now sits offset below the announcement bar (top: var(--announcement-height)),
+     that left a sliver up to the announcement bar's height still visible
+     instead of fully leaving the viewport. */
+  transform: translateY(calc(-100% - var(--announcement-height, 0px)));
+}
+
+.header--drawer-open {
+  z-index: 10011;
+}
+
+.header--transparent {
+  background: transparent;
+}
+
+.header--transparent::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.35), transparent);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.header--transparent .header__nav-link,
+.header--transparent .header__logo-text strong,
+.header--transparent .header__logo-text span,
+.header--transparent .header__icons,
+.header--transparent .header__menu-toggle {
+  color: #fff;
+}
+
+  @media screen and (max-width: 990px) {
+    .header--transparent .header__nav-link{
+      color: var(--color-primary);  
+    }
+  }
+
+.header--transparent.header--scrolled {
+  background: var(--color-background);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+}
+
+.header--transparent.header--drawer-open {
+  background: var(--color-background);
+}
+
+.header--transparent.header--scrolled .header__nav-link,
+.header--transparent.header--scrolled .header__logo-text strong,
+.header--transparent.header--scrolled .header__logo-text span,
+.header--transparent.header--scrolled .header__icons,
+.header--transparent.header--scrolled .header__menu-toggle {
+  color: var(--color-primary);
+}
+
+.header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+
+   @media screen and (max-width: 990px) {
+      padding-block: 1rem;
+  }
+
+   @media screen and (max-width: 600px) {
+      padding-block: 0.5rem;
+  }
+}
+
+@media screen and (max-width: 989px) {
+  .header__inner {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 0.5rem;
+  }
+
+  .header__menu-toggle {
+    justify-self: start;
+  }
+
+  .header__logo {
+    justify-self: center;
+  }
+
+  .header__icons {
+    justify-self: end;
+  }
+}
+
+.header__logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.header__logo img {
+  height: 44px;
+  width: auto;
+}
+
+.header__logo-img--inverse {
+  display: none;
+}
+
+.header--transparent:not(.header--scrolled) .header__logo--has-inverse .header__logo-img--default {
+  display: none;
+}
+
+.header--transparent:not(.header--scrolled) .header__logo--has-inverse .header__logo-img--inverse {
+  display: block;
+}
+
+.header__logo-text {
+  font-family: var(--font-heading);
+  line-height: 1.1;
+}
+
+.header__logo-text strong {
+  display: block;
+  font-size: 20px;
+  letter-spacing: 2px;
+  color: var(--color-primary);
+}
+
+.header__logo-text span {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: var(--color-secondary);
+}
+
+.header__nav {
+  display: none;
+}
+
+.header__nav-link,
+.header__menu-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 16px;
+  color: var(--color-primary);
+  /* calc(): shaves 5px off top and bottom (10px total) to bring the desktop
+     header down to 60px, matching the mobile height — the max-width:990px
+     override just below already gives mobile/tablet drawer rows their own
+     0.5rem padding, so this only affects desktop. */
+  padding: calc(1.4rem - 5px) 0.5rem;
+}
+
+@media screen and (max-width: 990px) {
+    .header__nav-link,
+    .header__menu-trigger {
+      padding:0.5rem;
+      font-size: 18px;
+    }
+  }
+
+.header__nav-item {
+  display: flex;
+  align-items: center;
+}
+
+.header__nav-account {
+  display: none;
+}
+
+.header__menu-trigger {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-body);
+}
+
+.header__menu-trigger-label {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.header__menu-count {
+  font-size: 14px;
+  font-weight: 400;
+  color: #55636b;
+  display: none;
+}
+
+.header__menu-trigger svg {
+  transition: transform 0.2s ease;
+}
+
+.header__menu-trigger[aria-expanded='true'] svg {
+  transform: rotate(180deg);
+}
+
+@media screen and (min-width: 990px) {
+  .header__nav {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .header__menu-panel {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    transform: translateY(-8px);
+    background: var(--color-background);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+    z-index: 25;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+
+  .header__menu-panel.is-open {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  .mega-menu-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 24;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+  }
+
+  .mega-menu-backdrop.is-open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .header__accordion-rows {
+    display: none;
+  }
+}
+
+.header__icons {
+  display: flex;
+  align-items: center;
+  color: var(--color-primary);
+}
+
+.header__icons a,
+.header__icons button {
+  background: none;
+  border: none;
+  padding: 11px;
+  margin: 0;
+  cursor: pointer;
+  color: inherit;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+}
+
+.header__icons > *:first-child {
+  margin-left: -11px;
+}
+
+.header__icons > *:last-child {
+  margin-right: -11px;
+}
+
+.header__menu-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 11px;
+  margin: -11px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: inherit;
+}
+
+@media screen and (min-width: 990px) {
+  .header__menu-toggle {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 989px) {
+  .header__account-wrapper {
+    display: none;
+  }
+
+  #WishlistToggle {
+    display: none;
+  }
+}
+
+.cart-icon-bubble {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: 50%;
+  background: var(--color-secondary);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 16px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#CartToggle,
+#WishlistToggle {
+  position: relative;
+}
+
+.header__account {
+  --shopify-account-color-background: var(--color-background);
+  --shopify-account-color-accent: var(--button-primary, var(--color-secondary));
+  --shopify-account-color-text: var(--color-primary);
+  --shopify-account-radius-base: var(--radius-m);
+  display: inline-flex;
+}
+
+.header__account:not(:defined) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+}
+
+.mega-menu__inner {
+  padding-block: 28px;
+}
+
+.mega-menu__cards {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 1rem;
+  max-width: 100%;
+}
+
+.mega-menu__text-link {
+  font-size: 14px;
+  color: var(--color-primary);
+}
+
+.mega-menu__view-all {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  flex: 0 1 160px;
+  width: 160px;
+  color: var(--color-primary);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  gap: 4px;
+}
+
+.mega-menu-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  flex: 0 1 160px;
+  width: 160px;
+  text-align: center;
+  color: var(--color-primary);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  padding: 0.5rem;
+  border-radius: var(--radius-m);
+}
+
+.mega-menu-card__media {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background: var(--color-surface);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.mega-menu-card__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.mega-menu-card__title {
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  margin-bottom: 6px;
+}
+
+.mega-menu-card__rating {
+  font-size: 14px;
+}
+
+.header__nav-close {
+  display: none;
+}
+
+.menu-drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 10010;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.menu-drawer-backdrop.is-open {
+  opacity: 1;
+}
+
+body.menu-drawer-open,
+body.search-popup-open {
+  overflow: hidden;
+}
+
+@media screen and (max-width: 989px) {
+  .header__menu-count {
+    display: inline;
+  }
+
+  .header__menu-trigger svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .header__nav {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 90%;
+    max-width: 400px;
+    gap: 0;
+    background: var(--color-background);
+    padding: 76px 20px 24px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    box-shadow: 0 0 24px rgba(0, 0, 0, 0.15);
+    z-index: 10011;
+  }
+
+  .header__nav.is-open {
+    transform: translateX(0);
+  }
+
+  .header__nav-close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    min-width: 44px;
+    min-height: 44px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--color-primary);
+  }
+
+  .header__nav-link,
+  .header__menu-trigger {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    color: var(--color-primary);
+  }
+
+  .header__nav-account {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+    width: 100%;
+    flex-shrink: 0;
+    margin-top: auto;
+    padding: 0.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+    font-size: 16px;
+    font-weight: 400;
+  }
+
+  .header__menu-count {
+    color: #55636b;
+  }
+
+  .header__nav-item {
+    display: block;
+    width: 100%;
+  }
+
+  .mega-menu__inner {
+    display: none;
+  }
+
+  .header__menu-panel {
+    display: grid;
+    grid-template-rows: 0fr;
+    min-height: 0;
+    transition: grid-template-rows 0.3s ease;
+  }
+
+  .header__menu-panel-inner {
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .header__menu-panel.is-open {
+    grid-template-rows: 1fr;
+  }
+
+  .header__accordion-rows {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .header__accordion-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-block: 0.5rem;
+    font-size: 14px;
+    color: var(--color-primary);
+
+    @media screen and (max-width: 990px) {
+      padding-inline:1rem;
+    }
+  }
+
+  .header__accordion-row img {
+    width: 32px;
+    height: 32px;
+    object-fit: cover;
+    border: 1px solid #f5ebeb;
+    border-radius: var(--radius-s);
+    background: var(--color-surface);
+    flex-shrink: 0;
+  }
+}
+
+.header__search-popup {
+  position: fixed;
+  /* Pinned right below the announcement bar only (not --header-height, which
+     includes the header) - the header can be scrolled hidden while the popup
+     opens, and offsetting for a header that isn't actually there left a gap.
+     The popup's own higher z-index already covers the header when visible,
+     which is fine since it's a full takeover, not a dropdown beside it. */
+  top: var(--announcement-height, 0px);
+  left: 0;
+  right: 0;
+  background: var(--color-background);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  transform: translateY(-16px);
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  max-height: calc(100vh - var(--announcement-height, 0px));
+  overflow-y: auto;
+  z-index: 40;
+}
+
+.header__search-popup.is-open {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.header__search-popup-inner {
+  padding-block: 24px 32px;
+
+  @media screen and (max-width: 992px) {
+    padding-block: 1.5rem 2rem;
+  }
+
+  @media screen and (max-width: 600px) {
+    padding-block: 1rem;
+  }
+}
+
+.header__search-popup-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 39;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.header__search-popup-backdrop.is-open {
+  opacity: 1;
+}
+
+.header__search-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header__search-form {
+  flex: 1;
+  min-width: 0;
+}
+
+.header__search-popup-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  min-height: 18px;
+  aspect-ratio: 1 / 1;
+  background: none;
+  border: 1px solid var(--color-primary);
+  cursor: pointer;
+  color: var(--color-primary);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+@media screen and (max-width: 600px) {
+  .header__search-popup-close svg {
+    width: 12px;
+    height: 12px;
+  }
+}
+
+.header__search-field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  border: 1px solid var(--color-surface);
+  border-radius: var(--radius-m);
+  padding-inline: 8px;
+}
+
+.header__search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  padding-block: 14px;
+  font-size: 16px;
+  font-family: var(--font-body);
+  color: var(--color-primary);
+  background: transparent;
+
+  @media screen and (max-width: 992px) {
+    padding-block: 10px;    
+  }
+
+  @media screen and (max-width: 600px) {
+    padding-block: 8px;    
+  }
+}
+
+.header__search-submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  min-height: 36px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.header__search-results {
+  padding-top: 16px;
+}
+
+.header__search-results:empty {
+  display: none;
+}
+
+.predictive-search__group-title {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #55636b;
+  margin: 0 0 12px;
+}
+
+.predictive-search__group + .predictive-search__group {
+  margin-top: 24px;
+}
+
+.predictive-search__products {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.predictive-search__product {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.predictive-search__product img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border: 1px solid #f5ebeb;
+  border-radius: var(--radius-s);
+  background: var(--color-surface);
+}
+
+.predictive-search__product-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.predictive-search__product-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+.predictive-search__list li {
+  padding-block: 6px;
+  font-size: 14px;
+}
+
+.predictive-search__list a,
+.predictive-search__no-results {
+  color: var(--color-primary);
+}
+
+.predictive-search__no-results {
+  font-size: 14px;
+  padding-block: 12px;
+}
+{% endstylesheet %}
+
+{% javascript %}
+class MobileNav {
+  #toggle
+  #nav
+  #backdrop
+  #closeButton
+  #header
+
+  constructor() {
+    this.#toggle = document.querySelector('.header__menu-toggle')
+    this.#nav = document.querySelector('.header__nav')
+    this.#backdrop = document.getElementById('MenuDrawerBackdrop')
+    this.#closeButton = document.getElementById('HeaderNavClose')
+    this.#header = document.querySelector('.header')
+    if (!this.#toggle || !this.#nav) return
+    this.#toggle.addEventListener('click', () => this.#onToggle())
+    this.#backdrop?.addEventListener('click', () => this.#setOpen(false))
+    this.#closeButton?.addEventListener('click', () => this.#setOpen(false))
+    document.addEventListener('keydown', (event) => this.#onKeydown(event))
+  }
+
+  #onToggle() {
+    this.#setOpen(!this.#nav.classList.contains('is-open'))
+  }
+
+  #setOpen(open) {
+    this.#nav.classList.toggle('is-open', open)
+    this.#toggle.setAttribute('aria-expanded', String(open))
+    document.body.classList.toggle('menu-drawer-open', open)
+    // .header__nav is nested inside .header, whose own z-index caps how high
+    // the drawer can stack against siblings like the fixed mobile bottom nav —
+    // elevate .header itself while the drawer is open so it escapes that cap.
+    this.#header?.classList.toggle('header--drawer-open', open)
+
+    if (this.#backdrop) {
+      if (open) {
+        this.#backdrop.hidden = false
+        requestAnimationFrame(() => this.#backdrop.classList.add('is-open'))
+      } else {
+        this.#backdrop.classList.remove('is-open')
+        window.setTimeout(() => {
+          if (!this.#backdrop.classList.contains('is-open')) this.#backdrop.hidden = true
+        }, 300)
+      }
+    }
+
+    if (open) {
+      this.#nav.querySelector('a, button')?.focus()
+    }
+  }
+
+  #onKeydown(event) {
+    if (event.key === 'Escape' && this.#nav.classList.contains('is-open')) {
+      this.#setOpen(false)
+      this.#toggle.focus()
+    }
+  }
+}
+
+class HeaderScroll {
+  #header
+  #announcementBar
+  #lastY = 0
+  #ticking = false
+  #resizeTimer
+
+  constructor() {
+    this.#header = document.querySelector('.header')
+    if (!this.#header) return
+    this.#announcementBar = document.querySelector('.announcement-bar')
+
+    this.#updatePadding()
+
+    window.addEventListener('scroll', () => this.#requestTick(), { passive: true })
+    // The header's height changes across breakpoints (nav link padding, logo
+    // size), so the compensating body padding — set once above — would go
+    // stale on any resize/orientation change without this.
+    window.addEventListener('resize', () => this.#onResize(), { passive: true })
+
+    // In the theme editor, adding/removing/reordering a section (e.g. the
+    // announcement bar) re-renders in place with no page reload and no
+    // resize event - without these, the padding this measured on load would
+    // stay stale (leftover space after removing it, none after adding it).
+    document.addEventListener('shopify:section:load', () => this.#onEditorChange())
+    document.addEventListener('shopify:section:unload', () => this.#onEditorChange())
+    document.addEventListener('shopify:section:reorder', () => this.#onEditorChange())
+  }
+
+  #onEditorChange() {
+    this.#announcementBar = document.querySelector('.announcement-bar')
+    this.#updatePadding()
+  }
+
+  #updatePadding() {
+    const announcementHeight = this.#announcementBar ? this.#announcementBar.offsetHeight : 0
+    const totalHeight = this.#header.offsetHeight + announcementHeight
+
+    // --announcement-height offsets .header itself below the announcement bar
+    // (0px when there isn't one). --header-height is the *combined* offset -
+    // used by body padding below, and by other sections (product page sticky
+    // info, the search popup) that just need "how far down does real content
+    // start", not the header's height specifically.
+    document.documentElement.style.setProperty('--announcement-height', `${announcementHeight}px`)
+    document.documentElement.style.setProperty('--header-height', `${totalHeight}px`)
+
+    // A transparent header intentionally overlays hero content, but the
+    // announcement bar always has a solid background and isn't meant to - its
+    // own height still needs reserving even when the header's doesn't.
+    const isTransparent = this.#header.classList.contains('header--transparent')
+    document.body.style.paddingTop = `${isTransparent ? announcementHeight : totalHeight}px`
+  }
+
+  #onResize() {
+    window.clearTimeout(this.#resizeTimer)
+    this.#resizeTimer = window.setTimeout(() => this.#updatePadding(), 150)
+  }
+
+  #requestTick() {
+    if (this.#ticking) return
+    this.#ticking = true
+    requestAnimationFrame(() => {
+      this.#onScroll()
+      this.#ticking = false
+    })
+  }
+
+  #onScroll() {
+    const y = window.scrollY
+    this.#header.classList.toggle('header--scrolled', y > 10)
+
+    // .header__nav and .header__search-popup are position:fixed but nested
+    // inside .header — a transform on .header (from header--hidden) becomes
+    // their containing block, dragging the open drawer/popup along with it
+    // and breaking their fixed positioning. Never hide the header while
+    // either is open.
+    if (document.body.classList.contains('menu-drawer-open') || document.body.classList.contains('search-popup-open')) {
+      this.#lastY = y
+      return
+    }
+
+    if (y > 80 && y > this.#lastY) {
+      this.#header.classList.add('header--hidden')
+    } else {
+      this.#header.classList.remove('header--hidden')
+    }
+
+    this.#lastY = y
+  }
+}
+
+class CartToggle {
+  constructor() {
+    const toggle = document.getElementById('CartToggle')
+    if (!toggle) return
+    toggle.addEventListener('click', (event) => {
+      event.preventDefault()
+      document.dispatchEvent(new CustomEvent('cart:open'))
+    })
+  }
+}
+
+class CartIconBubble {
+  #bubble
+
+  constructor() {
+    this.#bubble = document.getElementById('CartIconBubble')
+    if (!this.#bubble) return
+    document.addEventListener('cart:updated', (event) => this.#onCartUpdated(event))
+  }
+
+  #onCartUpdated(event) {
+    const sections = event.detail?.sections
+    if (!sections || !sections.header) return
+    const doc = new DOMParser().parseFromString(sections.header, 'text/html')
+    const updated = doc.getElementById('CartIconBubble')
+    if (!updated) return
+    this.#bubble.replaceWith(updated)
+    this.#bubble = updated
+  }
+}
+
+class PredictiveSearch {
+  #toggle
+  #popup
+  #closeButton
+  #backdrop
+  #input
+  #results
+  #abortController
+  #debounceTimer
+  #lastFocused
+
+  constructor() {
+    this.#toggle = document.getElementById('SearchToggle')
+    this.#popup = document.getElementById('HeaderSearchPopup')
+    this.#closeButton = document.getElementById('HeaderSearchClose')
+    this.#backdrop = document.getElementById('SearchPopupBackdrop')
+    this.#input = document.getElementById('HeaderSearchInput')
+    this.#results = document.getElementById('PredictiveSearchResults')
+    if (!this.#toggle || !this.#popup || !this.#input || !this.#results) return
+
+    this.#toggle.addEventListener('click', () => this.#open())
+    this.#closeButton.addEventListener('click', () => this.#close())
+    this.#backdrop?.addEventListener('click', () => this.#close())
+    this.#input.addEventListener('input', () => this.#onInput())
+    document.addEventListener('keydown', (event) => this.#onKeydown(event))
+  }
+
+  #open() {
+    this.#lastFocused = document.activeElement
+    this.#popup.hidden = false
+    if (this.#backdrop) this.#backdrop.hidden = false
+    // The popup is nested inside .header and position: fixed - if the header
+    // was already scrolled hidden (its own transform) before opening, that
+    // transform is still the popup's containing block at this point, so it
+    // needs clearing here too, not just guarded against going forward.
+    document.querySelector('.header')?.classList.remove('header--hidden')
+    requestAnimationFrame(() => {
+      this.#popup.classList.add('is-open')
+      this.#backdrop?.classList.add('is-open')
+    })
+    this.#toggle.setAttribute('aria-expanded', 'true')
+    this.#input.focus()
+    document.body.classList.add('search-popup-open')
+  }
+
+  #close() {
+    this.#popup.classList.remove('is-open')
+    this.#backdrop?.classList.remove('is-open')
+    this.#toggle.setAttribute('aria-expanded', 'false')
+    this.#abortController?.abort()
+    document.body.classList.remove('search-popup-open')
+    window.setTimeout(() => {
+      if (!this.#popup.classList.contains('is-open')) {
+        this.#popup.hidden = true
+        if (this.#backdrop) this.#backdrop.hidden = true
+      }
+    }, 200)
+    this.#lastFocused?.focus()
+  }
+
+  #onKeydown(event) {
+    if (event.key === 'Escape' && this.#popup.classList.contains('is-open')) {
+      this.#close()
+    }
+  }
+
+  #onInput() {
+    window.clearTimeout(this.#debounceTimer)
+    const term = this.#input.value.trim()
+    if (term.length < 2) {
+      this.#results.innerHTML = ''
+      return
+    }
+    this.#debounceTimer = window.setTimeout(() => this.#search(term), 300)
+  }
+
+  async #search(term) {
+    this.#abortController?.abort()
+    this.#abortController = new AbortController()
+
+    try {
+      const response = await fetch(
+        `${window.routes.predictiveSearchUrl}?q=${encodeURIComponent(term)}&resources[type]=product,collection,page,article&resources[limit]=6&section_id=predictive-search`,
+        { signal: this.#abortController.signal }
+      )
+      const text = await response.text()
+      const doc = new DOMParser().parseFromString(text, 'text/html')
+      const section = doc.getElementById('shopify-section-predictive-search')
+      this.#results.innerHTML = section ? section.innerHTML : ''
+    } catch (error) {
+      if (error.name !== 'AbortError') this.#results.innerHTML = ''
+    }
+  }
+}
+
+class HeaderMenu {
+  #items
+  #desktopQuery
+  #openPanel
+  #openTrigger
+  #backdrop
+
+  constructor() {
+    this.#items = Array.from(document.querySelectorAll('.header__nav-item.has-menu'))
+    if (this.#items.length === 0) return
+    this.#desktopQuery = window.matchMedia('(min-width: 990px)')
+    this.#backdrop = document.getElementById('MegaMenuBackdrop')
+    this.#backdrop?.addEventListener('click', () => {
+      if (this.#openPanel) this.#close(this.#openTrigger, this.#openPanel)
+    })
+
+    for (const item of this.#items) {
+      const trigger = item.querySelector('.header__menu-trigger')
+      const panel = item.querySelector('.header__menu-panel')
+      if (!trigger || !panel) continue
+
+      trigger.addEventListener('click', (event) => {
+        if (this.#desktopQuery.matches) return
+        event.preventDefault()
+        this.#toggle(trigger, panel)
+      })
+      item.addEventListener('mouseenter', () => {
+        if (this.#desktopQuery.matches) this.#open(trigger, panel)
+      })
+      item.addEventListener('mouseleave', () => {
+        if (this.#desktopQuery.matches) this.#close(trigger, panel)
+      })
+    }
+
+    document.addEventListener('click', (event) => this.#onOutsideClick(event))
+    document.addEventListener('keydown', (event) => this.#onKeydown(event))
+  }
+
+  #toggle(trigger, panel) {
+    const isOpen = trigger.getAttribute('aria-expanded') === 'true'
+    if (isOpen) {
+      this.#close(trigger, panel)
+    } else {
+      this.#open(trigger, panel)
+    }
+  }
+
+  #open(trigger, panel) {
+    if (this.#openPanel && this.#openPanel !== panel) {
+      this.#close(this.#openTrigger, this.#openPanel)
+    }
+    panel.classList.add('is-open')
+    trigger.setAttribute('aria-expanded', 'true')
+    this.#openPanel = panel
+    this.#openTrigger = trigger
+    if (this.#desktopQuery.matches && this.#backdrop) {
+      this.#backdrop.hidden = false
+      requestAnimationFrame(() => this.#backdrop.classList.add('is-open'))
+    }
+  }
+
+  #close(trigger, panel) {
+    if (!trigger || !panel) return
+    panel.classList.remove('is-open')
+    trigger.setAttribute('aria-expanded', 'false')
+    if (this.#openPanel === panel) {
+      this.#openPanel = null
+      this.#openTrigger = null
+      if (this.#backdrop) {
+        this.#backdrop.classList.remove('is-open')
+        window.setTimeout(() => {
+          if (!this.#openPanel) this.#backdrop.hidden = true
+        }, 200)
+      }
+    }
+  }
+
+  #onOutsideClick(event) {
+    if (!this.#desktopQuery.matches || !this.#openPanel) return
+    if (this.#openTrigger.closest('.header__nav-item').contains(event.target)) return
+    this.#close(this.#openTrigger, this.#openPanel)
+  }
+
+  #onKeydown(event) {
+    if (event.key !== 'Escape' || !this.#openPanel) return
+    const trigger = this.#openTrigger
+    this.#close(this.#openTrigger, this.#openPanel)
+    trigger?.focus()
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  new MobileNav()
+  new HeaderScroll()
+  new CartToggle()
+  new CartIconBubble()
+  new PredictiveSearch()
+  new HeaderMenu()
+})
+{% endjavascript %}
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": {{ shop.name | json }},
+  "url": {{ request.origin | append: page.url | json }}
+  {%- if section.settings.logo -%},
+    "logo": {{ section.settings.logo | image_url: width: 300 | prepend: 'https:' | json }}
+  {%- else -%},
+    "logo": {{ shop.brand.logo | image_url: width: 300 | prepend: 'https:' | json }}
+  {%- endif -%}
+  {%- if shop.brand.short_description -%},
+    "description": {{ shop.brand.short_description | json }}
+  {%- endif -%}
+}
+</script>
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo image"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo_inverse",
+      "label": "Inverse logo (light)",
+      "info": "Optional. Shown instead of the logo above only while the header is transparent and unscrolled (e.g. over the homepage hero). Once the header scrolls or on pages where it isn't transparent, the regular logo above is used."
+    },
+    {
+      "type": "text",
+      "id": "brand_name",
+      "label": "Brand name",
+      "default": "Nutra"
+    },
+    {
+      "type": "text",
+      "id": "brand_subtitle",
+      "label": "Brand subtitle",
+      "default": "Chem"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Main menu",
+      "default": "main-menu"
+    }
+  ]
+}
+{% endschema %}

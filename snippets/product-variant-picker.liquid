@@ -1,0 +1,93 @@
+{%- comment -%}
+  Renders the variant picker for a product with more than one variant.
+  Nothing is rendered for a product with only the default variant (spec: no
+  unnecessary variant controls).
+
+  Value UI prefers, per value, in order:
+    1. A native option-value swatch image (product_option_value.swatch.image)
+    2. A native swatch color (product_option_value.swatch.color)
+    3. The first matching variant's own featured_media (first option only)
+    4. A plain text pill
+  This is decided per value, not per whole option group, so a mixed option
+  (e.g. Black/White with images, Red without) falls back correctly per value.
+
+  Availability shown here is computed against the variant matching the
+  *currently selected* combination for correct first paint; product-info.js
+  recomputes it live against whatever is selected as the shopper clicks
+  through - this markup is not itself interactive beyond native button focus.
+
+  Accepts:
+  - product: {Object}
+
+  Usage:
+  {% render 'product-variant-picker', product: product %}
+{%- endcomment -%}
+
+{%- unless product.has_only_default_variant -%}
+  <div class="variant-picker" data-variant-picker>
+    {%- for option in product.options_with_values -%}
+      {%- assign opt_pos = option.position -%}
+      <fieldset class="variant-picker__option" data-option-position="{{ opt_pos }}">
+        <legend class="variant-picker__label">
+          {{ option.name }}: <span class="variant-picker__selected-value" data-selected-value>{{ option.selected_value }}</span>
+        </legend>
+        <div class="variant-picker__values">
+          {%- for value in option.values -%}
+            {%- liquid
+              assign value_name = value.name
+              assign is_selected = false
+              if value_name == option.selected_value
+                assign is_selected = true
+              endif
+
+              assign is_value_available = false
+              assign swatch_image = value.swatch.image
+              assign swatch_color = value.swatch.color
+              assign media_image = nil
+              assign opt_index = opt_pos | minus: 1
+
+              for v in product.variants
+                assign v_value = v.options[opt_index]
+                if v_value == value_name
+                  if v.available
+                    assign is_value_available = true
+                  endif
+                  if opt_pos == 1 and media_image == nil and v.featured_media
+                    assign media_image = v.featured_media.preview_image
+                  endif
+                endif
+              endfor
+
+              assign value_class = 'variant-picker__value--pill'
+              if swatch_image or media_image
+                assign value_class = 'variant-picker__value--image'
+              elsif swatch_color
+                assign value_class = 'variant-picker__value--color'
+              endif
+            -%}
+            <button
+              type="button"
+              class="variant-picker__value {{ value_class }}{% if is_selected %} is-selected{% endif %}{% unless is_value_available %} is-unavailable{% endunless %}"
+              data-variant-value
+              data-option-position="{{ opt_pos }}"
+              data-value="{{ value_name | escape }}"
+              aria-pressed="{% if is_selected %}true{% else %}false{% endif %}"
+              {%- unless is_value_available %}
+              aria-label="{{ value_name }} ({{ 'products.product.sold_out' | t }})"
+              {%- endunless %}
+            >
+              {%- if swatch_image -%}
+                {{ swatch_image | image_url: width: 120 | image_tag: loading: 'lazy', width: 60, height: 60, class: 'variant-picker__value-image', alt: value_name }}
+              {%- elsif media_image -%}
+                {{ media_image | image_url: width: 120 | image_tag: loading: 'lazy', width: 60, height: 60, class: 'variant-picker__value-image', alt: value_name }}
+              {%- elsif swatch_color -%}
+                <span class="variant-picker__value-swatch" style="background-color: {{ swatch_color | escape }};"></span>
+              {%- endif -%}
+              <span class="variant-picker__value-text">{{ value_name }}</span>
+            </button>
+          {%- endfor -%}
+        </div>
+      </fieldset>
+    {%- endfor -%}
+  </div>
+{%- endunless -%}

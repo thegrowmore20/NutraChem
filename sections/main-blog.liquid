@@ -1,0 +1,327 @@
+{%- comment -%}
+  Blog listing page. Inspired by Dawn's main-blog.liquid structurally
+  (breadcrumb, heading, article grid, pagination) but rebuilt on this theme's
+  own conventions: .container/.section-padding, plain-string schema names,
+  and top-level checkbox settings instead of Dawn's block-based toggles.
+{%- endcomment -%}
+
+<section
+  class="blog-listing section-padding"
+  style="--padding-top: {{ section.settings.padding_top }}px; --padding-bottom: {{ section.settings.padding_bottom }}px; --blog-columns-desktop: {{ section.settings.columns_desktop }};"
+>
+  <div class="container">
+    <nav class="blog-listing__breadcrumb" aria-label="breadcrumb">
+      <ol>
+        <li><a href="{{ routes.root_url }}">{{ 'general.navigation.home' | t }}</a></li>
+        <li aria-current="page">{{ blog.title }}</li>
+      </ol>
+    </nav>
+
+    <h1 class="blog-listing__title h2">{{ blog.title }}</h1>
+
+    {%- paginate blog.articles by section.settings.articles_per_page -%}
+      {%- if blog.articles.size > 0 -%}
+        <div class="blog-listing__grid">
+          {%- for article in blog.articles -%}
+            {%- render 'article-card',
+              article: article,
+              blog: blog,
+              show_image: section.settings.show_image,
+              show_excerpt: section.settings.show_excerpt,
+              show_date: section.settings.show_date,
+              show_author: section.settings.show_author,
+              show_comments: section.settings.show_comments
+            -%}
+          {%- endfor -%}
+        </div>
+
+        {%- if paginate.pages > 1 -%}
+          <nav class="pagination" aria-label="pagination">
+            {%- if paginate.previous -%}
+              <a href="{{ paginate.previous.url }}" class="pagination__link pagination__link--prev" aria-label="{{ 'collections.general.pagination_previous' | t }}">{% render 'icon', name: 'chevron-right' %}</a>
+            {%- endif -%}
+            {%- for part in paginate.parts -%}
+              {%- if part.is_link -%}
+                <a href="{{ part.url }}" class="pagination__link">{{ part.title }}</a>
+              {%- else -%}
+                <span class="pagination__link{% if part.title == paginate.current_page %} pagination__link--current{% endif %}" {% if part.title == paginate.current_page %}aria-current="page"{% endif %}>{{ part.title }}</span>
+              {%- endif -%}
+            {%- endfor -%}
+            {%- if paginate.next -%}
+              <a href="{{ paginate.next.url }}" class="pagination__link" aria-label="{{ 'collections.general.pagination_next' | t }}">{% render 'icon', name: 'chevron-right' %}</a>
+            {%- endif -%}
+          </nav>
+        {%- endif -%}
+      {%- else -%}
+        <p class="blog-listing__empty">{{ 'blogs.general.no_articles' | t }}</p>
+      {%- endif -%}
+    {%- endpaginate -%}
+  </div>
+</section>
+
+{% stylesheet %}
+.blog-listing__breadcrumb ol {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0 0 15px;
+  font-size: 14px;
+  color: #55636b;
+  list-style: none;
+}
+
+.blog-listing__breadcrumb li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.blog-listing__breadcrumb li:not(:last-child)::after {
+  content: '/';
+  color: #55636b;
+}
+
+.blog-listing__breadcrumb a {
+  color: #55636b;
+}
+
+.blog-listing__breadcrumb a:hover {
+  color: var(--color-secondary);
+}
+
+.blog-listing__breadcrumb li[aria-current='page'] {
+  color: var(--color-primary);
+}
+
+.blog-listing__title {
+  color: var(--color-primary);
+  margin: 0 0 32px;
+}
+
+.blog-listing__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 28px;
+}
+
+@media screen and (min-width: 750px) {
+  .blog-listing__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media screen and (min-width: 990px) {
+  .blog-listing__grid {
+    grid-template-columns: repeat(var(--blog-columns-desktop, 3), minmax(0, 1fr));
+  }
+}
+
+.blog-listing-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.blog-listing-card__media {
+  display: block;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border-radius: var(--radius-m);
+  background: var(--color-surface);
+}
+
+.blog-listing-card__media img,
+.blog-listing-card__media svg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.blog-listing-card__body {
+  padding-top: 16px;
+}
+
+.blog-listing-card__meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #7c8a90;
+  margin: 0 0 8px;
+}
+
+.blog-listing-card__title {
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.35;
+  margin: 0 0 10px;
+}
+
+.blog-listing-card__title a {
+  color: var(--color-primary);
+}
+
+.blog-listing-card__title a:hover {
+  color: var(--color-secondary);
+}
+
+.blog-listing-card__excerpt {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #55636b;
+  margin: 0 0 14px;
+}
+
+.blog-listing-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.blog-listing-card__link {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-secondary);
+  text-decoration: underline;
+}
+
+.blog-listing-card__comments {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #7c8a90;
+}
+
+.blog-listing-card__comments svg {
+  width: 15px;
+  height: 15px;
+}
+
+.blog-listing__empty {
+  color: var(--color-primary);
+  padding: 40px 0;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 40px;
+}
+
+.pagination__link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  height: 36px;
+  padding: 0 6px;
+  border-radius: var(--radius-s);
+  color: var(--color-primary);
+  font-size: 13px;
+}
+
+.pagination__link--current {
+  background: var(--color-secondary);
+  color: #fff;
+}
+
+.pagination__link--prev svg {
+  transform: scaleX(-1);
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Blog",
+  "class": "section",
+  "settings": [
+    {
+      "type": "select",
+      "id": "columns_desktop",
+      "label": "Columns on desktop",
+      "options": [
+        { "value": "2", "label": "2" },
+        { "value": "3", "label": "3" },
+        { "value": "4", "label": "4" }
+      ],
+      "default": "3"
+    },
+    {
+      "type": "range",
+      "id": "articles_per_page",
+      "label": "Articles per page",
+      "min": 3,
+      "max": 24,
+      "step": 1,
+      "default": 9
+    },
+    {
+      "type": "header",
+      "content": "Article card"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_image",
+      "label": "Show featured image",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_excerpt",
+      "label": "Show excerpt",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_date",
+      "label": "Show date",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_author",
+      "label": "Show author",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_comments",
+      "label": "Show comment count",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 60
+    }
+  ]
+}
+{% endschema %}

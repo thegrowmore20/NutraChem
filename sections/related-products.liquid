@@ -1,0 +1,144 @@
+{%- comment -%}
+  Product recommendations for the product page. `recommendations.performed`
+  is only populated when this section is re-rendered via the Section
+  Rendering API with `product_id` + `section_id` query params - so the
+  initial full-page load renders an empty shell, and `<product-recs>` below
+  lazy-fetches the real content once it scrolls into view (same mechanism
+  Dawn uses). Reuses the same `product-card` snippet as every other product
+  grid in the theme for visual consistency.
+{%- endcomment -%}
+
+<product-recs
+  class="related-products section-padding"
+  style="--padding-top: {{ section.settings.padding_top }}px; --padding-bottom: {{ section.settings.padding_bottom }}px; --related-columns-desktop: {{ section.settings.columns_desktop }};"
+  data-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&limit={{ section.settings.products_to_show }}"
+  data-product-id="{{ product.id }}"
+>
+  {%- if recommendations.performed and recommendations.products_count > 0 -%}
+    <div class="container">
+      {%- if section.settings.heading != blank -%}
+        <h2 class="section-heading">{{ section.settings.heading }}</h2>
+      {%- endif -%}
+      <div class="related-products__grid">
+        {%- for recommended_product in recommendations.products -%}
+          {% render 'product-card', product: recommended_product %}
+        {%- endfor -%}
+      </div>
+    </div>
+  {%- endif -%}
+</product-recs>
+
+{% stylesheet %}
+.related-products__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+@media screen and (min-width: 993px) {
+  .related-products__grid {
+    grid-template-columns: repeat(var(--related-columns-desktop, 4), minmax(0, 1fr));
+    gap: 20px;
+  }
+}
+{% endstylesheet %}
+
+{% javascript %}
+class ProductRecommendations extends HTMLElement {
+  #observer
+
+  connectedCallback() {
+    this.#observer = new IntersectionObserver(
+      (entries, observer) => {
+        if (!entries[0].isIntersecting) return
+        observer.unobserve(this)
+        this.#load()
+      },
+      { rootMargin: '0px 0px 400px 0px' }
+    )
+    this.#observer.observe(this)
+  }
+
+  async #load() {
+    try {
+      const response = await fetch(`${this.dataset.url}&product_id=${this.dataset.productId}`)
+      const text = await response.text()
+      const doc = new DOMParser().parseFromString(text, 'text/html')
+      const newContent = doc.querySelector('product-recs')
+      if (newContent && newContent.innerHTML.trim().length) {
+        this.innerHTML = newContent.innerHTML
+      }
+    } catch (error) {
+      console.error('Related products error:', error)
+    }
+  }
+}
+
+if (!customElements.get('product-recs')) {
+  customElements.define('product-recs', ProductRecommendations)
+}
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Related products",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "You may also like"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "label": "Products to show",
+      "min": 2,
+      "max": 8,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "select",
+      "id": "columns_desktop",
+      "label": "Columns on desktop",
+      "options": [
+        { "value": "2", "label": "2" },
+        { "value": "3", "label": "3" },
+        { "value": "4", "label": "4" },
+        { "value": "5", "label": "5" }
+      ],
+      "default": "4"
+    },
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    }
+  ],
+  "presets": [
+    {
+      "name": "Related products"
+    }
+  ]
+}
+{% endschema %}

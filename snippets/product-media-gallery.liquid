@@ -1,0 +1,122 @@
+{%- comment -%}
+  Renders the product media gallery: a main stage plus an optional thumbnail
+  strip. Thumbnail position (left/right/bottom) is applied via CSS classes on
+  the section's wrapper, set from section settings - this snippet stays
+  layout-agnostic so desktop/mobile positions can differ without duplicating
+  markup.
+
+  Also emits a variant-id -> media-id lookup script tag so product-info.js can
+  switch the active slide when the selected variant changes.
+
+  Accepts:
+  - product: {Object}
+  - section: {Object}
+
+  Usage:
+  {% render 'product-media-gallery', product: product, section: section %}
+{%- endcomment -%}
+
+{%- liquid
+  assign media_list = product.media
+  assign media_count = media_list.size
+-%}
+
+<product-gallery class="product-gallery" data-product-gallery>
+  <div class="product-gallery__stage" data-gallery-stage>
+    <div class="product-gallery__track" data-gallery-track>
+      {%- if media_count == 0 -%}
+        <div class="product-gallery__slide product-gallery__slide--active" data-gallery-slide data-media-id="0">
+          {{ 'product-1' | placeholder_svg_tag: 'product-gallery__placeholder' }}
+        </div>
+      {%- else -%}
+        {%- for media in media_list -%}
+          {%- liquid
+            assign media_loading = 'lazy'
+            assign media_fetchpriority = 'auto'
+            assign media_alt = media.alt | default: product.title
+            if forloop.first
+              assign media_loading = 'eager'
+              assign media_fetchpriority = 'high'
+            endif
+          -%}
+          <div
+            class="product-gallery__slide{% if forloop.first %} product-gallery__slide--active{% endif %}"
+            data-gallery-slide
+            data-media-id="{{ media.id }}"
+          >
+            {%- case media.media_type -%}
+              {%- when 'video', 'external_video' -%}
+                <div class="product-gallery__media-wrap">
+                  {{ media | media_tag: image_size: '1600x', controls: true }}
+                </div>
+              {%- when 'model' -%}
+                <div class="product-gallery__media-wrap">
+                  {{ media | media_tag: image_size: '1600x' }}
+                </div>
+              {%- else -%}
+                {{
+                  media.preview_image
+                  | image_url: width: 1600
+                  | image_tag:
+                    loading: media_loading,
+                    fetchpriority: media_fetchpriority,
+                    widths: '400, 600, 800, 1000, 1200, 1600',
+                    sizes: '(min-width: 990px) 50vw, 100vw',
+                    class: 'product-gallery__image',
+                    alt: media_alt,
+                    draggable: 'false'
+                }}
+            {%- endcase -%}
+          </div>
+        {%- endfor -%}
+      {%- endif -%}
+    </div>
+
+    {%- if media_count > 1 -%}
+      <button type="button" class="product-gallery__nav product-gallery__nav--prev" data-gallery-prev aria-label="{{ 'products.product.previous_image' | t }}">
+        {% render 'icon', name: 'chevron-right' %}
+      </button>
+      <button type="button" class="product-gallery__nav product-gallery__nav--next" data-gallery-next aria-label="{{ 'products.product.next_image' | t }}">
+        {% render 'icon', name: 'chevron-right' %}
+      </button>
+    {%- endif -%}
+  </div>
+
+  {%- if media_count > 1 -%}
+    <div class="product-gallery__thumbs" data-gallery-thumbs role="tablist" aria-label="{{ product.title | escape }}">
+      {%- for media in media_list -%}
+        <button
+          type="button"
+          class="product-gallery__thumb{% if forloop.first %} is-active{% endif %}"
+          data-gallery-thumb
+          data-media-id="{{ media.id }}"
+          role="tab"
+          aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+          aria-label="{{ 'products.product.view_gallery_image' | t: index: forloop.index, count: media_count }}"
+        >
+          {{
+            media.preview_image
+            | image_url: width: 160
+            | image_tag: loading: 'lazy', width: 80, height: 80, class: 'product-gallery__thumb-image', alt: ''
+          }}
+          {%- if media.media_type == 'video' or media.media_type == 'external_video' -%}
+            <span class="product-gallery__thumb-badge">{% render 'icon', name: 'play' %}</span>
+          {%- elsif media.media_type == 'model' -%}
+            <span class="product-gallery__thumb-badge">3D</span>
+          {%- endif -%}
+        </button>
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+
+  {%- if media_count > 0 -%}
+    <script type="application/json" data-variant-media>
+      {
+        {%- for variant in product.variants -%}
+          {%- assign v_media_id = variant.featured_media.id | default: 0 -%}
+          "{{ variant.id }}": {{ v_media_id }}{% unless forloop.last %},{% endunless %}
+        {%- endfor -%}
+      }
+    </script>
+  {%- endif -%}
+</product-gallery>

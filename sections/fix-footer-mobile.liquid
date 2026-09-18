@@ -1,0 +1,364 @@
+{%- if section.blocks.size > 0 and request.page_type != 'product' -%}
+  <nav class="mobile-bottom-nav" aria-label="{{ section.settings.aria_label | escape }}">
+    <ul class="mobile-bottom-nav__list" role="list">
+      {%- for block in section.blocks -%}
+        {%- liquid
+          assign item_url = block.settings.custom_link | default: block.settings.url
+          assign is_current = false
+          if item_url != blank and item_url == request.path
+            assign is_current = true
+          endif
+        -%}
+
+        <li class="mobile-bottom-nav__item" {{ block.shopify_attributes }}>
+          {%- case block.type -%}
+            {%- when 'link' -%}
+              <a
+                class="mobile-bottom-nav__link"
+                href="{{ item_url | default: routes.root_url }}"
+                {% if is_current %}aria-current="page"{% endif %}
+              >
+                <span class="mobile-bottom-nav__icon">
+                  {%- if block.settings.icon_image != blank -%}
+                    {{
+                      block.settings.icon_image
+                      | image_url: width: 84
+                      | image_tag:
+                        widths: '28, 56, 84',
+                        sizes: '28px',
+                        width: 28,
+                        height: 28,
+                        loading: 'lazy',
+                        alt: ''
+                    }}
+                  {%- elsif block.settings.icon_url != blank -%}
+                    <img
+                      src="{{ block.settings.icon_url }}"
+                      alt=""
+                      loading="lazy"
+                      width="28"
+                      height="28"
+                    >
+                  {%- else -%}
+                    {%- render 'icon', name: block.settings.icon -%}
+                  {%- endif -%}
+                </span>
+                <span class="mobile-bottom-nav__label">{{ block.settings.label | escape }}</span>
+              </a>
+
+            {%- when 'wishlist' -%}
+              <div class="mobile-bottom-nav__link">
+                <!-- Vensa Wishlist icon. The app binds the click and the counter. -->
+                <button type="button" class="vensa-wl-header-btn mobile-bottom-nav__icon" aria-label="Open wishlist">
+                  <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" preserveAspectRatio="xMidYMid meet">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="none" stroke="currentColor" stroke-width="1.8"/>
+                  </svg>
+                  <span class="vensa-wl-badge" hidden>0</span>
+                </button>
+                <span class="mobile-bottom-nav__label">{{ block.settings.label | escape }}</span>
+              </div>
+
+            {%- when 'account' -%}
+              {%- if shop.customer_accounts_enabled -%}
+                <div class="mobile-bottom-nav__link">
+                  <span class="mobile-bottom-nav__icon mobile-bottom-nav__account-slot">
+                    <shopify-account class="mobile-bottom-nav__account" menu="{{ settings.customer_account_menu | default: 'customer-account-main-menu' }}">
+                      <span slot="signed-out-avatar">{% render 'icon', name: 'account' %}</span>
+                    </shopify-account>
+                  </span>
+                  <span class="mobile-bottom-nav__label">{{ block.settings.label | escape }}</span>
+                </div>
+              {%- else -%}
+                <a class="mobile-bottom-nav__link" href="{{ routes.account_url }}">
+                  <span class="mobile-bottom-nav__icon">{% render 'icon', name: 'account' %}</span>
+                  <span class="mobile-bottom-nav__label">{{ block.settings.label | escape }}</span>
+                </a>
+              {%- endif -%}
+          {%- endcase -%}
+        </li>
+      {%- endfor -%}
+    </ul>
+  </nav>
+
+  <style>
+    :root {
+      --mobile-bottom-nav-height: {{ section.settings.height }}px;
+    }
+
+    #shopify-section-{{ section.id }} .mobile-bottom-nav {
+      --mobile-bottom-nav-background: {% if section.settings.background_color != blank %}{{ section.settings.background_color }}{% else %}var(--color-background){% endif %};
+      --mobile-bottom-nav-foreground: {% if section.settings.text_color != blank %}{{ section.settings.text_color }}{% else %}var(--color-primary){% endif %};
+
+      position: fixed;
+      inset: auto 0 0 0;
+      z-index: 400;
+      display: flex;
+      background-color: var(--mobile-bottom-nav-background);
+      color: var(--mobile-bottom-nav-foreground);
+      border-top: 1px solid rgba(0, 0, 0, 0.08);
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    #shopify-section-{{ section.id }} .mobile-bottom-nav__list {
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: 1fr;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    #shopify-section-{{ section.id }} .mobile-bottom-nav__link {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.25rem;
+      min-height: var(--mobile-bottom-nav-height);
+      padding: 0.375rem 0.25rem;
+      color: inherit;
+      text-decoration: none;
+    }
+
+    #shopify-section-{{ section.id }} .mobile-bottom-nav__icon,
+    #shopify-section-{{ section.id }} .mobile-bottom-nav__icon svg,
+    #shopify-section-{{ section.id }} .mobile-bottom-nav__icon img {
+      display: block;
+      width: 1.75rem;
+      height: 1.75rem;
+    }
+
+    #shopify-section-{{ section.id }} .mobile-bottom-nav__icon img {
+      object-fit: contain;
+    }
+
+    #shopify-section-{{ section.id }} .mobile-bottom-nav__label {
+      font-family: var(--font-body);
+      font-size: 0.6875rem;
+      line-height: 1;
+      text-align: center;
+    }
+
+    #shopify-section-{{ section.id }} .mobile-bottom-nav__link[aria-current='page'] {
+      opacity: 0.55;
+    }
+
+    #shopify-section-{{ section.id }} .mobile-bottom-nav__account-slot {
+      position: relative;
+    }
+
+    #shopify-section-{{ section.id }} .mobile-bottom-nav__account {
+      --shopify-account-color-background: var(--color-background);
+      --shopify-account-color-accent: var(--button-primary, var(--color-secondary));
+      --shopify-account-color-text: var(--color-primary);
+      --shopify-account-radius-base: var(--radius-m);
+      position: absolute;
+      inset: 0;
+      margin: auto;
+      width: fit-content;
+      height: fit-content;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      border: 0;
+      background: none;
+      cursor: pointer;
+    }
+
+    #shopify-section-{{ section.id }} .vensa-wl-header-btn.mobile-bottom-nav__icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      padding: 0;
+      border: none;
+      background: none;
+      color: inherit;
+      cursor: pointer;
+    }
+
+    @media (min-width: 990px) {
+      #shopify-section-{{ section.id }} {
+        display: none;
+      }
+    }
+
+    @media (max-width: 989px) {
+      body {
+        padding-bottom: calc(var(--mobile-bottom-nav-height) + env(safe-area-inset-bottom, 0px));
+      }
+
+      .sticky-add-to-cart-wrapper {
+        bottom: calc(var(--mobile-bottom-nav-height) + env(safe-area-inset-bottom, 0px));
+      }
+    }
+
+    @media screen and (min-width: 601px) and (max-width: 989px) {
+      #appstle-loyalty-button.appstle-loyalty-button {
+        bottom: 68px !important;
+      }
+    }
+  </style>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Mobile Bottom Nav",
+  "tag": "section",
+  "class": "section-mobile-bottom-nav",
+  "max_blocks": 5,
+  "settings": [
+    {
+      "type": "text",
+      "id": "aria_label",
+      "label": "Accessible label",
+      "default": "Quick links",
+      "info": "Read by screen readers to describe this navigation bar."
+    },
+    {
+      "type": "range",
+      "id": "height",
+      "label": "Bar height",
+      "min": 48,
+      "max": 72,
+      "step": 1,
+      "unit": "px",
+      "default": 56
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "info": "Leave empty to use the theme background color."
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text and icons",
+      "info": "Leave empty to use the theme text color."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "link",
+      "name": "Link",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Home"
+        },
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "store", "label": "Store" },
+            { "value": "tag", "label": "Tag" },
+            { "value": "package", "label": "Package" },
+            { "value": "shopping-cart", "label": "Shopping cart" },
+            { "value": "gift", "label": "Gift" },
+            { "value": "percent", "label": "Percent" },
+            { "value": "heart", "label": "Heart" },
+            { "value": "star", "label": "Star" },
+            { "value": "mail", "label": "Mail" },
+            { "value": "phone", "label": "Phone" },
+            { "value": "message-chat-circle", "label": "Chat" },
+            { "value": "marker-pin", "label": "Location pin" },
+            { "value": "truck", "label": "Truck" },
+            { "value": "user", "label": "User" }
+          ],
+          "default": "store"
+        },
+        {
+          "type": "url",
+          "id": "url",
+          "label": "Link"
+        },
+        {
+          "type": "text",
+          "id": "custom_link",
+          "label": "Custom link",
+          "info": "Overrides the link above. Use for mailto: or tel: links."
+        },
+        {
+          "type": "image_picker",
+          "id": "icon_image",
+          "label": "Icon image",
+          "info": "Overrides the icon above. Upload to Content → Files."
+        },
+        {
+          "type": "text",
+          "id": "icon_url",
+          "label": "Icon image URL",
+          "info": "Used only when no icon image is selected."
+        }
+      ]
+    },
+    {
+      "type": "wishlist",
+      "name": "Wishlist",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "Renders the Vensa Wishlist button directly in the bar; the app binds its click and counter behavior to any matching button on the page."
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Wishlist"
+        }
+      ]
+    },
+    {
+      "type": "account",
+      "name": "Account",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "Opens the Shopify account popup on stores with new customer accounts enabled, or links to /account otherwise."
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Account"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Mobile Bottom Nav",
+      "blocks": [
+        {
+          "type": "link",
+          "settings": { "label": "Home", "icon": "store", "url": "/" }
+        },
+        {
+          "type": "link",
+          "settings": { "label": "Products", "icon": "tag", "url": "/collections/all" }
+        },
+        {
+          "type": "link",
+          "settings": { "label": "Email us", "icon": "mail", "custom_link": "mailto:support@airvape.eu" }
+        },
+        {
+          "type": "wishlist",
+          "settings": { "label": "Wishlist" }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

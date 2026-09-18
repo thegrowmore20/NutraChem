@@ -1,0 +1,115 @@
+{%- comment -%}
+  Generic embed section (Google Maps, chat widgets, third-party iframes) -
+  renders the given code as-is via a `html`-type setting, which is Shopify's
+  built-in mechanism for exactly this (raw embed codes, not Liquid-escaped).
+{%- endcomment -%}
+
+<section
+  class="custom-embed-section section-padding"
+  style="--padding-top: {{ section.settings.padding_top }}px; --padding-bottom: {{ section.settings.padding_bottom }}px;"
+>
+  {%- if section.settings.heading != blank -%}
+    <div class="container">
+      <h2 class="custom-embed-section__heading h2">{{ section.settings.heading }}</h2>
+    </div>
+  {%- endif -%}
+
+  {%- if section.settings.embed_code != blank -%}
+    {%- if section.settings.full_width -%}
+      <div class="custom-embed-section__embed">{{ section.settings.embed_code }}</div>
+    {%- else -%}
+      <div class="container">
+        <div class="custom-embed-section__embed">{{ section.settings.embed_code }}</div>
+      </div>
+    {%- endif -%}
+  {%- endif -%}
+  {%- if section.blocks.size > 0 -%}
+    <div class="custom-embed-section__apps{% unless section.settings.full_width %} container{% endunless %}">
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when '@app' -%}
+            {% render block %}
+        {%- endcase -%}
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+</section>
+
+{% stylesheet %}
+.custom-embed-section__heading {
+  margin: 0 0 24px;
+  text-align: center;
+  color: var(--color-primary);
+}
+
+.custom-embed-section__embed {
+  line-height: 0;
+}
+
+.custom-embed-section__embed iframe {
+  width: 100%;
+  border: 0;
+  display: block;
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Custom section",
+  "class": "section",
+  "blocks": [
+    {
+      "type": "@app"
+    }
+  ],
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "info": "Optional - leave blank to hide."
+    },
+    {
+      "type": "checkbox",
+      "id": "full_width",
+      "label": "Full width (edge to edge)",
+      "default": true
+    },
+    {
+      "type": "html",
+      "id": "embed_code",
+      "label": "Embed code",
+      "info": "Paste an iframe or other embed code, e.g. a Google Maps embed."
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom section"
+    }
+  ]
+}
+{% endschema %}

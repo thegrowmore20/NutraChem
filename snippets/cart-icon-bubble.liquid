@@ -1,0 +1,6 @@
+{%- comment -%}
+  Renders the small item-count badge on the header cart icon.
+  Re-rendered server-side and swapped client-side after every cart mutation
+  (see the `cart:updated` listener in sections/header.liquid).
+{%- endcomment -%}
+<span id="CartIconBubble" class="cart-icon-bubble"{% if cart.item_count == 0 %} hidden{% endif %}>{{ cart.item_count }}</span>

@@ -1,0 +1,157 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin language editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "general": {
+    "search": {
+      "placeholder": "Search",
+      "submit": "Search",
+      "clear": "Clear search",
+      "no_results": "No results for \"{{ terms }}\"",
+      "results_for": "Results for \"{{ terms }}\"",
+      "enter_a_search_term": "Enter a search term above to find products"
+    },
+    "cart": {
+      "title": "Cart",
+      "subtotal": "Subtotal",
+      "checkout": "Checkout",
+      "quantity": "Quantity",
+      "decrease_quantity": "Decrease quantity",
+      "increase_quantity": "Increase quantity",
+      "remove": "Remove {{ title }}",
+      "remove_label": "Remove",
+      "empty_heading": "Your cart is empty",
+      "empty_cta": "Continue shopping",
+      "update": "Update Cart",
+      "product": "Product",
+      "price": "Price",
+      "total": "Total"
+    },
+    "accessibility": {
+      "close": "Close"
+    },
+    "navigation": {
+      "view_all": "View all",
+      "home": "Home"
+    },
+    "continue_shopping": "Continue shopping",
+    "password_page": {
+      "opening_soon": "Opening soon",
+      "login_form_heading": "Enter using password",
+      "login_form_password_placeholder": "Password",
+      "login_form_error": "Wrong password!",
+      "login_form_submit": "Enter"
+    }
+  },
+  "templates": {
+    "404": {
+      "title": "Page not found",
+      "subtext": "The link may be incorrect, or the page has been removed."
+    }
+  },
+  "products": {
+    "product": {
+      "add_to_cart": "Add to Cart",
+      "sale": "Save {{ percentage }}%",
+      "sale_amount": "Save {{ amount }}",
+      "reviews": "{{ count }} Reviews",
+      "sold_out": "Sold out",
+      "unavailable": "Unavailable",
+      "join_waitlist": "Join Waitlist",
+      "share": "Share",
+      "share_copied": "Link copied to clipboard",
+      "select_option": "Select {{ option }}",
+      "inventory_error": "Only {{ quantity }} items are available. Please reduce the quantity.",
+      "quantity_min_error": "Minimum order quantity is {{ min }}.",
+      "quantity_max_error": "Maximum order quantity is {{ max }}.",
+      "quantity_increment_error": "Quantity must be a multiple of {{ increment }}.",
+      "cart_error": "Something went wrong, please try again.",
+      "view_gallery_image": "View image {{ index }} of {{ count }}",
+      "previous_image": "Previous image",
+      "next_image": "Next image"
+    },
+    "facets": {
+      "filter_button": "Filter",
+      "sort_button": "Sort",
+      "filter_and_sort": "Filter and sort",
+      "filter_by_label": "Filter",
+      "sort_by_label": "Sort by",
+      "reset": "Reset",
+      "apply": "Apply",
+      "clear": "Clear",
+      "clear_all": "Clear all",
+      "remove": "Remove filter",
+      "from": "From",
+      "to": "To",
+      "max_price": "The highest price is {{ price }}",
+      "product_count_simple": {
+        "one": "{{ count }} product",
+        "other": "{{ count }} products"
+      },
+      "product_count": "{{ product_count }} of {{ count }} products"
+    }
+  },
+  "sections": {
+    "contact": {
+      "form": {
+        "first_name": "First name",
+        "last_name": "Last name",
+        "email": "Email",
+        "phone": "Phone",
+        "message": "Message",
+        "send": "Submit",
+        "post_success": "Thanks for contacting us. We'll get back to you as soon as possible.",
+        "error_heading": "Please adjust the following:"
+      }
+    },
+    "youtube_reels": {
+      "play": "Play video",
+      "video_player": "Video player"
+    }
+  },
+  "blogs": {
+    "general": {
+      "no_articles": "No articles have been published yet."
+    },
+    "article": {
+      "read_more": "Read more",
+      "comments": {
+        "one": "{{ count }} comment",
+        "other": "{{ count }} comments"
+      },
+      "back_to_blog": "Back to {{ title }}",
+      "share": "Share",
+      "comment_form_title": "Leave a comment",
+      "name": "Name",
+      "email": "Email",
+      "message": "Message",
+      "post": "Post comment",
+      "success": "Your comment was posted successfully. Thank you!",
+      "success_moderated": "Your comment was posted successfully. We'll publish it once it's approved.",
+      "moderated": "Comments must be approved before they appear."
+    }
+  },
+  "collections": {
+    "general": {
+      "title": "Collection",
+      "empty": "No products found",
+      "use_fewer_filters_html": "Try removing some filters or <a href=\"{{ link }}\" class=\"{{ class }}\">clear all</a>",
+      "remove": "Remove",
+      "clear_all": "Clear all",
+      "pagination_previous": "Previous page",
+      "pagination_next": "Next page"
+    }
+  },
+  "newsletter": {
+    "placeholder": "Email Address",
+    "subscribe": "Subscribe",
+    "success": "Thanks for subscribing!",
+    "error": "Something went wrong, please try again."
+  }
+}

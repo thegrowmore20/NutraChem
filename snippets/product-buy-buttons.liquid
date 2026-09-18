@@ -1,0 +1,86 @@
+{%- comment -%}
+  Renders quantity selector + Add to Cart + dynamic checkout + Join Waitlist.
+  Must be rendered inside a {% form 'product', product %}...{% endform %}
+  block so `form` resolves and `{{ form | payment_button }}` works.
+
+  Layout (spec): [ -qty+ ] [ Add to Cart ]  /  [ Dynamic Checkout ] on its own
+  row below. When the current variant is unavailable, the dynamic checkout
+  wrapper is hidden and a full-width Join Waitlist button takes its place.
+
+  Accepts:
+  - product, current_variant, section, form, block (block.settings)
+
+  Usage:
+  {% render 'product-buy-buttons', product: product, current_variant: current_variant, section: section, form: form, block: block %}
+{%- endcomment -%}
+
+{%- liquid
+  assign qty_rule = current_variant.quantity_rule
+  assign qty_min = qty_rule.min | default: 1
+  assign qty_increment = qty_rule.increment | default: 1
+  assign qty_max = qty_rule.max
+  assign is_available = current_variant.available
+  assign show_qty = block.settings.show_quantity_selector
+  assign button_style = block.settings.button_style | default: 'accent'
+  assign waitlist_style = block.settings.waitlist_style | default: 'dark'
+-%}
+
+<div class="product-buy-box" data-buy-box data-qty-min="{{ qty_min }}" data-qty-increment="{{ qty_increment }}" {% if qty_max %}data-qty-max="{{ qty_max }}"{% endif %}>
+  <div class="product-buy-box__row">
+    {%- if show_qty -%}
+      <div class="quantity-selector" data-quantity-selector>
+        <button type="button" class="quantity-selector__btn" data-quantity-decrease aria-label="{{ 'general.cart.decrease_quantity' | t }}">&minus;</button>
+        <input
+          type="number"
+          class="quantity-selector__input"
+          name="quantity"
+          data-quantity-input
+          value="{{ qty_min }}"
+          min="{{ qty_min }}"
+          {% if qty_max %}max="{{ qty_max }}"{% endif %}
+          step="{{ qty_increment }}"
+          inputmode="numeric"
+          aria-label="{{ 'general.cart.quantity' | t }}"
+        >
+        <button type="button" class="quantity-selector__btn" data-quantity-increase aria-label="{{ 'general.cart.increase_quantity' | t }}">+</button>
+      </div>
+    {%- endif -%}
+
+    <button
+      type="submit"
+      class="button button--{{ button_style }} product-buy-box__submit"
+      data-add-to-cart
+      data-label-available="{{ 'products.product.add_to_cart' | t }}"
+      data-label-unavailable="{{ 'products.product.sold_out' | t }}"
+      {% unless is_available %}disabled{% endunless %}
+    >
+      <span data-add-to-cart-text>
+        {%- if is_available -%}{{ 'products.product.add_to_cart' | t }}{%- else -%}{{ 'products.product.sold_out' | t }}{%- endif -%}
+      </span>
+    </button>
+  </div>
+
+  <div class="product-buy-box__error" data-cart-error role="alert" aria-live="assertive" hidden></div>
+
+  {%- if block.settings.show_dynamic_checkout -%}
+    <div class="product-buy-box__payment" data-payment-button {% unless is_available %}hidden{% endunless %}>
+      {{ form | payment_button }}
+    </div>
+  {%- endif -%}
+
+  {%- if block.settings.enable_waitlist -%}
+    <button
+      type="button"
+      class="button button--{{ waitlist_style }} product-buy-box__waitlist"
+      data-waitlist-button
+      id="ProductWaitlist-{{ section.id }}"
+      {% if is_available %}hidden{% endif %}
+    >
+      {%- if block.settings.waitlist_text != blank -%}
+        {{ block.settings.waitlist_text }}
+      {%- else -%}
+        {{ 'products.product.join_waitlist' | t }}
+      {%- endif -%}
+    </button>
+  {%- endif -%}
+</div>

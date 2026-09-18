@@ -1,0 +1,214 @@
+{%- comment -%}
+  About page mission block: a pull-quote, a heading/description, and up to
+  3 icon features (icon rendered as an emoji/text glyph, matching the
+  scraped source content, so merchants can swap it in the theme editor
+  without needing a new icon asset).
+{%- endcomment -%}
+
+<section
+  id="mission"
+  class="about-mission section-padding"
+  style="--padding-top: {{ section.settings.padding_top }}px; --padding-bottom: {{ section.settings.padding_bottom }}px;"
+>
+  <div class="container">
+    {%- if section.settings.quote != blank -%}
+      <div class="about-mission__quote-block">
+        <div class="about-mission__quote">{{ section.settings.quote }}</div>
+        {%- if section.settings.quote_attribution != blank -%}
+          <p class="about-mission__quote-attribution">{{ section.settings.quote_attribution }}</p>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    <div class="about-mission__intro">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="about-mission__eyebrow">{{ section.settings.eyebrow }}</p>
+      {%- endif -%}
+      {%- if section.settings.heading != blank -%}
+        <h2 class="about-mission__heading h2">{{ section.settings.heading }}</h2>
+      {%- endif -%}
+      {%- if section.settings.description != blank -%}
+        <div class="about-mission__description">{{ section.settings.description }}</div>
+      {%- endif -%}
+    </div>
+
+    {%- if section.blocks.size > 0 -%}
+      <div class="about-mission__features">
+        {%- for block in section.blocks -%}
+          <div class="about-mission__feature" {{ block.shopify_attributes }}>
+            {%- if block.settings.icon != blank -%}
+              <span class="about-mission__feature-icon" aria-hidden="true">{{ block.settings.icon }}</span>
+            {%- endif -%}
+            {%- if block.settings.heading != blank -%}
+              <p class="about-mission__feature-heading">{{ block.settings.heading }}</p>
+            {%- endif -%}
+            {%- if block.settings.text != blank -%}
+              <p class="about-mission__feature-text">{{ block.settings.text }}</p>
+            {%- endif -%}
+          </div>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% stylesheet %}
+.about-mission__quote-block {
+  text-align: center;
+  max-width: 640px;
+  margin: 0 auto 48px;
+}
+
+.about-mission__quote {
+  font-family: var(--font-heading);
+  font-size: clamp(22px, 18px + 1.5vw, 32px);
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--color-primary);
+  margin: 0 0 12px;
+}
+
+.about-mission__quote p {
+  margin: 0;
+}
+
+.about-mission__quote p::before,
+.about-mission__quote p::after {
+  content: '"';
+  color: var(--color-secondary);
+}
+
+.about-mission__quote-attribution {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #7c8a90;
+  margin: 0;
+}
+
+.about-mission__intro {
+  text-align: center;
+  max-width: 640px;
+  margin: 0 auto 48px;
+}
+
+.about-mission__eyebrow {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-secondary);
+  margin: 0 0 12px;
+}
+
+.about-mission__heading {
+  color: var(--color-primary);
+  margin: 0 0 16px;
+}
+
+.about-mission__description {
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--color-text);
+}
+
+.about-mission__description p {
+  margin: 0 0 12px;
+}
+
+.about-mission__description p:last-child {
+  margin-bottom: 0;
+}
+
+.about-mission__features {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+@media screen and (min-width: 750px) {
+  .about-mission__features {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.about-mission__feature {
+  text-align: center;
+  padding: 24px;
+  border-radius: var(--radius-m);
+  background: var(--color-surface);
+}
+
+.about-mission__feature-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  font-size: 22px;
+  border-radius: 50%;
+  background: var(--color-background);
+  margin-bottom: 14px;
+}
+
+.about-mission__feature-heading {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-primary);
+  margin: 0 0 6px;
+}
+
+.about-mission__feature-text {
+  font-size: 13px;
+  line-height: 1.6;
+  color: #55636b;
+  margin: 0;
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "About mission",
+  "class": "section",
+  "settings": [
+    { "type": "richtext", "id": "quote", "label": "Quote", "default": "<p>We believe in results, not marketing promises.</p>" },
+    { "type": "text", "id": "quote_attribution", "label": "Quote attribution", "default": "Formulated by industry specialists" },
+    { "type": "header", "content": "Intro" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Our Mission" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Built to Perform" },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description",
+      "default": "<p>Every ingredient we use has been selected for one reason: clinical proof of efficacy. We work directly with dermatologists, biochemists, and researchers at leading institutions.</p><p>Our formulations are never diluted for cost, never padded with filler. Every concentration is set at the level shown to produce measurable results in peer-reviewed studies.</p>"
+    },
+    { "type": "header", "content": "Padding" },
+    { "type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 60 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 60 }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature",
+      "settings": [
+        { "type": "text", "id": "icon", "label": "Icon (emoji)", "default": "🔬" },
+        { "type": "text", "id": "heading", "label": "Heading", "default": "Lab Tested" },
+        { "type": "text", "id": "text", "label": "Text", "default": "Every product is checked for safety." }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "About mission",
+      "blocks": [
+        { "type": "feature", "settings": { "icon": "🔬", "heading": "Lab Tested", "text": "Every product is checked for safety." } },
+        { "type": "feature", "settings": { "icon": "💧", "heading": "High Potency", "text": "We use strong, active ingredients that actually work." } },
+        { "type": "feature", "settings": { "icon": "🌿", "heading": "Cruelty Free", "text": "100% natural extracts. No animal testing." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

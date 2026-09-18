@@ -1,0 +1,165 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "NutraChem",
+    "theme_version": "0.1.0",
+    "theme_author": "GrowMore Agency",
+    "theme_documentation_url": "https://support.shopify.com/",
+    "theme_support_url": "https://support.shopify.com/"
+  },
+  {
+    "name": "Favicon",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "favicon",
+        "label": "Favicon image",
+        "info": "Displayed at 32 x 32px"
+      }
+    ]
+  },
+  {
+    "name": "Fonts",
+    "settings": [
+      {
+        "type": "font_picker",
+        "id": "font_heading",
+        "label": "Heading font",
+        "default": "playfair_display_n4"
+      },
+      {
+        "type": "font_picker",
+        "id": "font_body",
+        "label": "Body font",
+        "default": "poppins_n4"
+      }
+    ]
+  },
+  {
+    "name": "Buttons",
+    "settings": [
+      {
+        "type": "color",
+        "id": "button_primary_color",
+        "label": "Primary button color",
+        "default": "#008FA3"
+      },
+      {
+        "type": "color",
+        "id": "button_secondary_color",
+        "label": "Secondary button color",
+        "default": "#153342"
+      }
+    ]
+  },
+  {
+    "name": "Cart",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "show_free_shipping_bar",
+        "label": "Show free shipping progress bar in cart",
+        "default": true
+      },
+      {
+        "type": "number",
+        "id": "free_shipping_threshold",
+        "label": "Free shipping threshold",
+        "default": 500,
+        "info": "Amount in your store's currency, e.g. 75 for $75.00"
+      },
+      {
+        "type": "text",
+        "id": "free_shipping_message_before",
+        "label": "Message before threshold is reached",
+        "default": "Spend [amount] more for free shipping!",
+        "info": "[amount] is replaced with the remaining amount"
+      },
+      {
+        "type": "text",
+        "id": "free_shipping_message_after",
+        "label": "Message once threshold is reached",
+        "default": "You've unlocked free shipping!"
+      },
+      {
+        "type": "color",
+        "id": "free_shipping_bar_fill_color",
+        "label": "Progress bar fill color",
+        "default": "#008FA3"
+      },
+      {
+        "type": "color",
+        "id": "free_shipping_bar_track_color",
+        "label": "Progress bar track color",
+        "default": "#E7EEF2"
+      },
+      {
+        "type": "url",
+        "id": "cart_empty_button_link",
+        "label": "Empty cart button link",
+        "info": "Defaults to all products if left blank"
+      },
+      {
+        "type": "textarea",
+        "id": "free_shipping_markets",
+        "label": "Show free-shipping bar only in these markets",
+        "info": "One market handle per line. Takes priority over the country list below — when this is filled in, the country list is ignored. Leave both blank to show the bar everywhere."
+      },
+      {
+        "type": "textarea",
+        "id": "free_shipping_countries",
+        "label": "Show free-shipping bar only in these countries",
+        "info": "One ISO country code per line (e.g. US, GB, CA). Only used when the market list above is blank. Leave both blank to show the bar in all countries. Use GB for the United Kingdom (UK is auto-mapped to GB)."
+      }
+    ]
+  },
+  {
+    "name": "Colors",
+    "settings": [
+      {
+        "type": "color",
+        "id": "color_primary",
+        "label": "Primary color",
+        "info": "Used for headings and sold out badges",
+        "default": "#18252B"
+      },
+      {
+        "type": "color",
+        "id": "color_secondary",
+        "label": "Secondary color",
+        "info": "Used for primary buttons and sale badges",
+        "default": "#008FA3"
+      },
+      {
+        "type": "color",
+        "id": "color_dark",
+        "label": "Dark color",
+        "default": "#153342"
+      },
+      {
+        "type": "color",
+        "id": "color_surface",
+        "label": "Surface color",
+        "default": "#E7EEF2"
+      },
+      {
+        "type": "color",
+        "id": "color_background",
+        "label": "Background color",
+        "default": "#FFFFFF"
+      },
+      {
+        "type": "color",
+        "id": "color_text",
+        "label": "Text color",
+        "default": "#18252B"
+      },
+      {
+        "type": "color",
+        "id": "color_star",
+        "label": "Star rating color",
+        "default": "#F2A93B"
+      }
+    ]
+  }
+]

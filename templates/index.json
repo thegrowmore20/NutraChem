@@ -1,0 +1,223 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "hero": {
+      "type": "hero-banner",
+      "settings": {
+        "image": "shopify://shop_images/Banner.webp",
+        "height": "full",
+        "custom_height": 640,
+        "content_position_x": "left",
+        "content_position_y": "center",
+        "content_position_x_mobile": "center",
+        "content_position_y_mobile": "center",
+        "heading": "Where Beauty Begins with care",
+        "heading_color": "#008fa3",
+        "heading_size": "h0",
+        "text": "<p>We combine natural extracts with clinical research to give you skin results you can actually see. No fillers, just pure potency.</p>",
+        "button_label": "Shop Now",
+        "button_link": "/collections/all"
+      }
+    },
+    "best-sellers": {
+      "type": "featured-collection",
+      "settings": {
+        "heading": "BEST SELLERS",
+        "collection": "best-sellers",
+        "products_to_show": 4,
+        "padding_top": 80,
+        "padding_bottom": 40
+      }
+    },
+    "shop-by-concern": {
+      "type": "collection-list",
+      "blocks": {
+        "c1": {
+          "type": "collection",
+          "settings": {
+            "product": "hydrating-mineral-sunscreen",
+            "image": "shopify://shop_images/sunblock_5a0f8b71-f91e-4f92-b78b-c6017525a780.webp",
+            "title": "Sunblock"
+          }
+        },
+        "c2": {
+          "type": "collection",
+          "settings": {
+            "product": "skin-brightening-serum",
+            "image": "shopify://shop_images/serm.webp",
+            "title": "Serum"
+          }
+        },
+        "c3": {
+          "type": "collection",
+          "settings": {
+            "product": "hair-serum",
+            "image": "shopify://shop_images/hair_seum.webp",
+            "title": "Hair Serum"
+          }
+        },
+        "c4": {
+          "type": "collection",
+          "settings": {
+            "product": "gluta-care",
+            "image": "shopify://shop_images/facewash_fc9bbb7b-f227-4e33-b402-f04fdbe3f63a.webp",
+            "title": "Facewash"
+          }
+        },
+        "c5": {
+          "type": "collection",
+          "settings": {
+            "product": "skin-brightening-cream-gluta-glow",
+            "image": "shopify://shop_images/brightening.webp",
+            "title": "Brighting Cream"
+          }
+        }
+      },
+      "block_order": [
+        "c1",
+        "c2",
+        "c3",
+        "c4",
+        "c5"
+      ],
+      "settings": {
+        "heading": "Shop by Concern",
+        "columns_desktop": 5,
+        "padding_top": 40,
+        "padding_bottom": 40
+      }
+    },
+    "ingredients": {
+      "type": "features-with-image",
+      "blocks": {
+        "f1": {
+          "type": "feature",
+          "settings": {
+            "image": "shopify://shop_images/Glutathione.svg",
+            "title": "Glutathione",
+            "text": "Brightens skin tone and enhances natural glow."
+          }
+        },
+        "f2": {
+          "type": "feature",
+          "settings": {
+            "image": "shopify://shop_images/Vitamin_C.svg",
+            "title": "Vitamin C 20%",
+            "text": "Brightens skin tone and enhances natural glow."
+          }
+        },
+        "f3": {
+          "type": "feature",
+          "settings": {
+            "image": "shopify://shop_images/Hyaluronic_Acid.svg",
+            "title": "Hyaluronic Acid",
+            "text": "Brightens skin & fades dark spots."
+          }
+        },
+        "f4": {
+          "type": "feature",
+          "settings": {
+            "image": "shopify://shop_images/Niacinamide.svg",
+            "title": "Niacinamide 10%",
+            "text": "Clears pores & controls oil."
+          }
+        }
+      },
+      "block_order": [
+        "f1",
+        "f2",
+        "f3",
+        "f4"
+      ],
+      "settings": {
+        "heading": "Pure Ingredients. Proven Science.",
+        "padding_top": 40,
+        "padding_bottom": 40
+      }
+    },
+    "custom_section_dHGKA6": {
+      "type": "custom-section",
+      "name": "Custom Section",
+      "settings": {
+        "heading": "Follow Us on Instagram",
+        "full_width": true,
+        "embed_code": "",
+        "padding_top": 40,
+        "padding_bottom": 40
+      }
+    },
+    "custom_section_LCMcUH": {
+      "type": "custom-section",
+      "name": "Custom Section",
+      "settings": {
+        "heading": "See what our customers said",
+        "full_width": true,
+        "embed_code": "",
+        "padding_top": 40,
+        "padding_bottom": 40
+      }
+    },
+    "real-results": {
+      "type": "split-banner",
+      "settings": {
+        "width": "container",
+        "layout": "image_left",
+        "style": "accent",
+        "image": "shopify://shop_images/Real_Result_Before.webp",
+        "image_2": "shopify://shop_images/Real_Result_After.webp",
+        "heading": "Real Results. Proven By Science.",
+        "subheading": "",
+        "text": "<p>We dont guess—we prove. All NutraChem products are independently tested to ensure they actually work. Every claim we make is backed by real research.</p>",
+        "button_label": "Read More",
+        "button_link": "/pages/about-us",
+        "padding_top": 0,
+        "padding_bottom": 40
+      }
+    },
+    "curated-for-you": {
+      "type": "featured-collection",
+      "settings": {
+        "heading": "Curated for Every Skin",
+        "collection": "face-wash",
+        "products_to_show": 4,
+        "padding_top": 40,
+        "padding_bottom": 40
+      }
+    },
+    "blogs": {
+      "type": "blog-posts",
+      "settings": {
+        "heading": "Blogs",
+        "blog": "news",
+        "columns_desktop": "3",
+        "articles_count": 3,
+        "show_image": true,
+        "show_excerpt": true,
+        "show_date": true,
+        "show_author": false,
+        "show_comments": false,
+        "padding_top": 40,
+        "padding_bottom": 80
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "best-sellers",
+    "shop-by-concern",
+    "ingredients",
+    "custom_section_dHGKA6",
+    "custom_section_LCMcUH",
+    "real-results",
+    "curated-for-you",
+    "blogs"
+  ]
+}

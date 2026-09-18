@@ -1,0 +1,125 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "current": {
+    "favicon": "shopify://shop_images/Png_white_1.png",
+    "font_heading": "playfair_display_n4",
+    "font_body": "poppins_n4",
+    "show_free_shipping_bar": false,
+    "color_primary": "#18252B",
+    "color_secondary": "#008FA3",
+    "color_dark": "#153342",
+    "color_surface": "#E7EEF2",
+    "color_background": "#FFFFFF",
+    "color_text": "#18252B",
+    "color_star": "#F2A93B",
+    "sections": {
+      "header": {
+        "type": "header",
+        "settings": {
+          "logo": "shopify://shop_images/NutraChem_Logo.webp",
+          "brand_name": "",
+          "brand_subtitle": "",
+          "menu": "header-menu"
+        }
+      },
+      "footer": {
+        "type": "footer",
+        "settings": {
+          "logo": "shopify://shop_images/footer_logo.webp",
+          "background_image": "shopify://shop_images/footer_background.webp",
+          "facebook": "https://www.facebook.com/p/Nutra-Chem-61587738555299/",
+          "instagram": "https://www.instagram.com/nutrachem.official/",
+          "tiktok": "https://www.tiktok.com/@nutrachem.official",
+          "youtube": "",
+          "pages_menu": "",
+          "help_menu": ""
+        }
+      },
+      "cart-drawer": {
+        "type": "cart-drawer",
+        "settings": {}
+      },
+      "fix-footer-mobile": {
+        "type": "fix-footer-mobile",
+        "blocks": {
+          "home": {
+            "type": "link",
+            "settings": {
+              "label": "Home",
+              "icon": "store",
+              "url": "/",
+              "custom_link": "",
+              "icon_image": "shopify://shop_images/home-icon.svg",
+              "icon_url": ""
+            }
+          },
+          "products": {
+            "type": "link",
+            "settings": {
+              "label": "Products",
+              "icon": "tag",
+              "url": "/collections/all",
+              "custom_link": "",
+              "icon_image": "shopify://shop_images/products-grid-icon.svg",
+              "icon_url": ""
+            }
+          },
+          "email": {
+            "type": "link",
+            "settings": {
+              "label": "Email us",
+              "icon": "mail",
+              "url": "mailto:nutrachem3@gmail.com",
+              "custom_link": "",
+              "icon_url": ""
+            }
+          },
+          "wishlist": {
+            "type": "wishlist",
+            "settings": {
+              "label": "Wishlist"
+            }
+          }
+        },
+        "block_order": [
+          "home",
+          "products",
+          "email",
+          "wishlist"
+        ],
+        "settings": {
+          "aria_label": "Quick links",
+          "height": 56,
+          "background_color": "",
+          "text_color": ""
+        }
+      }
+    },
+    "content_for_index": [],
+    "blocks": {
+      "2567389343055140935": {
+        "type": "shopify://apps/microsoft-clarity/blocks/clarity_js/31c3d126-8116-4b4a-8ba1-baeda7c4aeea",
+        "disabled": true,
+        "settings": {}
+      },
+      "14710238943034738919": {
+        "type": "shopify://apps/ag-product-reviews/blocks/app-embed/c4e1e9ca-4d46-4e76-bc39-7e42417cb327",
+        "disabled": false,
+        "settings": {}
+      },
+      "16462826257733288596": {
+        "type": "shopify://apps/vensa-wishlist-back-in-stock/blocks/wishlist-loader/019f9be2-4682-783c-bf16-0376fe0b8d5d",
+        "disabled": false,
+        "settings": {}
+      }
+    }
+  }
+}

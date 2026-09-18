@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}">
+  <head>
+
+  {%- if settings.favicon != blank -%}
+      <link
+        rel="icon"
+        type="image/png"
+        href="{{ settings.favicon | image_url: width: 32, height: 32 }}"
+      >
+    {%- endif -%}
+
+    {%- render 'meta-tags' -%}
+
+    <script src="{{ 'shopify_common.js' | shopify_asset_url }}" defer="defer"></script>
+
+    {%- unless settings.font_heading.system? -%}
+      {{ settings.font_heading | font_url | preload_tag: as: 'font', crossorigin: 'anonymous' }}
+    {%- endunless -%}
+    {%- unless settings.font_body.system? -%}
+      {{ settings.font_body | font_url | preload_tag: as: 'font', crossorigin: 'anonymous' }}
+    {%- endunless -%}
+
+    {{ 'base.css' | asset_url | stylesheet_tag }}
+
+    <style>
+      {{ settings.font_heading | font_face: font_display: 'swap' }}
+      {{ settings.font_body | font_face: font_display: 'swap' }}
+
+      :root {
+        --color-primary: {{ settings.color_primary }};
+        --color-secondary: {{ settings.color_secondary }};
+        --color-dark: {{ settings.color_dark }};
+        --color-surface: {{ settings.color_surface }};
+        --color-background: {{ settings.color_background }};
+        --color-text: {{ settings.color_text }};
+        --color-star: {{ settings.color_star }};
+        --button-primary: {{ settings.button_primary_color }};
+        --button-secondary: {{ settings.button_secondary_color }};
+        --font-heading: {{ settings.font_heading.family }}, {{ settings.font_heading.fallback_families }};
+        --font-body: {{ settings.font_body.family }}, {{ settings.font_body.fallback_families }};
+      }
+    </style>
+
+    <script type="speculationrules">
+      {
+        "prerender": [
+          {
+            "where": {
+              "and": [
+                { "href_matches": "/*" },
+                { "not": { "href_matches": "/cart*" } },
+                { "not": { "href_matches": "/account*" } },
+                { "not": { "href_matches": "/checkout*" } }
+              ]
+            },
+            "eagerness": "moderate"
+          }
+        ]
+      }
+    </script>
+
+    {{ content_for_header }}
+  </head>
+  <body class="template-{{ template.name }}">
+    <a class="skip-link" href="#MainContent">Skip to content</a>
+
+    <div class="scroll-progress-bar" id="ScrollProgressBar"></div>
+
+    {% sections 'header-group' %}
+    {% section 'cart-drawer' %}
+
+    <main id="MainContent" tabindex="-1">
+      {{ content_for_layout }}
+    </main>
+
+    {% sections 'footer-group' %}
+    {% section 'fix-footer-mobile' %}
+
+    <script>
+      window.routes = {
+        cartAddUrl: {{ routes.cart_add_url | json }},
+        cartChangeUrl: {{ routes.cart_change_url | json }},
+        predictiveSearchUrl: {{ routes.predictive_search_url | json }}
+      };
+    </script>
+    <script src="{{ 'global.js' | asset_url }}" defer="defer"></script>
+  </body>
+</html>

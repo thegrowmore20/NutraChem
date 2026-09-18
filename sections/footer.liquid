@@ -1,0 +1,281 @@
+<footer class="footer">
+  <div class="footer__top"{% if section.settings.background_image %} style="background-image: url({{ section.settings.background_image | image_url: width: 1920 }});"{% endif %}>
+    <div class="container footer__inner">
+      <div class="footer__brand">
+        <a href="{{ routes.root_url }}" class="footer__logo">
+          {%- if section.settings.logo -%}
+            {%- assign logo_h = 175 | divided_by: section.settings.logo.aspect_ratio | round -%}
+            {{ section.settings.logo | image_url: width: 175 | image_tag: loading: 'lazy', widths: '175, 262, 350', width: 175, height: logo_h, alt: shop.name }}
+          {%- else -%}
+            <span class="footer__logo-text">{{ shop.name }}</span>
+          {%- endif -%}
+        </a>
+
+        <p class="footer__newsletter-title">Subscribe newsletter</p>
+        {%- comment -%}
+          Shopify's `form` tag auto-applies class="contact-form" when no
+          class is given - which collided with sections/contact.liquid's own
+          .contact-form styling (border/padding/radius) once that section
+          existed, since Shopify bundles all section CSS theme-wide. Passing
+          an explicit class avoids the collision.
+        {%- endcomment -%}
+        {%- form 'customer', id: 'FooterNewsletterForm', class: 'footer__newsletter' -%}
+          <input type="hidden" name="contact[tags]" value="newsletter">
+          <div class="footer__newsletter-form">
+            <label class="visually-hidden" for="FooterNewsletterEmail">Email address</label>
+            <input type="email" id="FooterNewsletterEmail" name="contact[email]" placeholder="Type your email" autocomplete="email" required>
+            <button type="submit">Subscribe</button>
+          </div>
+          {%- if form.posted_successfully? -%}
+            <p class="footer__newsletter-message footer__newsletter-message--success" role="status">{{ 'newsletter.success' | t }}</p>
+          {%- elsif form.errors -%}
+            {%- assign newsletter_error = form.errors.messages['email'] | default: form.errors.messages['form'] -%}
+            <p class="footer__newsletter-message footer__newsletter-message--error" role="alert">
+              {%- if newsletter_error -%}
+                {{ newsletter_error }}
+              {%- else -%}
+                {{ 'newsletter.error' | t }}
+              {%- endif -%}
+            </p>
+          {%- endif -%}
+        {%- endform -%}
+      </div>
+
+      <div class="footer__col footer__col--social">
+        <h2 class="footer__col-title">Social Media</h2>
+        <ul class="footer__links">
+          {%- if section.settings.facebook != blank -%}<li><a href="{{ section.settings.facebook }}" target="_blank" rel="noopener noreferrer">Facebook<span class="visually-hidden"> (opens in a new tab)</span></a></li>{%- endif -%}
+          {%- if section.settings.instagram != blank -%}<li><a href="{{ section.settings.instagram }}" target="_blank" rel="noopener noreferrer">Instagram<span class="visually-hidden"> (opens in a new tab)</span></a></li>{%- endif -%}
+          {%- if section.settings.tiktok != blank -%}<li><a href="{{ section.settings.tiktok }}" target="_blank" rel="noopener noreferrer">Tiktok<span class="visually-hidden"> (opens in a new tab)</span></a></li>{%- endif -%}
+          {%- if section.settings.youtube != blank -%}<li><a href="{{ section.settings.youtube }}" target="_blank" rel="noopener noreferrer">YouTube<span class="visually-hidden"> (opens in a new tab)</span></a></li>{%- endif -%}
+        </ul>
+      </div>
+
+      <div class="footer__col footer__col--pages">
+        <h2 class="footer__col-title">Pages</h2>
+        <ul class="footer__links">
+          {%- for link in section.settings.pages_menu.links -%}
+            <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+          {%- else -%}
+            <li><a href="{{ routes.root_url }}">Home</a></li>
+            <li><a href="{{ routes.all_products_collection_url }}">Shop</a></li>
+            <li><a href="{{ routes.root_url }}">Shop Bundles</a></li>
+          {%- endfor -%}
+        </ul>
+      </div>
+
+      <div class="footer__col footer__col--policies">
+        <h2 class="footer__col-title">Policies</h2>
+        <ul class="footer__links">
+          {%- for link in section.settings.help_menu.links -%}
+            <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+          {%- else -%}
+            <li><a href="{{ routes.root_url }}policies/privacy-policy">Privacy Policy</a></li>
+            <li><a href="{{ routes.root_url }}policies/refund-policy">Return policy</a></li>
+            <li><a href="{{ routes.root_url }}policies/shipping-policy">Shipping Policy</a></li>
+          {%- endfor -%}
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer__bottom">
+    &copy; {{ 'now' | date: '%Y' }} <a href="{{ routes.root_url }}">{{ shop.name }}</a> All Rights Reserved | Developed by
+    <a href="http://thegrowmore.com/" target="_blank" rel="noopener noreferrer" class="footer__credit">
+      GrowMore {% render 'icon', name: 'open-link' %}
+    </a>
+  </div>
+
+  <div class="footer__watermark">
+    <div class="container footer__watermark-inner">
+      {%- if section.settings.logo -%}
+        {%- assign watermark_h = 1600 | divided_by: section.settings.logo.aspect_ratio | round -%}
+        {{ section.settings.logo | image_url: width: 1600 | image_tag: loading: 'lazy', widths: '800, 1200, 1600, 2400', sizes: '100vw', width: 1600, height: watermark_h, class: 'footer__watermark-logo', alt: '' }}
+      {%- else -%}
+        <span class="footer__watermark-text">{{ shop.name }}</span>
+      {%- endif -%}
+    </div>
+  </div>
+</footer>
+
+{% stylesheet %}
+.footer__top {
+  padding-block: 48px;
+  background-color: var(--color-surface);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.footer__inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.footer__brand,
+.footer__col--policies {
+  grid-column: 1 / -1;
+}
+
+@media screen and (min-width: 601px) {
+  .footer__inner {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  .footer__col--policies {
+    grid-column: auto;
+  }
+}
+
+@media screen and (min-width: 992px) {
+  .footer__inner {
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 40px;
+  }
+
+  .footer__brand {
+    grid-column: auto;
+  }
+}
+
+.footer__logo img {
+  margin-bottom: 16px;
+}
+
+.footer__logo-text {
+  display: inline-block;
+  font-family: var(--font-heading);
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--color-primary);
+  margin-bottom: 16px;
+}
+
+.footer__newsletter-title {
+  font-family: var(--font-heading);
+  font-size: 18px;
+  margin: 0 0 14px;
+  font-weight: 500;
+}
+
+.footer__newsletter-form {
+  display: flex;
+  max-width: 340px;
+  border-radius: var(--radius-m);
+  overflow: hidden;
+}
+
+.footer__newsletter-form input {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid var(--color-secondary);
+  background: #fff;
+  padding: 12px 14px;
+  font-size: 14px;
+  font-family: var(--font-body);
+  border-top-left-radius: var(--radius-m);
+  border-bottom-left-radius: var(--radius-m);
+}
+
+.footer__newsletter-form button {
+  background: var(--color-secondary);
+  color: #fff;
+  border: none;
+  padding: 12px 20px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.footer__newsletter-message {
+  margin: 10px 0 0;
+  font-size: 13px;
+}
+
+.footer__newsletter-message--success {
+  color: #1a7a3c;
+}
+
+.footer__newsletter-message--error {
+  color: #c0392b;
+}
+
+.footer__col-title {
+  font-family: var(--font-heading);
+  font-style: italic;
+  font-size: 17px;
+  margin: 0 0 16px;
+}
+
+.footer__links li {
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.footer__links a {
+  text-decoration: none;
+}
+
+.footer__bottom {
+  background: var(--color-secondary);
+  color: #fff;
+  text-align: center;
+  font-size: 13px;
+  padding: 14px 20px;
+}
+
+.footer__bottom a {
+  color: inherit;
+}
+
+.footer__credit {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.footer__watermark {
+  background: var(--color-secondary);
+  padding-block: 32px;
+  text-align: center;
+}
+
+.footer__watermark-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.footer__watermark-logo {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: brightness(0) invert(1);
+}
+
+.footer__watermark-text {
+  display: block;
+  width: 100%;
+  font-family: var(--font-heading);
+  font-size: clamp(48px, 12vw, 160px);
+  color: #fff;
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Footer",
+  "settings": [
+    { "type": "image_picker", "id": "logo", "label": "Logo" },
+    { "type": "image_picker", "id": "background_image", "label": "Top background image (optional)" },
+    { "type": "url", "id": "facebook", "label": "Facebook URL" },
+    { "type": "url", "id": "instagram", "label": "Instagram URL" },
+    { "type": "url", "id": "tiktok", "label": "TikTok URL" },
+    { "type": "url", "id": "youtube", "label": "YouTube URL" },
+    { "type": "link_list", "id": "pages_menu", "label": "Pages menu" },
+    { "type": "link_list", "id": "help_menu", "label": "Policies menu" }
+  ]
+}
+{% endschema %}

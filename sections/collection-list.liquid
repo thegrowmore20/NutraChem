@@ -1,0 +1,158 @@
+<section class="collections-section section-padding" style="--padding-top: {{ section.settings.padding_top }}px; --padding-bottom: {{ section.settings.padding_bottom }}px;">
+  <div class="container">
+    <h2 class="section-heading">{{ section.settings.heading | default: 'Shop by Concern' }}</h2>
+
+    <div class="collections-grid" style="--collections-columns-desktop: {{ section.settings.columns_desktop }};">
+      {%- for block in section.blocks -%}
+        {%- assign product = block.settings.product -%}
+        <a class="collection-card" href="{{ product.url | default: routes.all_products_collection_url }}" {{ block.shopify_attributes }}>
+          <span class="collection-card__media">
+            {%- if block.settings.image -%}
+              {{ block.settings.image | image_url: width: 600 | image_tag: loading: 'lazy', widths: '300, 450, 600', sizes: '200px', width: 600, height: 600, alt: block.settings.title | default: product.title }}
+            {%- elsif product.featured_image -%}
+              {{ product.featured_image | image_url: width: 600 | image_tag: loading: 'lazy', widths: '300, 450, 600', sizes: '200px', width: 600, height: 600, alt: block.settings.title | default: product.title }}
+            {%- else -%}
+              {{ 'product-1' | placeholder_svg_tag }}
+            {%- endif -%}
+            <span class="collection-card__title">{{ block.settings.title | default: product.title }}</span>
+          </span>
+        </a>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+.collections-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 220px));
+  justify-content: center;
+  gap: 16px;
+  
+  @media screen and (min-width: 600px) {
+    grid-template-columns: repeat(3, minmax(0, 220px));    
+  }
+
+}
+
+@media screen and (min-width: 1200px) {
+  .collections-grid {
+    grid-template-columns: repeat(var(--collections-columns-desktop, 5), minmax(0, 220px));
+    gap: 20px;
+  }
+}
+
+.collection-card {
+  display: block;
+}
+
+.collection-card__media {
+  display: block;
+  position: relative;
+  height: 303px;
+  background: var(--color-surface);
+  border: 1px solid #f5ebeb;
+  overflow: hidden;
+  border-radius: var(--radius-m);
+
+  @media screen and (max-width: 992px) {
+    height: 263px;
+  }
+  @media screen and (max-width: 600px) {
+    height: 213px;
+  }
+}
+
+.collection-card__media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.collection-card__title {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  font-family: var(--font-heading);
+  font-size: 18px;
+  font-weight: 500;
+  color: #fff;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Collection list",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Shop by Concern"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "label": "Items per row (desktop)",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "default": 5
+    },
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    }
+  ],
+  "blocks": [
+    {
+      "type": "collection",
+      "name": "Product",
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Product"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Custom image (optional)"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Custom title (optional)"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection list"
+    }
+  ]
+}
+{% endschema %}

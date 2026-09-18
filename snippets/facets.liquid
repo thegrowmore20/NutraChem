@@ -1,0 +1,177 @@
+{%- comment -%}
+  Renders the filter sidebar body:
+    1. Active filter pills (only when something is actually applied)
+    2. Quick links (fake accordion, chevron right, non-expanding)
+    3. Navigation-as-filter group (chevron down, checkboxes that navigate)
+    4. Real Search & Discovery filters (chevron down, actual facets)
+
+  Accepts:
+    results         - collection or search object (.filters, .url, .sort_by)
+    nav_menu        - a linklist object (optional)
+    has_quick_links - boolean
+    section         - the parent section
+{%- endcomment -%}
+
+{%- liquid
+  assign has_active_filters = false
+  for filter in results.filters
+    if filter.type == 'price_range'
+      if filter.min_value.value != blank
+        assign has_active_filters = true
+      endif
+      if filter.max_value.value != blank
+        assign has_active_filters = true
+      endif
+    elsif filter.active_values.size > 0
+      assign has_active_filters = true
+    endif
+  endfor
+-%}
+
+<facet-filters-form>
+  {%- comment -%} sort_by is supplied by the toolbar's <select form="FacetFiltersForm-{{ section.id }}">, not a hidden input here, to avoid a duplicate/conflicting field. {%- endcomment -%}
+  <form id="FacetFiltersForm-{{ section.id }}" class="facets" data-section-id="{{ section.id }}">
+
+    {%- comment -%} 1. Active filter pills — only rendered when at least one filter is applied {%- endcomment -%}
+    {%- if has_active_filters -%}
+      <div class="active-filters" id="ActiveFilters-{{ section.id }}">
+        <div class="active-filters__pills">
+          {%- for filter in results.filters -%}
+            {%- if filter.type == 'price_range' -%}
+              {%- if filter.min_value.value != blank or filter.max_value.value != blank -%}
+                <span
+                  class="active-filters__pill active-filters__pill--price"
+                  data-price-pill
+                  data-min-name="{{ filter.min_value.param_name }}"
+                  data-max-name="{{ filter.max_value.param_name }}"
+                >
+                  {{ filter.min_value.value | default: 0 | money }}&ndash;{{ filter.max_value.value | default: filter.range_max | money }}
+                  <button type="button" class="active-filters__remove" aria-label="{{ 'collections.general.remove' | t }}">{% render 'icon', name: 'close' %}</button>
+                </span>
+              {%- endif -%}
+            {%- else -%}
+              {%- for value in filter.active_values -%}
+                <a href="{{ value.url_to_remove }}" class="active-filters__pill">
+                  {{ value.label | escape }}
+                  <span class="active-filters__remove-icon" aria-hidden="true">{% render 'icon', name: 'close' %}</span>
+                </a>
+              {%- endfor -%}
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+        <a href="{{ results.url }}" class="active-filters__clear-all body-text">
+          {{ 'collections.general.clear_all' | t }}
+        </a>
+      </div>
+    {%- endif -%}
+
+    {%- comment -%} 2. Quick links — fake accordion rows, chevron right, plain navigation {%- endcomment -%}
+    {%- if has_quick_links -%}
+      {%- if section.settings.quick_link_1_text != blank and section.settings.quick_link_1_url != blank -%}
+        <a href="{{ section.settings.quick_link_1_url }}" class="facets__group facets__group--link">
+          <span class="facets__summary">
+            <span>{{ section.settings.quick_link_1_text }}</span>
+            <span class="facets__chevron facets__chevron--right" aria-hidden="true">{% render 'icon', name: 'chevron-right' %}</span>
+          </span>
+        </a>
+      {%- endif -%}
+      {%- if section.settings.quick_link_2_text != blank and section.settings.quick_link_2_url != blank -%}
+        <a href="{{ section.settings.quick_link_2_url }}" class="facets__group facets__group--link">
+          <span class="facets__summary">
+            <span>{{ section.settings.quick_link_2_text }}</span>
+            <span class="facets__chevron facets__chevron--right" aria-hidden="true">{% render 'icon', name: 'chevron-right' %}</span>
+          </span>
+        </a>
+      {%- endif -%}
+      {%- if section.settings.quick_link_3_text != blank and section.settings.quick_link_3_url != blank -%}
+        <a href="{{ section.settings.quick_link_3_url }}" class="facets__group facets__group--link">
+          <span class="facets__summary">
+            <span>{{ section.settings.quick_link_3_text }}</span>
+            <span class="facets__chevron facets__chevron--right" aria-hidden="true">{% render 'icon', name: 'chevron-right' %}</span>
+          </span>
+        </a>
+      {%- endif -%}
+      {%- if section.settings.quick_link_4_text != blank and section.settings.quick_link_4_url != blank -%}
+        <a href="{{ section.settings.quick_link_4_url }}" class="facets__group facets__group--link">
+          <span class="facets__summary">
+            <span>{{ section.settings.quick_link_4_text }}</span>
+            <span class="facets__chevron facets__chevron--right" aria-hidden="true">{% render 'icon', name: 'chevron-right' %}</span>
+          </span>
+        </a>
+      {%- endif -%}
+    {%- endif -%}
+
+    {%- comment -%} 3. Navigation-as-filter — real accordion, checkboxes that redirect {%- endcomment -%}
+    {%- if nav_menu and nav_menu.links.size > 0 -%}
+      <details class="facets__group" data-filter-param="nav-menu" open>
+        <summary class="facets__summary">
+          <span>{{ nav_menu.title }}</span>
+          <span class="facets__chevron facets__chevron--down" aria-hidden="true">{% render 'icon', name: 'chevron-down' %}</span>
+        </summary>
+        <div class="facets__body">
+          <ul class="facets__list" role="list">
+            {%- for link in nav_menu.links -%}
+              <li class="facets__item">
+                <label class="facets__checkbox-label">
+                  <input
+                    type="checkbox"
+                    class="facets__checkbox facets__checkbox--nav"
+                    data-nav-url="{{ link.url }}"
+                    {% if link.active %}checked{% endif %}
+                  >
+                  <span>{{ link.title | escape }}</span>
+                </label>
+              </li>
+            {%- endfor -%}
+          </ul>
+        </div>
+      </details>
+    {%- endif -%}
+
+    {%- comment -%} 4. Real Search & Discovery filters {%- endcomment -%}
+    {%- for filter in results.filters -%}
+      {%- if filter.type == 'price_range' -%}
+        {%- assign price_is_active = false -%}
+        {%- if filter.min_value.value != blank or filter.max_value.value != blank -%}
+          {%- assign price_is_active = true -%}
+        {%- endif -%}
+        <details class="facets__group" data-filter-param="{{ filter.param_name }}" {% if price_is_active %}open{% endif %}>
+          <summary class="facets__summary">
+            <span>{{ filter.label | escape }}</span>
+            <span class="facets__chevron facets__chevron--down" aria-hidden="true">{% render 'icon', name: 'chevron-down' %}</span>
+          </summary>
+          <div class="facets__body">
+            {%- render 'price-range', filter: filter -%}
+          </div>
+        </details>
+      {%- elsif filter.values.size > 0 -%}
+        <details class="facets__group" data-filter-param="{{ filter.param_name }}" {% if filter.active_values.size > 0 %}open{% endif %}>
+          <summary class="facets__summary">
+            <span>{{ filter.label | escape }}</span>
+            <span class="facets__chevron facets__chevron--down" aria-hidden="true">{% render 'icon', name: 'chevron-down' %}</span>
+          </summary>
+          <div class="facets__body">
+            <ul class="facets__list" role="list">
+              {%- for value in filter.values -%}
+                <li class="facets__item{% if value.count == 0 and value.active == false %} facets__item--disabled{% endif %}">
+                  <label class="facets__checkbox-label">
+                    <input
+                      type="checkbox"
+                      class="facets__checkbox"
+                      name="{{ value.param_name }}"
+                      value="{{ value.value }}"
+                      {% if value.active %}checked{% endif %}
+                      {% if value.count == 0 and value.active == false %}disabled{% endif %}
+                    >
+                    <span>{{ value.label | escape }}</span>
+                    <span class="facets__count text-muted">({{ value.count }})</span>
+                  </label>
+                </li>
+              {%- endfor -%}
+            </ul>
+          </div>
+        </details>
+      {%- endif -%}
+    {%- endfor -%}
+  </form>
+</facet-filters-form>

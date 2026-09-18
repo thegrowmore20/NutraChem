@@ -1,0 +1,89 @@
+{%- comment -%}
+  Hidden utility section — never placed via the theme editor. Reached only through
+  routes.predictive_search_url?q=...&section_id=predictive-search (see header.liquid's
+  PredictiveSearch class), which returns this section's rendered HTML for the JS to
+  extract and inject into #PredictiveSearchResults. Its CSS lives in header.liquid's
+  own stylesheet, since header is what's actually rendered on every page — this
+  section itself never is, so a stylesheet block here would never ship.
+
+  NOTE: the predictive_search Liquid object exposes results directly on
+  `predictive_search.resources.products/collections/pages/articles` — there is no
+  extra `.results` nesting level, despite that being a common assumption.
+{%- endcomment -%}
+{%- if predictive_search.performed -%}
+  {%- liquid
+    assign has_results = false
+    if predictive_search.resources.products.size > 0
+      assign has_results = true
+    elsif predictive_search.resources.collections.size > 0
+      assign has_results = true
+    elsif predictive_search.resources.pages.size > 0
+      assign has_results = true
+    elsif predictive_search.resources.articles.size > 0
+      assign has_results = true
+    endif
+  -%}
+  {%- if has_results -%}
+    {%- if predictive_search.resources.products.size > 0 -%}
+      <div class="predictive-search__group">
+        <p class="predictive-search__group-title">Products</p>
+        <ul class="predictive-search__products" role="list">
+          {%- for product in predictive_search.resources.products -%}
+            <li>
+              <a href="{{ product.url }}" class="predictive-search__product">
+                {%- if product.featured_image -%}
+                  {{ product.featured_image | image_url: width: 120 | image_tag: loading: 'lazy', width: 60, height: 60, alt: product.featured_image.alt | default: product.title }}
+                {%- endif -%}
+                <span class="predictive-search__product-info">
+                  <span class="predictive-search__product-title">{{ product.title }}</span>
+                  {% render 'price', product: product %}
+                </span>
+              </a>
+            </li>
+          {%- endfor -%}
+        </ul>
+      </div>
+    {%- endif -%}
+
+    {%- if predictive_search.resources.collections.size > 0 -%}
+      <div class="predictive-search__group">
+        <p class="predictive-search__group-title">Collections</p>
+        <ul class="predictive-search__list" role="list">
+          {%- for collection in predictive_search.resources.collections -%}
+            <li><a href="{{ collection.url }}">{{ collection.title }}</a></li>
+          {%- endfor -%}
+        </ul>
+      </div>
+    {%- endif -%}
+
+    {%- if predictive_search.resources.pages.size > 0 -%}
+      <div class="predictive-search__group">
+        <p class="predictive-search__group-title">Pages</p>
+        <ul class="predictive-search__list" role="list">
+          {%- for page in predictive_search.resources.pages -%}
+            <li><a href="{{ page.url }}">{{ page.title }}</a></li>
+          {%- endfor -%}
+        </ul>
+      </div>
+    {%- endif -%}
+
+    {%- if predictive_search.resources.articles.size > 0 -%}
+      <div class="predictive-search__group">
+        <p class="predictive-search__group-title">Articles</p>
+        <ul class="predictive-search__list" role="list">
+          {%- for article in predictive_search.resources.articles -%}
+            <li><a href="{{ article.url }}">{{ article.title }}</a></li>
+          {%- endfor -%}
+        </ul>
+      </div>
+    {%- endif -%}
+  {%- else -%}
+    <p class="predictive-search__no-results">{{ 'general.search.no_results' | t: terms: predictive_search.terms }}</p>
+  {%- endif -%}
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Predictive search"
+}
+{% endschema %}

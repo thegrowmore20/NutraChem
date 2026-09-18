@@ -1,0 +1,77 @@
+{%- comment -%}
+  Renders a product's price: the sale price, with the compare-at price
+  struck through below it when the product is discounted.
+
+  Accepts:
+  - product: {Object} Product Liquid object (omit for a placeholder price)
+  - use_variant: {Boolean} Use the selected/first available variant instead of the product's own price
+  - variant: {Object} An explicit variant to price against, overriding product/use_variant
+  - show_badge: {Boolean} Render a "Save X%"/"Save $X" badge when on sale
+  - savings_format: {String} 'percentage' (default) or 'amount', used only when show_badge is true
+  - data_attributes: {Boolean} Add data-price-current/compare/badge hooks for JS to update on variant change
+
+  Usage:
+  {% render 'price', product: product %}
+  {% render 'price', product: product, variant: current_variant, show_badge: true %}
+{%- endcomment -%}
+{%- liquid
+  if variant != blank
+    assign target = variant
+  elsif product == blank
+    assign price = 296000
+    assign compare_at_price = nil
+  else
+    if use_variant
+      assign target = product.selected_or_first_available_variant
+    else
+      assign target = product
+    endif
+  endif
+
+  if target != blank
+    assign price = target.price
+    assign compare_at_price = target.compare_at_price
+  endif
+
+  assign on_sale = false
+  if compare_at_price > price
+    assign on_sale = true
+  endif
+
+  if on_sale
+    if savings_format == 'amount'
+      assign savings_amount = compare_at_price | minus: price | money
+    else
+      assign savings_amount = compare_at_price | minus: price | times: 100.0 | divided_by: compare_at_price | round
+    endif
+  endif
+-%}
+<div class="price{% if on_sale %} price--on-sale{% endif %}"{% if data_attributes %} data-product-price data-savings-format="{{ savings_format | default: 'amount' }}"{% endif %}>
+  <span class="price-item price-item--regular"{% if data_attributes %} data-price-current{% endif %}>{{ price | money }}</span>
+  {%- if data_attributes -%}
+    {%- comment -%} Kept in the DOM (vs. Liquid-conditional) so JS can toggle it via the hidden attribute when the variant's sale state changes without re-inserting the node. {%- endcomment -%}
+    <s class="price-item price-item--compare" data-price-compare{% unless on_sale %} hidden{% endunless %}>{{ compare_at_price | money }}</s>
+  {%- elsif on_sale -%}
+    <s class="price-item price-item--compare">{{ compare_at_price | money }}</s>
+  {%- endif -%}
+  {%- if show_badge and data_attributes -%}
+    {%- comment -%} Always rendered (vs. Liquid-conditional) so JS can reveal it via the hidden attribute if a later-selected variant is on sale, even though the first-paint variant isn't. {%- endcomment -%}
+    <span class="price__badge" data-price-badge{% unless on_sale %} hidden{% endunless %}>
+      {%- if on_sale -%}
+        {%- if savings_format == 'amount' -%}
+          {{ 'products.product.sale_amount' | t: amount: savings_amount }}
+        {%- else -%}
+          {{ 'products.product.sale' | t: percentage: savings_amount }}
+        {%- endif -%}
+      {%- endif -%}
+    </span>
+  {%- elsif show_badge and on_sale -%}
+    <span class="price__badge">
+      {%- if savings_format == 'amount' -%}
+        {{ 'products.product.sale_amount' | t: amount: savings_amount }}
+      {%- else -%}
+        {{ 'products.product.sale' | t: percentage: savings_amount }}
+      {%- endif -%}
+    </span>
+  {%- endif -%}
+</div>

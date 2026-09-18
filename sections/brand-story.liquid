@@ -1,0 +1,263 @@
+<section class="brand-story section-padding" style="--padding-top: {{ section.settings.padding_top }}px; --padding-bottom: {{ section.settings.padding_bottom }}px;">
+  <div class="container brand-story__grid">
+    <div class="brand-story__content">
+      <h2 class="brand-story__heading">{{ section.settings.heading }}</h2>
+      <div class="brand-story__text">{{ section.settings.text }}</div>
+      {%- if section.settings.button_label != blank -%}
+        <a href="{{ section.settings.button_link | default: routes.root_url }}" class="button button--dark">{{ section.settings.button_label }}</a>
+      {%- endif -%}
+    </div>
+
+    <div class="brand-story__reels">
+      {%- for block in section.blocks -%}
+        <div class="reel-card" {{ block.shopify_attributes }}>
+          {%- if block.settings.video -%}
+            {{
+              block.settings.video
+              | video_tag:
+                autoplay: true,
+                loop: true,
+                muted: true,
+                playsinline: true,
+                controls: false,
+                image_size: '600x',
+                class: 'reel-card__media'
+            }}
+            <button type="button" class="reel-card__play" data-reel-toggle aria-label="Pause video">
+              <span class="reel-card__play-icon reel-card__play-icon--pause">{% render 'icon', name: 'pause' %}</span>
+              <span class="reel-card__play-icon reel-card__play-icon--play">{% render 'icon', name: 'play' %}</span>
+            </button>
+          {%- elsif block.settings.poster -%}
+            {{ block.settings.poster | image_url: width: 600 | image_tag: loading: 'lazy', widths: '300, 450, 600', sizes: '(min-width: 750px) 16vw, 33vw', width: 600, height: 800, class: 'reel-card__media', alt: block.settings.caption | default: '' }}
+            <span class="reel-card__play" aria-hidden="true">{% render 'icon', name: 'play' %}</span>
+          {%- else -%}
+            {{ 'lifestyle-1' | placeholder_svg_tag: 'reel-card__media' }}
+            <span class="reel-card__play" aria-hidden="true">{% render 'icon', name: 'play' %}</span>
+          {%- endif -%}
+          {%- if block.settings.caption != blank -%}
+            <span class="reel-card__caption">{{ block.settings.caption }}</span>
+          {%- endif -%}
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+.brand-story__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 40px;
+  align-items: center;
+}
+
+@media screen and (min-width: 990px) {
+  .brand-story__grid {
+    grid-template-columns: 1fr 1.3fr;
+    gap: 56px;
+  }
+}
+
+.brand-story__heading {
+  font-family: var(--font-heading);
+  font-weight: 500;
+  line-height: 1.2;
+  font-size: clamp(28px, 22.88px + 1.37vw, 42px);
+  color: var(--color-primary);
+  margin: 0 0 20px;
+}
+
+.brand-story__text {
+  font-size: 15px;
+  line-height: 1.8;
+  color: #45535c;
+  margin: 0 0 28px;
+}
+
+.brand-story__text p {
+  margin: 0 0 16px;
+}
+
+.brand-story__reels {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+@media screen and (min-width: 750px) {
+  .brand-story__reels {
+    gap: 16px;
+  }
+}
+
+.reel-card {
+  position: relative;
+  aspect-ratio: 9 / 12;
+  overflow: hidden;
+  border-radius: 12px;
+  background: var(--color-surface);
+}
+
+.reel-card__media {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.reel-card__play {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-primary);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.reel-card__play-icon--play {
+  display: none;
+}
+
+.reel-card__play.is-paused .reel-card__play-icon--play {
+  display: inline-flex;
+}
+
+.reel-card__play.is-paused .reel-card__play-icon--pause {
+  display: none;
+}
+
+.reel-card__caption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 10px 12px;
+  font-size: 12px;
+  color: #fff;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.65), transparent);
+}
+{% endstylesheet %}
+
+{% javascript %}
+class ReelVideos {
+  constructor() {
+    for (const button of document.querySelectorAll('[data-reel-toggle]')) {
+      const video = button.previousElementSibling
+      if (!video || video.tagName !== 'VIDEO') continue
+      button.addEventListener('click', () => this.#toggle(button, video))
+    }
+  }
+
+  #toggle(button, video) {
+    const willPlay = video.paused
+    if (willPlay) {
+      video.play()
+    } else {
+      video.pause()
+    }
+    button.classList.toggle('is-paused', !willPlay)
+    button.setAttribute('aria-label', willPlay ? 'Pause video' : 'Play video')
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => new ReelVideos())
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Brand story + reels",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Pakistan's Trusted Organic Skincare Brand – Shivora Naturals"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Text"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Shop Now"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    }
+  ],
+  "blocks": [
+    {
+      "type": "reel",
+      "name": "Reel",
+      "settings": [
+        {
+          "type": "video",
+          "id": "video",
+          "label": "Video",
+          "info": "Uploaded directly in the theme editor. Used instead of the poster image when set."
+        },
+        {
+          "type": "image_picker",
+          "id": "poster",
+          "label": "Poster image",
+          "info": "Shown when no video is uploaded"
+        },
+        {
+          "type": "text",
+          "id": "caption",
+          "label": "Caption (optional)"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Brand story + reels",
+      "blocks": [
+        { "type": "reel" },
+        { "type": "reel" },
+        { "type": "reel" },
+        { "type": "reel" },
+        { "type": "reel" },
+        { "type": "reel" }
+      ]
+    }
+  ]
+}
+{% endschema %}
