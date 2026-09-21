@@ -20,10 +20,10 @@
     </div>
 
     {%- if section.blocks.size > 0 -%}
-      <div class="about-values__grid">
+      <div class="u-grid about-values__grid">
         {%- for block in section.blocks -%}
           <div class="about-values__card" {{ block.shopify_attributes }}>
-            <div class="about-values__card-header">
+            <div class="u-flex u-items-center u-justify-between about-values__card-header">
               <span class="about-values__number">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
               {%- if block.settings.icon != blank -%}
                 <span class="about-values__icon" aria-hidden="true">{{ block.settings.icon }}</span>
@@ -52,6 +52,7 @@
 .about-values__eyebrow {
   font-size: 12px;
   font-weight: 600;
+  font-family: var(--font-accent);
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--color-secondary);
@@ -71,7 +72,6 @@
 }
 
 .about-values__grid {
-  display: grid;
   grid-template-columns: 1fr;
   gap: 24px;
 }
@@ -95,16 +95,13 @@
 }
 
 .about-values__card-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
   margin-bottom: 16px;
 }
 
 .about-values__number {
-  font-family: var(--font-heading);
   font-size: 22px;
   font-weight: 600;
+  font-family: var(--font-accent);
   color: #c3ccd0;
 }
 
@@ -115,6 +112,7 @@
 .about-values__card-heading {
   font-size: 17px;
   font-weight: 600;
+  font-family: var(--font-accent);
   color: var(--color-primary);
   margin: 0 0 8px;
 }

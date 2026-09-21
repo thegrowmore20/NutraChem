@@ -34,6 +34,8 @@
       "total": "Total"
     },
     "accessibility": {
+      "skip_to_content": "Skip to content",
+      "opens_in_new_tab": "(opens in a new tab)",
       "close": "Close"
     },
     "navigation": {

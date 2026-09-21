@@ -1,0 +1,474 @@
+
+
+<div class="comparison-section section-padding" style="--padding-top: {{ section.settings.padding_top }}px; --padding-bottom: {{ section.settings.padding_bottom }}px;">
+  <div class="container" style="max-width: {{ section.settings.content_max_width }}px;">
+    
+    <div class="comparison-header">
+      {%- if section.settings.heading != blank -%}
+        <h2 class="section-heading h2">{{ section.settings.heading }}</h2>
+      {%- endif -%}
+      {%- if section.settings.subheading != blank -%}
+        <div class="comparison-subheading">{{ section.settings.subheading }}</div>
+      {%- endif -%}
+    </div>
+
+    <div class="comparison-table-wrapper">
+      <div class="comparison-table-scroll">
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th class="comparison-th-feature">{{ section.settings.header_1 }}</th>
+              <th class="comparison-feature-text-th-highlight">
+                <span>{{ section.settings.header_2 }}</span>
+              </th>
+              <th class="comparison-th-regular">
+                <span>{{ section.settings.header_3 }}</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {%- for block in section.blocks -%}
+              <tr {{ block.shopify_attributes }}>
+                <td>
+                  <div class="comparison-td-feature">
+                    <div class="comparison-icon-wrap">
+                      {%- if block.settings.icon_image != blank -%}
+                        {{ block.settings.icon_image | image_url: width: 80 | image_tag: loading: 'lazy' }}
+                      {%- elsif block.settings.icon_svg != blank -%}
+                        {{ block.settings.icon_svg }}
+                      {%- else -%}
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4v16m8-8H4"></path></svg>
+                      {%- endif -%}
+                    </div>
+                    <span class="comparison-feature-text">{{ block.settings.text }}</span>
+                  </div>
+                </td>
+                <td class="comparison-td-highlight">
+                  {%- if section.settings.icon_check != blank -%}
+                    {{ section.settings.icon_check | image_url: width: 56 | image_tag: class: 'comparison-status-icon', loading: 'lazy' }}
+                  {%- else -%}
+                    <svg class="comparison-status-icon comparison-status-icon--check" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
+                  {%- endif -%}
+                </td>
+                <td class="comparison-td-regular">
+                  {%- if section.settings.icon_cross != blank -%}
+                    {{ section.settings.icon_cross | image_url: width: 48 | image_tag: class: 'comparison-status-icon comparison-status-icon--cross', loading: 'lazy' }}
+                  {%- else -%}
+                    <svg class="comparison-status-icon comparison-status-icon--cross comparison-status-icon--cross-svg" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                  {%- endif -%}
+                </td>
+              </tr>
+            {%- endfor -%}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+{%- stylesheet -%}
+
+.comparison-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.comparison-heading {
+  font-family: var(--font-heading);
+  margin:0;
+}
+
+.comparison-subheading {
+  max-width: 672px;
+  margin: 0 auto;
+  margin-top: 0px;
+}
+
+
+
+.comparison-table-wrapper {
+  max-width: 1024px;
+  margin: 0 auto;
+  background-color: #fff;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  position: relative;
+}
+
+.comparison-table-scroll {
+  overflow-x: auto;
+  padding-bottom: 8px;
+}
+
+.comparison-table-scroll::-webkit-scrollbar {
+  height: 4px;
+}
+.comparison-table-scroll::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 4px;
+}
+.comparison-table-scroll::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+.comparison-table-scroll::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+@media screen and (min-width: 640px) {
+  .comparison-table-scroll {
+    padding-bottom: 0;
+  }
+}
+
+.comparison-table {
+  width: 100%;
+  min-width: 700px;
+  text-align: left;
+  border-collapse: collapse;
+}
+
+.comparison-table th {
+  padding: 24px 24px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.comparison-table td {
+  padding: 20px 24px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+@media screen and (min-width: 640px) {
+  .comparison-table th, .comparison-table td {
+    padding-left: 32px;
+    padding-right: 32px;
+  }
+}
+
+.comparison-th-feature {
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  font-weight: 600;
+  color: #94a3b8;
+  width: 40%;
+}
+
+.comparison-th-highlight {
+  text-align: center;
+  width: 30%;
+  background-color: #F5F7F6;
+  border-left: 1px solid #e2e8f0;
+  border-right: 1px solid #e2e8f0;
+  position: relative;
+}
+
+.comparison-th-highlight::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background-color: #2C3E35;
+}
+
+.comparison-th-highlight span {
+  display: block;
+  font-family: var(--font-heading);
+  color: #1E2B25;
+  font-weight: 700;
+  font-size: 18px;
+  margin-bottom: 2px;
+}
+
+@media screen and (min-width: 640px) {
+  .comparison-th-highlight span {
+    font-size: 20px;
+  }
+}
+
+.comparison-th-regular {
+  text-align: center;
+  width: 30%;
+}
+
+.comparison-th-regular span {
+  font-family: var(--font-heading);
+  color: #94a3b8;
+  font-weight: 500;
+  font-size: 16px;
+}
+
+@media screen and (min-width: 640px) {
+  .comparison-th-regular span {
+    font-size: 18px;
+  }
+}
+
+.comparison-table tbody tr {
+  transition: background-color 0.2s ease;
+}
+
+.comparison-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.comparison-table tbody tr:hover td {
+  background-color: #FAFAFA;
+}
+
+.comparison-td-highlight {
+  background-color: #F5F7F6;
+  border-left: 1px solid #e2e8f0;
+  border-right: 1px solid #e2e8f0;
+  text-align: center;
+  transition: background-color 0.3s ease;
+}
+
+.comparison-table tbody tr:hover .comparison-td-highlight {
+  background-color: #F0F4F2;
+}
+
+.comparison-td-feature {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.comparison-icon-wrap {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #f8fafc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+  border: 1px solid #f1f5f9;
+  overflow: hidden;
+}
+
+.comparison-icon-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.comparison-icon-wrap svg {
+  width: 20px;
+  height: 20px;
+}
+
+.comparison-td-regular {
+  text-align: center;
+}
+
+.comparison-status-icon {
+  width: 28px;
+  height: 28px;
+  margin: 0 auto;
+  display: block;
+  object-fit: contain;
+}
+
+.comparison-status-icon--cross {
+  width: 24px;
+  height: 24px;
+}
+
+.comparison-status-icon--check {
+  color: #4A8B63;
+}
+
+.comparison-status-icon--cross-svg {
+  color: #cbd5e1;
+}
+@media screen and (max-width: 992px) {
+  .comparison-feature-text {
+    font-size: 14px;
+  }
+
+  .comparison-icon-wrap{
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .comparison-td-feature {
+    gap: 0.5rem;
+  }
+
+  .comparison-table th,
+  .comparison-table td{
+    padding: 1rem;
+  }
+
+}
+{%- endstylesheet -%}
+{% schema %}
+{
+  "name": "Comparison Table",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Why Choose Nutrachem?"
+    },
+    {
+      "type": "richtext",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "<p>Our advanced skincare solutions are carefully formulated to deliver visible results while keeping your skin healthy, hydrated, and naturally radiant.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "content_max_width",
+      "label": "Content max width",
+      "min": 780,
+      "max": 1200,
+      "step": 10,
+      "unit": "px",
+      "default": 1020
+    },
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "header",
+      "content": "Table Settings"
+    },
+    {
+      "type": "text",
+      "id": "header_1",
+      "label": "Left Column Header",
+      "default": "Features"
+    },
+    {
+      "type": "text",
+      "id": "header_2",
+      "label": "Middle Column Header",
+      "default": "Nutrachem Products"
+    },
+    {
+      "type": "text",
+      "id": "header_3",
+      "label": "Right Column Header",
+      "default": "Regular Products"
+    },
+    {
+      "type": "header",
+      "content": "Custom Icons"
+    },
+    {
+      "type": "image_picker",
+      "id": "icon_check",
+      "label": "Custom Checkmark Icon",
+      "info": "Leave blank to use the default green SVG checkmark."
+    },
+    {
+      "type": "image_picker",
+      "id": "icon_cross",
+      "label": "Custom Cross Icon",
+      "info": "Leave blank to use the default black SVG cross."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature Row",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Feature Name",
+          "default": "Dermatologically Tested"
+        },
+        {
+          "type": "image_picker",
+          "id": "icon_image",
+          "label": "Feature Image Icon",
+          "info": "Upload an image to override the default SVG icon."
+        },
+        {
+          "type": "html",
+          "id": "icon_svg",
+          "label": "Default SVG Code",
+          "info": "The default SVG icon code. You can safely ignore this if you upload an image above."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Comparison Table",
+      "blocks": [
+        { 
+          "type": "feature", 
+          "settings": { 
+            "text": "Dermatologically Tested",
+            "icon_svg": "<svg fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\" d=\"M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z\"></path></svg>"
+          } 
+        },
+        { 
+          "type": "feature", 
+          "settings": { 
+            "text": "No Harsh Chemicals",
+            "icon_svg": "<svg fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\" d=\"M3 21c3 0 7-1 7-8V5c0-1.252.756-2.017 2-2s2 .748 2 2v8c0 7 4 8 7 8M12 10c0-1.252.756-2.017 2-2s2 .748 2 2\"></path><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\" d=\"M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z\" opacity=\"0.3\"></path></svg>"
+          } 
+        },
+        { 
+          "type": "feature", 
+          "settings": { 
+            "text": "Suitable for All Skin Types",
+            "icon_svg": "<svg fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\" d=\"M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z\"></path></svg>"
+          } 
+        },
+        { 
+          "type": "feature", 
+          "settings": { 
+            "text": "Visible Glow Results",
+            "icon_svg": "<svg fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\" d=\"M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z\"></path></svg>"
+          } 
+        },
+        { 
+          "type": "feature", 
+          "settings": { 
+            "text": "Skin-Friendly Ingredients",
+            "icon_svg": "<svg fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\" d=\"M12 3v1m0 16a4.5 4.5 0 100-9 4.5 4.5 0 000 9zm0 0V9m0 0a2.5 2.5 0 100 5 2.5 2.5 0 000-5z\" opacity=\"0.3\"></path><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\" d=\"M12 21a5 5 0 005-5c0-3.333-5-10-5-10S7 12.667 7 16a5 5 0 005 5z\"></path></svg>"
+          } 
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

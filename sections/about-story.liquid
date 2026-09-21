@@ -21,7 +21,7 @@
     </div>
 
     {%- if section.blocks.size > 0 -%}
-      <ol class="about-story__timeline">
+      <ol class="u-flex u-flex-col about-story__timeline">
         {%- for block in section.blocks -%}
           <li class="about-story__milestone" {{ block.shopify_attributes }}>
             <span class="about-story__year">{{ block.settings.year }}</span>
@@ -39,8 +39,8 @@
     {%- endif -%}
 
     {%- if section.settings.founder_name != blank -%}
-      <div class="about-story__founder">
-        <div class="about-story__founder-media">
+      <div class="u-flex u-items-center about-story__founder">
+        <div class="u-flex u-items-center u-justify-center about-story__founder-media">
           {%- if section.settings.founder_image != blank -%}
             {{ section.settings.founder_image | image_url: width: 160 | image_tag: loading: 'lazy', width: 80, height: 80, alt: section.settings.founder_name }}
           {%- else -%}
@@ -68,6 +68,7 @@
 .about-story__eyebrow {
   font-size: 12px;
   font-weight: 600;
+  font-family: var(--font-accent);
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--color-secondary);
@@ -98,8 +99,6 @@
   margin: 0 auto;
   padding: 0;
   max-width: 720px;
-  display: flex;
-  flex-direction: column;
   gap: 28px;
   border-left: 2px solid var(--color-surface);
 }
@@ -122,9 +121,9 @@
 
 .about-story__year {
   display: block;
-  font-family: var(--font-heading);
   font-size: 18px;
   font-weight: 600;
+  font-family: var(--font-accent);
   color: var(--color-secondary);
   margin-bottom: 4px;
 }
@@ -132,6 +131,7 @@
 .about-story__milestone-title {
   font-size: 16px;
   font-weight: 600;
+  font-family: var(--font-accent);
   color: var(--color-primary);
   margin: 0 0 6px;
 }
@@ -144,8 +144,6 @@
 }
 
 .about-story__founder {
-  display: flex;
-  align-items: center;
   gap: 16px;
   max-width: 720px;
   margin: 48px auto 0;
@@ -160,9 +158,6 @@
   border-radius: 50%;
   overflow: hidden;
   background: var(--color-surface);
-  display: flex;
-  align-items: center;
-  justify-content: center;
   color: var(--color-primary);
 }
 
@@ -175,6 +170,7 @@
 .about-story__founder-name {
   font-size: 15px;
   font-weight: 600;
+  font-family: var(--font-accent);
   color: var(--color-primary);
   margin: 0;
 }
@@ -182,6 +178,7 @@
 .about-story__founder-role {
   font-size: 12px;
   font-weight: 600;
+  font-family: var(--font-accent);
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: #7c8a90;

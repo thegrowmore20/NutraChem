@@ -4,8 +4,8 @@
 
     <div id="MainCartContent" class="cart-page__content" data-section-id="{{ section.id }}">
       {%- if cart.item_count > 0 -%}
-        <div class="cart-page__table" role="table">
-          <div class="cart-page__row cart-page__row--head" role="row">
+        <div class="u-flex u-flex-col cart-page__table" role="table" aria-label="{{ 'general.cart.title' | t }}">
+          <div class="u-grid u-items-center cart-page__row cart-page__row--head" role="row">
             <span role="columnheader">{{ 'general.cart.product' | t }}</span>
             <span role="columnheader">{{ 'general.cart.price' | t }}</span>
             <span role="columnheader">{{ 'general.cart.quantity' | t }}</span>
@@ -13,10 +13,15 @@
           </div>
 
           {%- for item in cart.items -%}
-            <div class="cart-page__row" role="row" data-cart-item data-line="{{ forloop.index }}">
-              <div class="cart-page__product" role="cell">
+            <div class="u-grid u-items-center cart-page__row" role="row" data-cart-item data-line="{{ forloop.index }}">
+              <div class="u-flex cart-page__product" role="cell">
                 <a href="{{ item.url }}" class="cart-page__product-media">
-                  {{ item.image | image_url: width: 200 | image_tag: loading: 'lazy', widths: '100, 150, 200', width: 100, height: 100, alt: item.image.alt | default: item.product.title }}
+                  {%- if item.image -%}
+                    {{ item.image | image_url: width: 140 | image_tag: loading: 'lazy', widths: '70, 140', sizes: '70px', width: 70, height: 70, alt: item.product.title }}
+                  {%- else -%}
+                    <span class="visually-hidden">{{ item.product.title | escape }}</span>
+                    {{ 'product-1' | placeholder_svg_tag }}
+                  {%- endif -%}
                 </a>
                 <div class="cart-page__product-body">
                   <a href="{{ item.url }}" class="cart-page__product-title">{{ item.product.title }}</a>
@@ -26,7 +31,7 @@
                   {%- if item.line_level_discount_allocations.size > 0 -%}
                     <div class="cart-page__product-discounts">
                       {%- for discount_allocation in item.line_level_discount_allocations -%}
-                        <span class="cart-page__discount-badge">
+                        <span class="u-inline-flex u-items-center cart-page__discount-badge">
                           {% render 'icon', name: 'tag' %}
                           {{ discount_allocation.discount_application.title }}
                         </span>
@@ -38,22 +43,25 @@
                   </button>
                 </div>
               </div>
-              <div class="cart-page__price" role="cell">
+              <div class="u-flex cart-page__price" role="cell">
+                <span class="price-item price-item--regular">{{ item.price | money }}</span>
                 {%- if item.variant.compare_at_price > item.variant.price -%}
                   <s class="price-item price-item--compare">{{ item.variant.compare_at_price | money }}</s>
+                  <span class="cart-page__save-badge">Save {{ item.variant.compare_at_price | minus: item.price | money }}</span>
                 {%- endif -%}
-                <span class="price-item price-item--regular">{{ item.price | money }}</span>
               </div>
               <div class="cart-page__quantity" role="cell">
-                <div class="cart-page__qty" role="group" aria-label="{{ 'general.cart.quantity' | t }}">
+                <div class="u-flex u-items-center cart-page__qty" role="group" aria-label="{{ 'general.cart.quantity' | t }}">
                   <button type="button" class="cart-page__qty-btn" data-cart-qty-decrease aria-label="{{ 'general.cart.decrease_quantity' | t }}">&minus;</button>
                   <input
                     type="number"
+                    id="CartPageQuantity-{{ section.id }}-{{ forloop.index }}"
+                    name="updates[]"
                     data-cart-qty-input
                     value="{{ item.quantity }}"
                     min="0"
                     class="cart-page__qty-input"
-                    aria-label="{{ 'general.cart.quantity' | t }}"
+                    aria-label="{{ 'general.cart.quantity' | t }}: {{ item.product.title | escape }}"
                   >
                   <button type="button" class="cart-page__qty-btn" data-cart-qty-increase aria-label="{{ 'general.cart.increase_quantity' | t }}">+</button>
                 </div>
@@ -63,12 +71,12 @@
           {%- endfor -%}
         </div>
 
-        <div class="cart-page__footer">
-          <div class="cart-page__subtotal">
+        <div class="u-flex u-flex-col cart-page__footer">
+          <div class="u-flex cart-page__subtotal">
             <span>{{ 'general.cart.subtotal' | t }}</span>
             <span>{{ cart.total_price | money }}</span>
           </div>
-          <div class="cart-page__actions">
+          <div class="u-flex cart-page__actions">
             <a href="/checkout" class="button button--accent">{{ 'general.cart.checkout' | t }}</a>
           </div>
         </div>
@@ -114,15 +122,11 @@
 }
 
 .cart-page__table {
-  display: flex;
-  flex-direction: column;
 }
 
 .cart-page__row {
-  display: grid;
   grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) 120px minmax(0, 1fr);
   gap: 20px;
-  align-items: center;
   padding-block: 20px;
   border-bottom: 1px solid var(--color-surface);
 }
@@ -130,6 +134,7 @@
 .cart-page__row--head {
   font-size: 13px;
   font-weight: 600;
+  font-family: var(--font-accent);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   color: #55636b;
@@ -138,7 +143,7 @@
 
 @media screen and (max-width: 749px) {
   .cart-page__row {
-    grid-template-columns: 1fr;
+    grid-template-columns: 70px minmax(0, 1fr);
     gap: 10px;
   }
 
@@ -146,15 +151,35 @@
     display: none;
   }
 
-  .cart-page__price,
+  /* On mobile: price (unit regular + compare) is hidden;
+     only line-total (final_line_price) is kept. */
+  .cart-page__price {
+    display: none;
+  }
+
   .cart-page__quantity,
   .cart-page__line-total {
-    padding-left: 96px;
+    grid-column: 2;
+  }
+
+  .cart-page__row .cart-page__product {
+    display: grid;
+    grid-template-columns: 70px minmax(0, 1fr);
+    grid-column: 1 / -1;
+    gap: 10px;
+  }
+
+  .cart-page__qty .cart-page__qty-btn,
+  .cart-page__qty .cart-page__qty-input {
+    width: 30px;
+    min-width: 30px;
+    height: 30px;
+    padding: 0;
+    font-size: 14px;
   }
 }
 
 .cart-page__product {
-  display: flex;
   gap: 16px;
   min-width: 0;
 }
@@ -163,9 +188,14 @@
   min-width: 0;
 }
 
-.cart-page__product-media img {
-  width: 90px;
-  height: 90px;
+.cart-page__product-media {
+  flex: 0 0 70px;
+}
+
+.cart-page__product-media img,
+.cart-page__product-media svg {
+  width: 70px;
+  height: 70px;
   object-fit: cover;
   border-radius: var(--radius-s);
   background: var(--color-surface);
@@ -174,6 +204,7 @@
 .cart-page__product-title {
   font-size: 15px;
   font-weight: 600;
+  font-family: var(--font-accent);
   color: var(--color-primary);
   display: block;
   margin-bottom: 6px;
@@ -191,13 +222,12 @@
 }
 
 .cart-page__discount-badge {
-  display: inline-flex;
-  align-items: center;
   gap: 4px;
   background: var(--button-primary, var(--color-secondary));
   color: #fff;
   font-size: 11px;
   font-weight: 600;
+  font-family: var(--font-accent);
   padding: 3px 8px;
   border-radius: var(--radius-s);
 }
@@ -214,16 +244,22 @@
 }
 
 .cart-page__price {
-  display: flex;
   align-items: baseline;
+  flex-wrap: wrap;
   gap: 8px;
   font-size: 15px;
   min-width: 0;
 }
 
+.cart-page__save-badge {
+  background: var(--button-primary, var(--color-secondary));
+  color: #fff;
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: var(--radius-s);
+}
+
 .cart-page__qty {
-  display: flex;
-  align-items: center;
   width: fit-content;
   border: 1px solid var(--color-surface);
   border-radius: var(--radius-s);
@@ -259,28 +295,31 @@
 .cart-page__line-total {
   font-size: 15px;
   font-weight: 600;
+  font-family: var(--font-accent);
   color: var(--color-primary);
 }
 
 .cart-page__footer {
-  display: flex;
-  flex-direction: column;
   align-items: flex-end;
-  gap: 20px;
-  padding-top: 24px;
+  gap: 0.8rem;
+  padding-top: 1.5rem;
 }
 
 .cart-page__subtotal {
-  display: flex;
   gap: 12px;
   font-size: 18px;
   font-weight: 600;
+  font-family: var(--font-accent);
   color: var(--color-primary);
 }
 
 .cart-page__actions {
-  display: flex;
   gap: 12px;
+}
+
+.cart-page__actions .button {
+  width: 220px;
+  max-width: 100%;
 }
 
 .cart-page__empty {
@@ -291,6 +330,7 @@
 .cart-page__empty-heading {
   font-size: 20px;
   font-weight: 600;
+  font-family: var(--font-accent);
   color: var(--color-primary);
   margin: 0 0 20px;
 }

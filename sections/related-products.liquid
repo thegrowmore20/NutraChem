@@ -19,7 +19,7 @@
       {%- if section.settings.heading != blank -%}
         <h2 class="section-heading">{{ section.settings.heading }}</h2>
       {%- endif -%}
-      <div class="related-products__grid">
+      <div class="u-grid related-products__grid">
         {%- for recommended_product in recommendations.products -%}
           {% render 'product-card', product: recommended_product %}
         {%- endfor -%}
@@ -29,8 +29,11 @@
 </product-recs>
 
 {% stylesheet %}
+.related-products {
+  display: block;
+}
+
 .related-products__grid {
-  display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
 }
@@ -46,8 +49,11 @@
 {% javascript %}
 class ProductRecommendations extends HTMLElement {
   #observer
+  #reviewTimer
+  #request
 
   connectedCallback() {
+    this.#observer?.disconnect()
     this.#observer = new IntersectionObserver(
       (entries, observer) => {
         if (!entries[0].isIntersecting) return
@@ -59,16 +65,40 @@ class ProductRecommendations extends HTMLElement {
     this.#observer.observe(this)
   }
 
+  disconnectedCallback() {
+    this.#observer?.disconnect()
+    this.#request?.abort()
+    clearTimeout(this.#reviewTimer)
+  }
+
+  #refreshReviews(attempt = 0) {
+    if (!this.isConnected) return
+    if (typeof window.avadaAirReviewRerender === 'function') {
+      window.avadaAirReviewRerender()
+    } else if (attempt < 20) {
+      this.#reviewTimer = setTimeout(() => this.#refreshReviews(attempt + 1), 500)
+    }
+  }
+
   async #load() {
     try {
-      const response = await fetch(`${this.dataset.url}&product_id=${this.dataset.productId}`)
+      this.#request?.abort()
+      clearTimeout(this.#reviewTimer)
+      this.#request = new AbortController()
+      const response = await fetch(`${this.dataset.url}&product_id=${this.dataset.productId}`, {
+        signal: this.#request.signal,
+      })
+      if (!response.ok) throw new Error(`Recommendations request failed: ${response.status}`)
       const text = await response.text()
+      if (!this.isConnected) return
       const doc = new DOMParser().parseFromString(text, 'text/html')
       const newContent = doc.querySelector('product-recs')
       if (newContent && newContent.innerHTML.trim().length) {
         this.innerHTML = newContent.innerHTML
+        this.#refreshReviews()
       }
     } catch (error) {
+      if (error.name === 'AbortError') return
       console.error('Related products error:', error)
     }
   }
@@ -105,8 +135,7 @@ if (!customElements.get('product-recs')) {
       "options": [
         { "value": "2", "label": "2" },
         { "value": "3", "label": "3" },
-        { "value": "4", "label": "4" },
-        { "value": "5", "label": "5" }
+        { "value": "4", "label": "4" }        
       ],
       "default": "4"
     },

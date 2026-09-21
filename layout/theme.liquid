@@ -26,6 +26,12 @@
     <style>
       {{ settings.font_heading | font_face: font_display: 'swap' }}
       {{ settings.font_body | font_face: font_display: 'swap' }}
+      {{ settings.font_subheading | font_face: font_display: 'swap' }}
+      {{ settings.font_accent | font_face: font_display: 'swap' }}
+      {%- assign subheading_medium = settings.font_subheading | font_modify: 'weight', '500' -%}
+      {%- assign accent_semibold = settings.font_accent | font_modify: 'weight', '600' -%}
+      {{ subheading_medium | font_face: font_display: 'swap' }}
+      {{ accent_semibold | font_face: font_display: 'swap' }}
 
       :root {
         --color-primary: {{ settings.color_primary }};
@@ -39,6 +45,12 @@
         --button-secondary: {{ settings.button_secondary_color }};
         --font-heading: {{ settings.font_heading.family }}, {{ settings.font_heading.fallback_families }};
         --font-body: {{ settings.font_body.family }}, {{ settings.font_body.fallback_families }};
+        --font-subheading: {{ settings.font_subheading.family }}, {{ settings.font_subheading.fallback_families }};
+        --font-subheading-weight: {{ settings.font_subheading.weight }};
+        --font-subheading-style: {{ settings.font_subheading.style }};
+        --font-accent: {{ settings.font_accent.family }}, {{ settings.font_accent.fallback_families }};
+        --font-accent-weight: {{ settings.font_accent.weight }};
+        --font-accent-style: {{ settings.font_accent.style }};
       }
     </style>
 
@@ -63,7 +75,7 @@
     {{ content_for_header }}
   </head>
   <body class="template-{{ template.name }}">
-    <a class="skip-link" href="#MainContent">Skip to content</a>
+    <a class="skip-link" href="#MainContent">{{ 'general.accessibility.skip_to_content' | t }}</a>
 
     <div class="scroll-progress-bar" id="ScrollProgressBar"></div>
 
@@ -75,7 +87,9 @@
     </main>
 
     {% sections 'footer-group' %}
-    {% section 'fix-footer-mobile' %}
+    {% unless request.page_type == 'product' %}
+      {% section 'fix-footer-mobile' %}
+    {% endunless %}
 
     <script>
       window.routes = {

@@ -1,5 +1,5 @@
 <section
-  class="split-banner section-padding{% if section.settings.width == 'container' %} container{% endif %}{% if section.settings.layout == 'image_right' %} split-banner--reverse{% endif %}{% if section.settings.image_2 %} split-banner--triptych{% endif %}"
+  class="u-grid split-banner section-padding{% if section.settings.width == 'container' %} container{% endif %}{% if section.settings.layout == 'image_right' %} split-banner--reverse{% endif %}{% if section.settings.image_2 %} split-banner--triptych{% endif %}"
   style="--padding-top: {{ section.settings.padding_top }}px; --padding-bottom: {{ section.settings.padding_bottom }}px;"
 >
   <div class="split-banner__media">
@@ -13,7 +13,7 @@
   <div class="split-banner__content{% if section.settings.style == 'light' %} split-banner__content--light{% endif %}">
     <h2 class="split-banner__title">{{ section.settings.heading }}</h2>
     {%- if section.settings.subheading != blank -%}
-      <p class="split-banner__text" style="font-weight:600;margin-bottom:16px;">{{ section.settings.subheading }}</p>
+      <p class="split-banner__text" style="font-weight:600;font-family: var(--font-accent);margin-bottom:16px;">{{ section.settings.subheading }}</p>
     {%- endif -%}
     <div class="split-banner__text">{{ section.settings.text }}</div>
     {%- if section.settings.button_label != blank -%}
@@ -35,7 +35,6 @@
 
 {% stylesheet %}
 .split-banner {
-  display: grid;
   grid-template-columns: 1fr;
 }
 
@@ -94,9 +93,9 @@
 }
 
 .split-banner__title {
-  font-family: var(--font-heading);
   margin: 0 0 20px;
   font-weight: 500;
+  font-family: var(--font-subheading);
   line-height: 1.2;
   font-size: clamp(28px, 22.88px + 1.37vw, 42px);
 }

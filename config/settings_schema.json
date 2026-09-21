@@ -32,6 +32,18 @@
         "id": "font_body",
         "label": "Body font",
         "default": "poppins_n4"
+      },
+      {
+        "type": "font_picker",
+        "id": "font_subheading",
+        "label": "Subheading font",
+        "default": "poppins_n4"
+      },
+      {
+        "type": "font_picker",
+        "id": "font_accent",
+        "label": "Accent font",
+        "default": "poppins_n4"
       }
     ]
   },

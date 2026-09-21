@@ -20,7 +20,7 @@
       {%- endif -%}
 
       {%- if section.settings.button_1_label != blank or section.settings.button_2_label != blank -%}
-        <div class="about-cta__actions">
+        <div class="u-flex u-items-center u-justify-center about-cta__actions">
           {%- if section.settings.button_1_label != blank -%}
             <a href="{{ section.settings.button_1_link | default: routes.all_products_collection_url }}" class="button button--accent">{{ section.settings.button_1_label }}</a>
           {%- endif -%}
@@ -31,9 +31,9 @@
       {%- endif -%}
 
       {%- if section.blocks.size > 0 -%}
-        <div class="about-cta__badges">
+        <div class="u-flex u-items-center u-justify-center about-cta__badges">
           {%- for block in section.blocks -%}
-            <span class="about-cta__badge" {{ block.shopify_attributes }}>
+            <span class="u-inline-flex u-items-center about-cta__badge" {{ block.shopify_attributes }}>
               {%- if block.settings.icon != blank -%}<span aria-hidden="true">{{ block.settings.icon }}</span>{%- endif -%}
               {{ block.settings.label }}
             </span>
@@ -58,6 +58,7 @@
 .about-cta__eyebrow {
   font-size: 12px;
   font-weight: 600;
+  font-family: var(--font-accent);
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--color-secondary);
@@ -77,18 +78,12 @@
 }
 
 .about-cta__actions {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   gap: 16px;
   flex-wrap: wrap;
   margin-top: 28px;
 }
 
 .about-cta__badges {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   flex-wrap: wrap;
   gap: 10px 24px;
   margin-top: 32px;
@@ -97,11 +92,10 @@
 }
 
 .about-cta__badge {
-  display: inline-flex;
-  align-items: center;
   gap: 6px;
   font-size: 13px;
   font-weight: 500;
+  font-family: var(--font-subheading);
   color: var(--color-primary);
 }
 {% endstylesheet %}

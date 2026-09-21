@@ -29,6 +29,7 @@
     <div class="price-range__progress" data-price-progress></div>
     <input
       type="range"
+      id="PriceThumbMin-{{ section.id }}-{{ filter.param_name }}"
       class="price-range__thumb price-range__thumb--min"
       data-price-thumb-min
       min="0"
@@ -40,6 +41,7 @@
     <input
       type="range"
       class="price-range__thumb price-range__thumb--max"
+      id="PriceThumbMax-{{ section.id }}-{{ filter.param_name }}"
       data-price-thumb-max
       min="0"
       max="{{ range_max }}"
@@ -50,7 +52,7 @@
   </div>
   <div class="price-range__values">
     <div class="price-range__field">
-      <label for="PriceMin-{{ filter.param_name }}" class="visually-hidden">{{ 'products.facets.from' | t }}</label>
+      <label for="PriceMin-{{ section.id }}-{{ filter.param_name }}" class="visually-hidden">{{ 'products.facets.from' | t }}</label>
       <div class="price-range__input-wrap">
         <span class="price-range__currency" aria-hidden="true">{{ cart.currency.symbol }}</span>
         <input
@@ -58,7 +60,7 @@
           inputmode="decimal"
           class="price-range__input"
           name="{{ filter.min_value.param_name }}"
-          id="PriceMin-{{ filter.param_name }}"
+          id="PriceMin-{{ section.id }}-{{ filter.param_name }}"
           data-price-input-min
           value="{{ min_value | default: 0 }}"
         >
@@ -66,7 +68,7 @@
     </div>
     <span class="price-range__separator" aria-hidden="true">&ndash;</span>
     <div class="price-range__field">
-      <label for="PriceMax-{{ filter.param_name }}" class="visually-hidden">{{ 'products.facets.to' | t }}</label>
+      <label for="PriceMax-{{ section.id }}-{{ filter.param_name }}" class="visually-hidden">{{ 'products.facets.to' | t }}</label>
       <div class="price-range__input-wrap">
         <span class="price-range__currency" aria-hidden="true">{{ cart.currency.symbol }}</span>
         <input
@@ -74,7 +76,7 @@
           inputmode="decimal"
           class="price-range__input"
           name="{{ filter.max_value.param_name }}"
-          id="PriceMax-{{ filter.param_name }}"
+          id="PriceMax-{{ section.id }}-{{ filter.param_name }}"
           data-price-input-max
           value="{{ max_value }}"
         >

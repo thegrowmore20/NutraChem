@@ -5,10 +5,10 @@
     {%- assign left_blocks = section.blocks | where: 'type', 'feature' | slice: 0, 2 -%}
     {%- assign right_blocks = section.blocks | where: 'type', 'feature' | slice: 2, 2 -%}
 
-    <div class="features-grid">
-      <div class="features-col">
+    <div class="u-grid u-items-center features-grid">
+      <div class="u-flex u-flex-col features-col">
         {%- for block in left_blocks -%}
-          <div class="feature-item" {{ block.shopify_attributes }}>
+          <div class="u-flex feature-item" {{ block.shopify_attributes }}>
             {%- if block.settings.image -%}
               <span class="feature-item__icon">
                 {{ block.settings.image | image_url: width: 88 | image_tag: loading: 'lazy', width: 88, height: 88, alt: '' }}
@@ -22,7 +22,7 @@
         {%- endfor -%}
       </div>
 
-      <div class="features-media">
+      <div class="u-flex u-justify-center features-media">
         {%- if section.settings.image -%}
           {%- assign media_h = 700 | divided_by: section.settings.image.aspect_ratio | round -%}
           {{ section.settings.image | image_url: width: 700 | image_tag: loading: 'lazy', widths: '350, 500, 700', sizes: '(min-width: 990px) 33vw, 100vw', width: 700, height: media_h, alt: section.settings.image.alt | default: section.settings.heading }}
@@ -31,9 +31,9 @@
         {%- endif -%}
       </div>
 
-      <div class="features-col">
+      <div class="u-flex u-flex-col features-col">
         {%- for block in right_blocks -%}
-          <div class="feature-item" {{ block.shopify_attributes }}>
+          <div class="u-flex feature-item" {{ block.shopify_attributes }}>
             {%- if block.settings.image -%}
               <span class="feature-item__icon">
                 {{ block.settings.image | image_url: width: 88 | image_tag: loading: 'lazy', width: 88, height: 88, alt: '' }}
@@ -52,10 +52,8 @@
 
 {% stylesheet %}
 .features-grid {
-  display: grid;
   grid-template-columns: 1fr;
   gap: 40px;
-  align-items: center;
 }
 
 @media screen and (min-width: 990px) {
@@ -65,13 +63,10 @@
 }
 
 .features-col {
-  display: flex;
-  flex-direction: column;
   gap: 36px;
 }
 
 .feature-item {
-  display: flex;
   gap: 18px;
 }
 
@@ -92,6 +87,7 @@
   color: #153343;
   margin: 0 0 8px;
   font-weight: 600;
+  font-family: var(--font-accent);
 }
 
 .feature-item__text {
@@ -107,8 +103,6 @@
 
 .features-media {
   position: relative;
-  display: flex;
-  justify-content: center;
 }
 
 @media screen and (max-width: 989px) {

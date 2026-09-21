@@ -2,7 +2,7 @@
   <div class="container">
     <h2 class="section-heading">{{ section.settings.heading | default: 'Best Sellers' }}</h2>
 
-    <div class="product-grid">
+    <div class="u-grid product-grid">
       {%- assign collection = collections[section.settings.collection] -%}
       {%- if collection != blank and collection.products.size > 0 -%}
         {%- for product in collection.products limit: section.settings.products_to_show -%}
@@ -19,7 +19,6 @@
 
 {% stylesheet %}
 .product-grid {
-  display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
 }

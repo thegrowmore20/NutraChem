@@ -1,25 +1,53 @@
 <section
-  class="hero hero--height-{{ section.settings.height }}"
-  {%- if section.settings.height == 'custom' %} style="--hero-height: {{ section.settings.custom_height }}px;"{% endif -%}
+  class="u-flex hero hero--height-{{ section.settings.height }} hero--height-mobile-{{ section.settings.mobile_height | default: section.settings.height }}"
+  style="
+    {%- if section.settings.height == 'custom' %}--hero-height: {{ section.settings.custom_height }}px;{% endif -%}
+    {%- if section.settings.mobile_height == 'custom' %}--hero-height-mobile: {{ section.settings.custom_height_mobile }}px;{% endif -%}
+  "
 >
-  {%- if section.settings.image -%}
-    {%- assign hero_h = 3200 | divided_by: section.settings.image.aspect_ratio | round -%}
+  {%- assign hero_image = section.settings.image | default: section.settings.mobile_image -%}
+  {%- if hero_image -%}
+    {%- liquid
+      assign hero_h = 3200 | divided_by: hero_image.aspect_ratio | round
+      assign hero_loading = 'lazy'
+      assign hero_priority = 'auto'
+      if section.index == 1
+        assign hero_loading = 'eager'
+        assign hero_priority = 'high'
+      endif
+    -%}
+    <picture class="hero__picture">
+      {%- if section.settings.mobile_image -%}
+        <source
+          media="(max-width: 749px)"
+          srcset="{{ section.settings.mobile_image | image_url: width: 375 }} 375w, {{ section.settings.mobile_image | image_url: width: 550 }} 550w, {{ section.settings.mobile_image | image_url: width: 750 }} 750w, {{ section.settings.mobile_image | image_url: width: 1100 }} 1100w, {{ section.settings.mobile_image | image_url: width: 1500 }} 1500w"
+          sizes="100vw"
+          width="{{ section.settings.mobile_image.width }}"
+          height="{{ section.settings.mobile_image.height }}"
+        >
+      {%- endif -%}
     {{
-      section.settings.image
+      hero_image
       | image_url: width: 3200
       | image_tag:
-        loading: 'eager',
-        fetchpriority: 'high',
+        loading: hero_loading,
+        fetchpriority: hero_priority,
+        sizes: '100vw',
         widths: '750, 990, 1200, 1500, 1920, 2400, 3200',
         width: 3200,
         height: hero_h,
         class: 'hero__image',
-        alt: section.settings.image.alt | default: ''
+        alt: hero_image.alt | default: ''
     }}
+    </picture>
+  {%- endif -%}
+
+  {%- if section.settings.show_overlay -%}
+    <div class="hero__overlay" style="background: {{ section.settings.overlay_color }};"></div>
   {%- endif -%}
 
   {%- if section.settings.heading != blank or section.settings.text != blank or section.settings.button_label != blank -%}
-    <div class="hero__content-wrap container hero__content-wrap--x-{{ section.settings.content_position_x }} hero__content-wrap--y-{{ section.settings.content_position_y }} hero__content-wrap--x-mobile-{{ section.settings.content_position_x_mobile }} hero__content-wrap--y-mobile-{{ section.settings.content_position_y_mobile }}">
+    <div class="u-flex u-items-center hero__content-wrap container hero__content-wrap--x-{{ section.settings.content_position_x }} hero__content-wrap--y-{{ section.settings.content_position_y }} hero__content-wrap--x-mobile-{{ section.settings.content_position_x_mobile }} hero__content-wrap--y-mobile-{{ section.settings.content_position_y_mobile }}">
       <div class="hero__content">
         {%- if section.settings.heading != blank -%}
           <h1 class="hero__heading {{ section.settings.heading_size }}" style="color: {{ section.settings.heading_color }};">{{ section.settings.heading }}</h1>
@@ -28,7 +56,7 @@
           <div class="hero__text">{{ section.settings.text }}</div>
         {%- endif -%}
         {%- if section.settings.button_label != blank -%}
-          <a href="{{ section.settings.button_link | default: routes.all_products_collection_url }}" class="button hero__button">
+          <a href="{{ section.settings.button_link | default: routes.all_products_collection_url }}" class="u-inline-flex button hero__button">
             {{ section.settings.button_label }}
           </a>
         {%- endif -%}
@@ -44,23 +72,24 @@
 }
 
 .hero--height-full {
-  height: 100vh;
+  min-height: 100vh;
+  min-height: 100svh;
 }
 
 .hero--height-small {
-  height: 410px;
+  min-height: 410px;
 }
 
 .hero--height-medium {
-  height: 550px;
+  min-height: 550px;
 }
 
 .hero--height-large {
-  height: 640px;
+  min-height: 640px;
 }
 
 .hero--height-custom {
-  height: var(--hero-height, 640px);
+  min-height: var(--hero-height, 640px);
 }
 
 .hero__image {
@@ -72,11 +101,22 @@
   object-position: center;
 }
 
-.hero__content-wrap {
+.hero__picture {
   position: absolute;
   inset: 0;
-  display: flex;
-  align-items: center;
+  z-index: 0;
+}
+
+.hero__overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.hero__content-wrap {
+  position: relative;
+  z-index: 2;
+  padding-block: 48px;
   justify-content: flex-start;
 }
 
@@ -124,12 +164,32 @@
 }
 
 .hero__button {
-  display: inline-flex;
   background: var(--color-secondary);
   color: #fff;
 }
 
 @media screen and (max-width: 749px) {
+  .hero--height-mobile-full {
+    min-height: 100vh;
+    min-height: 100svh;
+  }
+
+  .hero--height-mobile-small {
+    min-height: 300px;
+  }
+
+  .hero--height-mobile-medium {
+    min-height: 400px;
+  }
+
+  .hero--height-mobile-large {
+    min-height: 500px;
+  }
+
+  .hero--height-mobile-custom {
+    min-height: var(--hero-height-mobile, 400px);
+  }
+
   .hero__content {
     max-width: 320px;
   }
@@ -176,9 +236,15 @@
       "label": "Background image"
     },
     {
+      "type": "image_picker",
+      "id": "mobile_image",
+      "label": "Mobile background image",
+      "info": "Optional. Uses the background image when left empty."
+    },
+    {
       "type": "select",
       "id": "height",
-      "label": "Banner height",
+      "label": "Minimum banner height",
       "options": [
         { "value": "full", "label": "Full height" },
         { "value": "small", "label": "Small (410px)" },
@@ -198,6 +264,42 @@
       "unit": "px",
       "default": 640,
       "visible_if": "{{ section.settings.height == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "mobile_height",
+      "label": "Minimum banner height (mobile)",
+      "options": [
+        { "value": "full", "label": "Full height" },
+        { "value": "small", "label": "Small (300px)" },
+        { "value": "medium", "label": "Medium (400px)" },
+        { "value": "large", "label": "Large (500px)" },
+        { "value": "custom", "label": "Custom" }
+      ],
+      "default": "full"
+    },
+    {
+      "type": "range",
+      "id": "custom_height_mobile",
+      "label": "Custom height (mobile)",
+      "min": 200,
+      "max": 800,
+      "step": 10,
+      "unit": "px",
+      "default": 400,
+      "visible_if": "{{ section.settings.mobile_height == 'custom' }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_overlay",
+      "label": "Show overlay",
+      "default": false
+    },
+    {
+      "type": "color_background",
+      "id": "overlay_color",
+      "label": "Overlay color",
+      "default": "rgba(0, 0, 0, 0.4)"
     },
     {
       "type": "select",

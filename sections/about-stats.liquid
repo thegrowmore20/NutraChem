@@ -13,11 +13,11 @@
     {%- endif -%}
 
     {%- if section.blocks.size > 0 -%}
-      <div class="about-stats__grid">
+      <div class="u-grid about-stats__grid">
         {%- for block in section.blocks -%}
           <div class="about-stats__item" {{ block.shopify_attributes }}>
             {%- if block.settings.icon != blank -%}
-              <span class="about-stats__icon" aria-hidden="true">{{ block.settings.icon }}</span>
+              <span class="u-inline-flex u-items-center u-justify-center about-stats__icon" aria-hidden="true">{{ block.settings.icon }}</span>
             {%- endif -%}
             {%- if block.settings.number != blank -%}
               <p class="about-stats__number">{{ block.settings.number }}</p>
@@ -43,7 +43,6 @@
 }
 
 .about-stats__grid {
-  display: grid;
   grid-template-columns: 1fr;
   gap: 24px;
 }
@@ -68,9 +67,6 @@
 }
 
 .about-stats__icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
   width: 48px;
   height: 48px;
   font-size: 22px;
@@ -80,9 +76,9 @@
 }
 
 .about-stats__number {
-  font-family: var(--font-heading);
   font-size: clamp(28px, 24px + 1.5vw, 40px);
   font-weight: 600;
+  font-family: var(--font-accent);
   color: var(--color-primary);
   margin: 0 0 6px;
 }
@@ -90,6 +86,7 @@
 .about-stats__label {
   font-size: 12px;
   font-weight: 600;
+  font-family: var(--font-accent);
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--color-secondary);

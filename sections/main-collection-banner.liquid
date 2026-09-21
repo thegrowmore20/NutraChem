@@ -32,7 +32,7 @@
     {{ 'collection-1' | placeholder_svg_tag: 'hero__image' }}
   {%- endif -%}
 
-  <div class="hero__content-wrap container hero__content-wrap--x-{{ section.settings.content_position_x }} hero__content-wrap--y-{{ section.settings.content_position_y }} hero__content-wrap--x-mobile-{{ section.settings.content_position_x_mobile }} hero__content-wrap--y-mobile-{{ section.settings.content_position_y_mobile }}">
+  <div class="u-flex u-items-center hero__content-wrap container hero__content-wrap--x-{{ section.settings.content_position_x }} hero__content-wrap--y-{{ section.settings.content_position_y }} hero__content-wrap--x-mobile-{{ section.settings.content_position_x_mobile }} hero__content-wrap--y-mobile-{{ section.settings.content_position_y_mobile }}">
     <div class="hero__content">
       <h1 class="hero__heading {{ section.settings.heading_size }}" style="color: {{ section.settings.heading_color }};">{{ heading }}</h1>
       {%- if show_text -%}
@@ -58,23 +58,23 @@
 }
 
 .hero--height-full {
-  height: 100vh;
+  min-height: 100vh;
 }
 
 .hero--height-small {
-  height: 410px;
+  min-height: 410px;
 }
 
 .hero--height-medium {
-  height: 550px;
+  min-height: 550px;
 }
 
 .hero--height-large {
-  height: 640px;
+  min-height: 640px;
 }
 
 .hero--height-custom {
-  height: var(--hero-height, 640px);
+  min-height: var(--hero-height, 640px);
 }
 
 .hero__image {
@@ -89,8 +89,6 @@
 .hero__content-wrap {
   position: absolute;
   inset: 0;
-  display: flex;
-  align-items: center;
   justify-content: flex-start;
 }
 

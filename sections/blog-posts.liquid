@@ -13,7 +13,7 @@
     <h2 class="section-heading">{{ section.settings.heading | default: 'Blogs' }}</h2>
 
     {%- assign blog = blogs[section.settings.blog] -%}
-    <div class="blogs-section__grid">
+    <div class="u-grid blogs-section__grid">
       {%- if blog != blank and blog.articles.size > 0 -%}
         {%- for article in blog.articles limit: section.settings.articles_count -%}
           {%- render 'article-card',
@@ -29,11 +29,11 @@
       {%- else -%}
         {%- assign placeholder_titles = 'Discover Natural Skincare Secrets,The Truth About Active Ingredients,Building a Routine That Actually Works' | split: ',' -%}
         {%- for placeholder_title in placeholder_titles limit: section.settings.articles_count -%}
-          <article class="blog-listing-card">
+          <article class="u-flex u-flex-col blog-listing-card">
             <span class="blog-listing-card__media">{{ 'lifestyle-2' | placeholder_svg_tag: 'blog-listing-card__placeholder' }}</span>
             <div class="blog-listing-card__body">
               {%- if section.settings.show_date or section.settings.show_author -%}
-                <p class="blog-listing-card__meta">
+                <p class="u-flex u-items-center blog-listing-card__meta">
                   {%- if section.settings.show_date -%}<span>{{ 'now' | date: '%B %d, %Y' }}</span>{%- endif -%}
                   {%- if section.settings.show_date and section.settings.show_author -%}<span aria-hidden="true">&middot;</span>{%- endif -%}
                   {%- if section.settings.show_author -%}<span>{{ shop.name }}</span>{%- endif -%}
@@ -43,12 +43,12 @@
               {%- if section.settings.show_excerpt -%}
                 <p class="blog-listing-card__excerpt">Explore expert skincare tips, ingredient insights, and simple routines to help your skin look and feel its best.</p>
               {%- endif -%}
-              <div class="blog-listing-card__footer">
+              <div class="u-flex u-items-center u-justify-between blog-listing-card__footer">
                 <a class="blog-listing-card__link" href="{{ routes.root_url }}blogs">
                   {{ 'blogs.article.read_more' | t }}<span class="visually-hidden"> &ndash; {{ placeholder_title }}</span>
                 </a>
                 {%- if section.settings.show_comments -%}
-                  <span class="blog-listing-card__comments">
+                  <span class="u-inline-flex u-items-center blog-listing-card__comments">
                     {% render 'icon', name: 'message-chat-circle' %}
                     {{ 'blogs.article.comments' | t: count: 0 }}
                   </span>
@@ -64,7 +64,6 @@
 
 {% stylesheet %}
 .blogs-section__grid {
-  display: grid;
   grid-template-columns: 1fr;
   gap: 28px;
 }
@@ -82,8 +81,6 @@
 }
 
 .blog-listing-card {
-  display: flex;
-  flex-direction: column;
 }
 
 .blog-listing-card__media {
@@ -106,11 +103,10 @@
 }
 
 .blog-listing-card__meta {
-  display: flex;
-  align-items: center;
   gap: 6px;
   font-size: 12px;
   font-weight: 600;
+  font-family: var(--font-accent);
   letter-spacing: 0.04em;
   text-transform: uppercase;
   color: #7c8a90;
@@ -120,6 +116,7 @@
 .blog-listing-card__title {
   font-size: 18px;
   font-weight: 600;
+  font-family: var(--font-accent);
   line-height: 1.35;
   margin: 0 0 10px;
 }
@@ -140,9 +137,6 @@
 }
 
 .blog-listing-card__footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
   gap: 12px;
   flex-wrap: wrap;
 }
@@ -150,13 +144,12 @@
 .blog-listing-card__link {
   font-size: 14px;
   font-weight: 600;
+  font-family: var(--font-accent);
   color: var(--color-secondary);
   text-decoration: underline;
 }
 
 .blog-listing-card__comments {
-  display: inline-flex;
-  align-items: center;
   gap: 6px;
   font-size: 13px;
   color: #7c8a90;

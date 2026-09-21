@@ -10,7 +10,46 @@
 >
   {%- if section.settings.heading != blank -%}
     <div class="container">
-      <h2 class="custom-embed-section__heading h2">{{ section.settings.heading }}</h2>
+      <h2 class="custom-embed-section__heading h2{% if section.settings.link_text != blank %} custom-embed-section__heading--with-link{% endif %}">{{ section.settings.heading }}</h2>
+    </div>
+  {%- endif -%}
+
+  {%- if section.settings.link_text != blank -%}
+    {%- liquid
+      assign link_tag = 'span'
+      if section.settings.link_url != blank
+        assign link_tag = 'a'
+      endif
+    -%}
+    <div class="u-flex u-justify-center custom-embed-section__link-row container">
+      <{{ link_tag }}
+        class="u-inline-flex u-items-center u-justify-center custom-embed-section__link"
+        {% if section.settings.link_url != blank %}href="{{ section.settings.link_url | escape }}"{% endif %}
+        {% if section.settings.link_url != blank %}
+          {% if section.settings.link_new_tab %}target="_blank" rel="noopener noreferrer"{% endif %}
+        {% endif %}
+      >
+        {%- if section.settings.link_image != blank -%}
+          <span class="u-inline-flex custom-embed-section__link-icon" aria-hidden="true">
+            {{ section.settings.link_image | image_url: width: 64 | image_tag: widths: '24, 48, 64', sizes: '24px', width: 24, height: 24, loading: 'lazy', alt: '' }}
+          </span>
+        {%- elsif section.settings.link_svg != blank -%}
+          <span class="u-inline-flex custom-embed-section__link-icon" aria-hidden="true">
+            {{ section.settings.link_svg }}
+          </span>
+        {%- endif -%}
+        <span class="custom-embed-section__link-text">{{ section.settings.link_text | escape }}</span>
+        {% if section.settings.link_url != blank %}
+          {% if section.settings.link_new_tab %}
+            <span class="visually-hidden">{{ 'general.accessibility.opens_in_new_tab' | t }}</span>
+          {% endif %}
+        {% endif %}
+        {%- if section.settings.link_url != blank -%}
+          <span class="u-inline-flex custom-embed-section__link-arrow" aria-hidden="true">
+            {% render 'icon', name: 'chevron-right' %}
+          </span>
+        {%- endif -%}
+      </{{ link_tag }}>
     </div>
   {%- endif -%}
 
@@ -46,6 +85,64 @@
   line-height: 0;
 }
 
+.custom-embed-section__heading--with-link {
+  margin-bottom: 8px;
+}
+
+.custom-embed-section__link-row {
+  margin-bottom: 32px;
+}
+
+.custom-embed-section__link {
+  gap: 6px;
+  min-height: 44px;
+  max-width: 100%;
+  color: var(--color-primary);
+  font-size: 15px;
+  font-weight: 600;
+  font-family: var(--font-accent);
+  line-height: 1.4;
+  text-align: center;
+}
+
+.custom-embed-section__link[href]:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.custom-embed-section__link:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 4px;
+}
+
+.custom-embed-section__link-text {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.custom-embed-section__link-icon {
+  flex: 0 0 24px;
+  width: 24px;
+  height: 24px;
+}
+
+.custom-embed-section__link-icon > img,
+.custom-embed-section__link-icon > svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.custom-embed-section__link-arrow {
+  flex: 0 0 12px;
+}
+
+.custom-embed-section__link-arrow > svg {
+  width: 12px;
+  height: 12px;
+}
+
 .custom-embed-section__embed iframe {
   width: 100%;
   border: 0;
@@ -68,6 +165,43 @@
       "id": "heading",
       "label": "Heading",
       "info": "Optional - leave blank to hide."
+    },
+    {
+      "type": "header",
+      "content": "Link below heading"
+    },
+    {
+      "type": "text",
+      "id": "link_text",
+      "label": "Text",
+      "info": "Leave blank to hide the link row."
+    },
+    {
+      "type": "url",
+      "id": "link_url",
+      "label": "Link",
+      "info": "Adding a link makes the row clickable and shows an arrow."
+    },
+    {
+      "type": "image_picker",
+      "id": "link_image",
+      "label": "Icon image"
+    },
+    {
+      "type": "checkbox",
+      "id": "link_new_tab",
+      "label": "Open link in a new tab",
+      "default": false
+    },
+    {
+      "type": "html",
+      "id": "link_svg",
+      "label": "SVG icon code",
+      "info": "Paste SVG markup. Used when no icon image is selected."
+    },
+    {
+      "type": "header",
+      "content": "Content"
     },
     {
       "type": "checkbox",

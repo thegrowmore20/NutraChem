@@ -40,7 +40,7 @@
 >
   <div class="container">
     <div class="search-results__searchbar">
-      <form action="{{ routes.search_url }}" method="get" role="search" class="search-results__form">
+      <form action="{{ routes.search_url }}" method="get" role="search" class="u-flex search-results__form">
         <input type="hidden" name="type" value="product">
         <input
           type="search"
@@ -50,7 +50,7 @@
           placeholder="{{ 'general.search.placeholder' | t }}"
           aria-label="{{ 'general.search.placeholder' | t }}"
         >
-        <button type="submit" class="search-results__submit" aria-label="{{ 'general.search.submit' | t }}">
+        <button type="submit" class="u-flex u-items-center u-justify-center search-results__submit" aria-label="{{ 'general.search.submit' | t }}">
           {% render 'icon', name: 'search' %}
         </button>
       </form>
@@ -69,7 +69,7 @@
     {%- else -%}
       {%- paginate search.results by section.settings.products_per_page -%}
         <div class="collection-layout{% if show_sidebar %} collection-layout--has-sidebar{% endif %}">
-          <div class="collection-topbar">
+          <div class="u-grid u-items-center collection-topbar">
             {%- if show_sidebar -%}
               <search-filters class="collection-filters">
                 <button
@@ -83,16 +83,16 @@
                 </button>
                 <div class="collection-filters__backdrop" data-filters-backdrop hidden></div>
                 <div
-                  class="collection-filters__panel"
+                  class="u-flex u-flex-col collection-filters__panel"
                   id="SearchFiltersPanel-{{ section.id }}"
                   role="dialog"
                   aria-modal="true"
                   aria-label="{{ 'products.facets.filter_button' | t }}"
                   hidden
                 >
-                  <div class="collection-filters__panel-header">
+                  <div class="u-flex u-items-center u-justify-between collection-filters__panel-header">
                     <p class="collection-filters__panel-heading">{{ 'products.facets.filter_button' | t }}</p>
-                    <button type="button" class="collection-filters__panel-close" data-filters-close aria-label="{{ 'general.accessibility.close' | t }}">
+                    <button type="button" class="u-inline-flex u-items-center u-justify-center collection-filters__panel-close" data-filters-close aria-label="{{ 'general.accessibility.close' | t }}">
                       {% render 'icon', name: 'close' %}
                     </button>
                   </div>
@@ -113,7 +113,7 @@
             </p>
 
             {%- if section.settings.enable_sorting -%}
-              <div class="collection-toolbar__sort">
+              <div class="u-flex u-items-center collection-toolbar__sort">
                 <label for="SortBy-{{ section.id }}" class="collection-toolbar__sort-label">{{ 'products.facets.sort_by_label' | t }}</label>
                 <select name="sort_by" form="FacetFiltersForm-{{ section.id }}" id="SortBy-{{ section.id }}" class="collection-toolbar__select">
                   {%- assign sort_by = search.sort_by | default: search.default_sort_by -%}
@@ -136,7 +136,7 @@
                 {%- endif -%}
               </div>
             {%- else -%}
-              <ul class="collection-grid" id="search-grid-{{ section.id }}">
+              <ul class="u-grid collection-grid" id="search-grid-{{ section.id }}">
                 {%- for item in search.results -%}
                   <li class="collection-grid__item">
                     {% render 'product-card', product: item %}
@@ -145,19 +145,19 @@
               </ul>
 
               {%- if paginate.pages > 1 -%}
-                <nav class="pagination" aria-label="pagination">
+                <nav class="u-flex u-items-center u-justify-center pagination" aria-label="pagination">
                   {%- if paginate.previous -%}
-                    <a href="{{ paginate.previous.url }}" class="pagination__link pagination__link--prev" aria-label="{{ 'collections.general.pagination_previous' | t }}">{% render 'icon', name: 'chevron-right' %}</a>
+                    <a href="{{ paginate.previous.url }}" class="u-inline-flex u-items-center u-justify-center pagination__link pagination__link--prev" aria-label="{{ 'collections.general.pagination_previous' | t }}">{% render 'icon', name: 'chevron-right' %}</a>
                   {%- endif -%}
                   {%- for part in paginate.parts -%}
                     {%- if part.is_link -%}
-                      <a href="{{ part.url }}" class="pagination__link">{{ part.title }}</a>
+                      <a href="{{ part.url }}" class="u-inline-flex u-items-center u-justify-center pagination__link">{{ part.title }}</a>
                     {%- else -%}
                       <span class="pagination__link{% if part.title == paginate.current_page %} pagination__link--current{% endif %}" {% if part.title == paginate.current_page %}aria-current="page"{% endif %}>{{ part.title }}</span>
                     {%- endif -%}
                   {%- endfor -%}
                   {%- if paginate.next -%}
-                    <a href="{{ paginate.next.url }}" class="pagination__link" aria-label="{{ 'collections.general.pagination_next' | t }}">{% render 'icon', name: 'chevron-right' %}</a>
+                    <a href="{{ paginate.next.url }}" class="u-inline-flex u-items-center u-justify-center pagination__link" aria-label="{{ 'collections.general.pagination_next' | t }}">{% render 'icon', name: 'chevron-right' %}</a>
                   {%- endif -%}
                 </nav>
               {%- endif -%}
@@ -187,7 +187,6 @@ facet-filters-form {
 
 .search-results__form {
   position: relative;
-  display: flex;
 }
 
 .search-results__input {
@@ -213,9 +212,6 @@ facet-filters-form {
   transform: translateY(-50%);
   width: 36px;
   height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   border: none;
   border-radius: 50%;
   background: transparent;
@@ -279,9 +275,7 @@ facet-filters-form {
 }
 
 .collection-topbar {
-  display: grid;
   grid-template-columns: auto 1fr auto;
-  align-items: center;
   gap: 12px;
 }
 
@@ -321,6 +315,7 @@ facet-filters-form {
   font-family: var(--font-body);
   font-size: 14px;
   font-weight: 600;
+  font-family: var(--font-accent);
   cursor: pointer;
   white-space: nowrap;
 
@@ -353,8 +348,6 @@ facet-filters-form {
   max-width: 380px;
   background: var(--color-background);
   z-index: 10011;
-  display: flex;
-  flex-direction: column;
   transform: translateX(-100%);
   transition: transform 0.3s ease;
 }
@@ -364,9 +357,6 @@ facet-filters-form {
 }
 
 .collection-filters__panel-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
   padding: 20px;
   border-bottom: 1px solid #eceff1;
   flex-shrink: 0;
@@ -380,9 +370,6 @@ facet-filters-form {
 }
 
 .collection-filters__panel-close {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
   min-width: 44px;
   min-height: 44px;
   margin: -11px;
@@ -456,9 +443,9 @@ body.search-filters-open {
   gap: 8px;
   cursor: pointer;
   list-style: none;
-  font-family: var(--font-body);
   font-size: 14px;
   font-weight: 600;
+  font-family: var(--font-accent);
   color: var(--color-primary);
 }
 
@@ -555,6 +542,7 @@ details[open] > .facets__summary .facets__chevron--down {
 .active-filters__clear-all.body-text {
   font-size: 13px;
   font-weight: 600;
+  font-family: var(--font-accent);
   color: var(--color-secondary);
 }
 
@@ -670,8 +658,6 @@ details[open] > .facets__summary .facets__chevron--down {
 
 /* ---------- Toolbar sort control ---------- */
 .collection-toolbar__sort {
-  display: flex;
-  align-items: center;
   gap: 8px;
   font-size: 13px;
   color: var(--color-primary);
@@ -702,7 +688,6 @@ details[open] > .facets__summary .facets__chevron--down {
 
 /* ---------- Grid ---------- */
 .collection-grid {
-  display: grid;
   grid-template-columns: repeat(var(--grid-columns-mobile, 2), minmax(0, 1fr));
   gap: 10px;
 }
@@ -753,21 +738,16 @@ details[open] > .facets__summary .facets__chevron--down {
 .collection-empty__link {
   color: var(--color-secondary);
   font-weight: 600;
+  font-family: var(--font-accent);
   text-decoration: underline;
 }
 
 .pagination {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   gap: 8px;
   margin-top: 32px;
 }
 
 .pagination__link {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
   min-width: 36px;
   height: 36px;
   padding: 0 6px;

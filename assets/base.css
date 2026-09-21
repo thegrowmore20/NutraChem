@@ -1,4 +1,4 @@
-/* Shivora Natural - base theme stylesheet */
+/* NutraChem - base theme stylesheet */
 /* Common/utility CSS only. Section-specific CSS lives in each section's {% stylesheet %} block. */
 
 :root {
@@ -12,12 +12,31 @@
 }
 
 html {
+  scroll-behavior: smooth;
   /* clip, not hidden: overflow-x: hidden forces overflow-y's computed value
      to auto (even though it's authored as the default visible), which turns
      html/body into their own scroll container and silently breaks
      position: sticky for every descendant on the site. clip clips the same
      horizontal overflow without that side effect. */
   overflow-x: clip;
+}
+
+@media screen and (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+.font-subheading {
+  font-family: var(--font-subheading);
+  font-weight: var(--font-subheading-weight);
+  font-style: var(--font-subheading-style);
+}
+
+.font-accent {
+  font-family: var(--font-accent);
+  font-weight: var(--font-accent-weight);
+  font-style: var(--font-accent-style);
 }
 
 body {
@@ -79,6 +98,7 @@ ul {
   border-radius: var(--radius-s);
   font-size: 14px;
   font-weight: 600;
+  font-family: var(--font-accent);
   transition: top 0.2s ease;
 }
 
@@ -106,60 +126,67 @@ ul {
 }
 
 /* ---------- Fluid heading scale ---------- */
-.h0 {
+h1,
+h2,
+h1[class],
+h2[class] {
   font-family: var(--font-heading);
+}
+
+.h0 {
   font-weight: 500;
+  font-family: var(--font-heading);
   line-height: 1.1;
   font-size: clamp(44px, 34.49px + 2.54vw, 70px);
 }
 
 .h1 {
-  font-family: var(--font-heading);
   font-weight: 500;
+  font-family: var(--font-heading);
   line-height: 1.15;
   font-size: clamp(34px, 25.95px + 2.15vw, 56px);
 }
 
 .h2 {
-  font-family: var(--font-heading);
   font-weight: 500;
+  font-family: var(--font-heading);
   line-height: 1.2;
   font-size: clamp(28px, 22.88px + 1.37vw, 42px);
 }
 
 .h3 {
-  font-family: var(--font-heading);
   font-weight: 500;
+  font-family: var(--font-subheading);
   line-height: 1.25;
   font-size: clamp(24px, 21.07px + 0.78vw, 32px);
 }
 
 .h4 {
-  font-family: var(--font-heading);
   font-weight: 500;
+  font-family: var(--font-subheading);
   line-height: 1.3;
   font-size: clamp(20px, 18.54px + 0.39vw, 24px);
 }
 
 .h5 {
-  font-family: var(--font-heading);
   font-weight: 500;
+  font-family: var(--font-subheading);
   line-height: 1.4;
   font-size: clamp(18px, 17.27px + 0.2vw, 20px);
 }
 
 .h6 {
-  font-family: var(--font-heading);
   font-weight: 500;
+  font-family: var(--font-subheading);
   line-height: 1.4;
   font-size: clamp(15px, 14.63px + 0.1vw, 16px);
 }
 
 .section-heading {
-  font-family: var(--font-heading);
   color: var(--color-primary);
   text-align: center;
   font-weight: 500;
+  font-family: var(--font-heading);
   line-height: 1.2;
   font-size: clamp(28px, 22.88px + 1.37vw, 42px);
   margin: 0 0 24px;
@@ -183,9 +210,9 @@ ul {
   gap: 8px;
   height: 48px;
   padding: 0 34px;
-  font-family: var(--font-body);
   font-size: 15px;
   font-weight: 500;
+  font-family: var(--font-subheading);
   border: none;
   border-radius: var(--radius-m);
   cursor: pointer;
@@ -289,6 +316,7 @@ ul {
   color: #fff;
   font-size: 10px;
   font-weight: 500;
+  font-family: var(--font-subheading);
   padding: 6px 12px;
   border-radius: var(--radius-s);
 
@@ -328,6 +356,7 @@ ul {
 .product-card__title {
   font-size: 15px;
   font-weight: 600;
+  font-family: var(--font-accent);
   color: var(--color-primary);
   margin: 0px;
   min-height: 40px;
@@ -402,7 +431,8 @@ span.star-rating {
 
 .price-item--regular {
   color: var(--color-primary);
-  font-weight: 700;
+  font-weight: 600;
+  font-family: var(--font-accent);
 }
 
 .price-item--compare {
@@ -426,20 +456,80 @@ span.star-rating {
   }
 }
 
-.AirReviews-CarouselWrapper .AirReviews-Carousel.AirReviews-Widget__V2 .AirReviews-Carousel__Header,
-#AirReviews-BlockAllWrapper .AirReviews-BlocksAll.AirReviews-Widget__V2.AirReviews-Blocks__LayoutGrid .AirReviews-BlocksAll__Heading{
-  display: none;
-}
-
-.AirReviews-Widget.AirReviews-Widget--Stars,
-.AirReviews-Carousel .AirReviews-Carousel__Container {
-  margin: 0;
-}
-
-.AirReviews-Widget.AirReviews-Widget--Stars{
-  margin-bottom: 0 !important;
-}
-
 .vensa-wl-badge{
   background-color: var(--color-secondary) !important;
+}
+
+/* ---------- Shared layout utilities ---------- */
+/* Component styles own spacing and responsive overrides.
+   Use these in Liquid HTML to avoid repeating display/alignment
+   declarations across every section's {% stylesheet %}. */
+
+/* Display */
+.u-flex         { display: flex; }
+.u-grid         { display: grid; }
+.u-inline-flex  { display: inline-flex; }
+.u-block        { display: block; }
+
+/* Flex direction */
+.u-flex-col     { flex-direction: column; }
+.u-flex-row     { flex-direction: row; }
+.u-flex-wrap    { flex-wrap: wrap; }
+.u-flex-nowrap  { flex-wrap: nowrap; }
+
+/* Align */
+.u-items-center  { align-items: center; }
+.u-items-start   { align-items: flex-start; }
+.u-items-end     { align-items: flex-end; }
+.u-items-stretch { align-items: stretch; }
+
+/* Justify */
+.u-justify-center  { justify-content: center; }
+.u-justify-between { justify-content: space-between; }
+.u-justify-start   { justify-content: flex-start; }
+.u-justify-end     { justify-content: flex-end; }
+
+/* Flex sizing */
+.u-flex-1     { flex: 1 1 auto; }
+.u-flex-auto  { flex: 1 1 auto; }
+.u-flex-none  { flex: none; }
+.u-shrink-0   { flex-shrink: 0; }
+
+/* Self-alignment */
+.u-self-center { align-self: center; }
+.u-self-start  { align-self: flex-start; }
+.u-self-end    { align-self: flex-end; }
+
+/* Text alignment */
+.u-text-center { text-align: center; }
+.u-text-left   { text-align: left; }
+.u-text-right  { text-align: right; }
+
+/* Min-width safety for flex/grid children */
+.u-min-w-0 { min-width: 0; }
+
+/* Position */
+.u-relative { position: relative; }
+.u-absolute { position: absolute; }
+.u-fixed    { position: fixed; }
+
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+button:focus-visible,
+a:focus-visible,
+summary:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+}
+
+
+
+/* custom app css */
+.AirReviews-Widget__V2.desktop {
+    padding-top: 0 !important;
+}
+
+.AirReviews-Blocks__Summary h2.AirReviews-Blocks--Title.AirReviews-Text--headingLg {
+    display: none;
 }

@@ -13,8 +13,12 @@
       "type": "hero-banner",
       "settings": {
         "image": "shopify://shop_images/Banner.webp",
-        "height": "full",
+        "height": "large",
         "custom_height": 640,
+        "mobile_height": "large",
+        "custom_height_mobile": 400,
+        "show_overlay": false,
+        "overlay_color": "rgba(0, 0, 0, 0.2)",
         "content_position_x": "left",
         "content_position_y": "center",
         "content_position_x_mobile": "center",
@@ -145,10 +149,26 @@
     },
     "custom_section_dHGKA6": {
       "type": "custom-section",
+      "blocks": {
+        "gsc_instagram_feed_instafeed_TGCqAG": {
+          "type": "shopify://apps/gsc-instagram-feed/blocks/instafeed/96970b1b-b770-454f-b16b-51f47e1aa4ed",
+          "settings": {
+            "widget_id": "GSC-yfbteqfweYTvQQx"
+          }
+        }
+      },
+      "block_order": [
+        "gsc_instagram_feed_instafeed_TGCqAG"
+      ],
       "name": "Custom Section",
       "settings": {
         "heading": "Follow Us on Instagram",
-        "full_width": true,
+        "link_text": "@nutrachem.official",
+        "link_url": "https://www.instagram.com/nutrachem.official",
+        "link_image": "shopify://shop_images/instagram_icon_a65561bf-2210-490a-90fc-b1e036ee1767.webp",
+        "link_new_tab": true,
+        "link_svg": "",
+        "full_width": false,
         "embed_code": "",
         "padding_top": 40,
         "padding_bottom": 40
@@ -156,10 +176,34 @@
     },
     "custom_section_LCMcUH": {
       "type": "custom-section",
+      "blocks": {
+        "ag_product_reviews_app_block_all_review_VHjdjz": {
+          "type": "shopify://apps/ag-product-reviews/blocks/app-block-all-review/c4e1e9ca-4d46-4e76-bc39-7e42417cb327",
+          "settings": {
+            "air_allReviewsBlock_heading": "All reviews page",
+            "air_allReviewsBlock_useSimpleSummary": false,
+            "air_allReviewsBlock_maxReview": 4,
+            "air_allReviewsBlock_summaryBgColor": "#f8f8f8",
+            "air_allReviewsBlock_bgColor": "#ffffff",
+            "air_allReviewsBlock_onlyMedia": false,
+            "air_allReviewsBlock_mediaFirst": false,
+            "air_allReviewsBlock_onlyPositive": false,
+            "air_allReviewsBlock_hideProductThumbnails": false,
+            "air_allReviewsBlock_selectedProduct": []
+          }
+        }
+      },
+      "block_order": [
+        "ag_product_reviews_app_block_all_review_VHjdjz"
+      ],
       "name": "Custom Section",
       "settings": {
         "heading": "See what our customers said",
-        "full_width": true,
+        "link_text": "",
+        "link_url": "",
+        "link_new_tab": false,
+        "link_svg": "",
+        "full_width": false,
         "embed_code": "",
         "padding_top": 40,
         "padding_bottom": 40

@@ -118,8 +118,94 @@
         "enable_sticky_info": true,
         "enable_sticky_info_mobile": false,
         "enable_sticky_cart": true,
-        "padding_top": 40,
+        "padding_top": 20,
         "padding_bottom": 40
+      }
+    },
+    "custom_section_BcGjnE": {
+      "type": "custom-section",
+      "blocks": {
+        "ag_product_reviews_app_block_review_list_FYDhAk": {
+          "type": "shopify://apps/ag-product-reviews/blocks/app-block-review-list/c4e1e9ca-4d46-4e76-bc39-7e42417cb327",
+          "settings": {
+            "air_blockreviews_summaryHeading": "",
+            "air_blockreviews_layout": "grid",
+            "air_blockreviews_singleStarColor": "#008fa3",
+            "air_blockreviews_primaryColor": "#121212"
+          }
+        }
+      },
+      "block_order": [
+        "ag_product_reviews_app_block_review_list_FYDhAk"
+      ],
+      "name": "Custom section",
+      "settings": {
+        "heading": "See what our customers said",
+        "link_text": "",
+        "link_url": "",
+        "link_new_tab": false,
+        "link_svg": "",
+        "full_width": false,
+        "embed_code": "",
+        "padding_top": 40,
+        "padding_bottom": 0
+      }
+    },
+    "comparison-table": {
+      "type": "comparison-table",
+      "blocks": {
+        "block_1": {
+          "type": "feature",
+          "settings": {
+            "text": "Dermatologically Tested",
+            "icon_svg": ""
+          }
+        },
+        "block_2": {
+          "type": "feature",
+          "settings": {
+            "text": "No Harsh Chemicals",
+            "icon_svg": ""
+          }
+        },
+        "block_3": {
+          "type": "feature",
+          "settings": {
+            "text": "Suitable for All Skin Types",
+            "icon_svg": ""
+          }
+        },
+        "block_4": {
+          "type": "feature",
+          "settings": {
+            "text": "Visible Glow Results",
+            "icon_svg": ""
+          }
+        },
+        "block_5": {
+          "type": "feature",
+          "settings": {
+            "text": "Skin-Friendly Ingredients",
+            "icon_svg": ""
+          }
+        }
+      },
+      "block_order": [
+        "block_1",
+        "block_2",
+        "block_3",
+        "block_4",
+        "block_5"
+      ],
+      "settings": {
+        "heading": "Why Choose Nutrachem?",
+        "subheading": "<p>Our advanced skincare solutions are carefully formulated to deliver visible results while keeping your skin healthy, hydrated, and naturally radiant.</p>",
+        "content_max_width": 1000,
+        "padding_top": 40,
+        "padding_bottom": 40,
+        "header_1": "Features",
+        "header_2": "Nutrachem Products",
+        "header_3": "Regular Products"
       }
     },
     "related-products": {
@@ -129,12 +215,25 @@
         "products_to_show": 4,
         "columns_desktop": "4",
         "padding_top": 40,
-        "padding_bottom": 60
+        "padding_bottom": 40
+      }
+    },
+    "product-faq": {
+      "type": "product-faq",
+      "settings": {
+        "heading": "FAQs",
+        "show_numbers": true,
+        "content_width": 1000,
+        "padding_top": 40,
+        "padding_bottom": 80
       }
     }
   },
   "order": [
     "main",
-    "related-products"
+    "custom_section_BcGjnE",
+    "comparison-table",
+    "related-products",
+    "product-faq"
   ]
 }

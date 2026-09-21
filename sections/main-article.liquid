@@ -24,7 +24,7 @@
     <header class="article-template__header">
       <h1 class="article-template__title h1">{{ article.title }}</h1>
       {%- if section.settings.show_date or section.settings.show_author -%}
-        <p class="article-template__meta">
+        <p class="u-flex u-items-center u-justify-center article-template__meta">
           {%- if section.settings.show_date -%}<span>{{ article.published_at | date: '%B %d, %Y' }}</span>{%- endif -%}
           {%- if section.settings.show_date and section.settings.show_author -%}<span aria-hidden="true">&middot;</span>{%- endif -%}
           {%- if section.settings.show_author -%}<span>{{ article.author }}</span>{%- endif -%}
@@ -63,7 +63,7 @@
         data-share-url="{{ request.origin }}{{ article.url }}"
         data-share-title="{{ article.title | escape }}"
       >
-        <button type="button" class="article-template__share-button" data-share-button>
+        <button type="button" class="u-inline-flex u-items-center article-template__share-button" data-share-button>
           {% render 'icon', name: 'share' %}
           <span>{{ 'blogs.article.share' | t }}</span>
         </button>      
@@ -71,7 +71,7 @@
     {%- endif -%}
 
     <div class="article-template__back">
-      <a href="{{ blog.url }}" class="article-template__back-link">
+      <a href="{{ blog.url }}" class="u-inline-flex u-items-center article-template__back-link">
         {% render 'icon', name: 'arrow-right' %}
         {{ 'blogs.article.back_to_blog' | t: title: blog.title }}
       </a>
@@ -82,11 +82,11 @@
         {%- if article.comments_count > 0 -%}
           <h2 class="article-template__comments-heading h3">{{ 'blogs.article.comments' | t: count: article.comments_count }}</h2>
           {%- paginate article.comments by 5 -%}
-            <div class="article-template__comments-list">
+            <div class="u-flex u-flex-col article-template__comments-list">
               {%- for comment in article.comments -%}
                 <article class="article-template__comment" id="{{ comment.id }}">
                   <div class="article-template__comment-body">{{ comment.content }}</div>
-                  <p class="article-template__comment-meta">
+                  <p class="u-flex u-items-center article-template__comment-meta">
                     <span>{{ comment.author }}</span>
                     <span aria-hidden="true">&middot;</span>
                     <span>{{ comment.created_at | date: '%B %d, %Y' }}</span>
@@ -95,19 +95,19 @@
               {%- endfor -%}
             </div>
             {%- if paginate.pages > 1 -%}
-              <nav class="pagination" aria-label="pagination">
+              <nav class="u-flex u-items-center u-justify-center pagination" aria-label="pagination">
                 {%- if paginate.previous -%}
-                  <a href="{{ paginate.previous.url }}#comments" class="pagination__link pagination__link--prev" aria-label="{{ 'collections.general.pagination_previous' | t }}">{% render 'icon', name: 'chevron-right' %}</a>
+                  <a href="{{ paginate.previous.url }}#comments" class="u-inline-flex u-items-center u-justify-center pagination__link pagination__link--prev" aria-label="{{ 'collections.general.pagination_previous' | t }}">{% render 'icon', name: 'chevron-right' %}</a>
                 {%- endif -%}
                 {%- for part in paginate.parts -%}
                   {%- if part.is_link -%}
-                    <a href="{{ part.url }}#comments" class="pagination__link">{{ part.title }}</a>
+                    <a href="{{ part.url }}#comments" class="u-inline-flex u-items-center u-justify-center pagination__link">{{ part.title }}</a>
                   {%- else -%}
                     <span class="pagination__link{% if part.title == paginate.current_page %} pagination__link--current{% endif %}" {% if part.title == paginate.current_page %}aria-current="page"{% endif %}>{{ part.title }}</span>
                   {%- endif -%}
                 {%- endfor -%}
                 {%- if paginate.next -%}
-                  <a href="{{ paginate.next.url }}#comments" class="pagination__link" aria-label="{{ 'collections.general.pagination_next' | t }}">{% render 'icon', name: 'chevron-right' %}</a>
+                  <a href="{{ paginate.next.url }}#comments" class="u-inline-flex u-items-center u-justify-center pagination__link" aria-label="{{ 'collections.general.pagination_next' | t }}">{% render 'icon', name: 'chevron-right' %}</a>
                 {%- endif -%}
               </nav>
             {%- endif -%}
@@ -134,17 +134,17 @@
             </div>
           {%- endif -%}
 
-          <div class="article-template__comment-row">
-            <div class="article-template__comment-field">
+          <div class="u-grid article-template__comment-row">
+            <div class="u-flex u-flex-col article-template__comment-field">
               <label for="CommentForm-author">{{ 'blogs.article.name' | t }}</label>
               <input type="text" id="CommentForm-author" name="comment[author]" autocomplete="name" required value="{{ form.author }}">
             </div>
-            <div class="article-template__comment-field">
+            <div class="u-flex u-flex-col article-template__comment-field">
               <label for="CommentForm-email">{{ 'blogs.article.email' | t }}</label>
               <input type="email" id="CommentForm-email" name="comment[email]" autocomplete="email" required value="{{ form.email }}">
             </div>
           </div>
-          <div class="article-template__comment-field">
+          <div class="u-flex u-flex-col article-template__comment-field">
             <label for="CommentForm-body">{{ 'blogs.article.message' | t }}</label>
             <textarea id="CommentForm-body" name="comment[body]" rows="4" required>{{ form.body }}</textarea>
           </div>
@@ -215,9 +215,6 @@
 }
 
 .article-template__meta {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   gap: 6px;
   font-size: 13px;
   color: #7c8a90;
@@ -241,6 +238,7 @@
   line-height: 1.6;
   color: var(--color-primary);
   font-weight: 500;
+  font-family: var(--font-subheading);
   margin: 0 0 24px;
 }
 
@@ -276,8 +274,6 @@
 }
 
 .article-template__share-button {
-  display: inline-flex;
-  align-items: center;
   gap: 8px;
   height: 40px;
   padding: 0 18px;
@@ -285,9 +281,9 @@
   border-radius: var(--radius-m);
   background: none;
   color: var(--color-primary);
-  font-family: var(--font-body);
   font-size: 14px;
   font-weight: 500;
+  font-family: var(--font-subheading);
   cursor: pointer;
 }
 
@@ -298,12 +294,11 @@
 }
 
 .article-template__back-link {
-  display: inline-flex;
-  align-items: center;
   gap: 8px;
   color: var(--color-primary);
   font-size: 14px;
   font-weight: 600;
+  font-family: var(--font-accent);
 }
 
 .article-template__back-link svg {
@@ -327,8 +322,6 @@
 }
 
 .article-template__comments-list {
-  display: flex;
-  flex-direction: column;
   gap: 20px;
   margin-bottom: 32px;
 }
@@ -350,8 +343,6 @@
 }
 
 .article-template__comment-meta {
-  display: flex;
-  align-items: center;
   gap: 6px;
   font-size: 12px;
   color: #7c8a90;
@@ -366,6 +357,7 @@
   color: #1e7e34;
   font-size: 14px;
   font-weight: 600;
+  font-family: var(--font-accent);
   margin: 0 0 16px;
 }
 
@@ -382,10 +374,10 @@
 .article-template__comment-error p {
   margin: 0 0 4px;
   font-weight: 600;
+  font-family: var(--font-accent);
 }
 
 .article-template__comment-row {
-  display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 16px;
 }
@@ -397,8 +389,6 @@
 }
 
 .article-template__comment-field {
-  display: flex;
-  flex-direction: column;
   gap: 6px;
   margin-bottom: 16px;
 }
@@ -406,6 +396,7 @@
 .article-template__comment-field label {
   font-size: 13px;
   font-weight: 500;
+  font-family: var(--font-subheading);
   color: var(--color-primary);
 }
 
@@ -439,17 +430,11 @@
 }
 
 .pagination {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   gap: 8px;
   margin-top: 32px;
 }
 
 .pagination__link {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
   min-width: 36px;
   height: 36px;
   padding: 0 6px;

@@ -28,7 +28,7 @@
     {%- if section.settings.channel_handle != blank -%}
       <a
         href="{{ section.settings.channel_url | default: '#' }}"
-        class="youtube-reels__channel"
+        class="u-flex u-items-center u-justify-center youtube-reels__channel"
         {% if section.settings.channel_url != blank %}target="_blank" rel="noopener noreferrer"{% endif %}
       >
         {% render 'icon', name: 'youtube' %}
@@ -40,7 +40,7 @@
     {%- assign reels = shop.metaobjects.youtube_reel.values -%}
     {%- if reels.size > 0 -%}
       <youtube-reel-player class="youtube-reels__wrapper">
-        <div class="youtube-reels__grid">
+        <div class="u-grid youtube-reels__grid">
           {%- for reel in reels limit: section.settings.reels_to_show -%}
             {%- liquid
               assign reel_url = reel.video_url.value
@@ -68,7 +68,7 @@
                 {%- else -%}
                   <img src="https://i.ytimg.com/vi/{{ video_id }}/hqdefault.jpg" loading="lazy" width="500" height="375" alt="{{ reel.title.value | default: '' }}">
                 {%- endif -%}
-                <span class="youtube-reels__play" aria-hidden="true">{% render 'icon', name: 'play' %}</span>
+                <span class="u-flex u-items-center u-justify-center youtube-reels__play" aria-hidden="true">{% render 'icon', name: 'play' %}</span>
               </button>
             {%- endif -%}
           {%- endfor -%}
@@ -76,7 +76,7 @@
 
         <div class="youtube-reels__modal-backdrop" data-video-modal-backdrop hidden></div>
         <div class="youtube-reels__modal" role="dialog" aria-modal="true" aria-label="{{ 'sections.youtube_reels.video_player' | t }}" hidden>
-          <button type="button" class="youtube-reels__modal-close" data-video-modal-close aria-label="{{ 'general.accessibility.close' | t }}">
+          <button type="button" class="u-inline-flex u-items-center u-justify-center youtube-reels__modal-close" data-video-modal-close aria-label="{{ 'general.accessibility.close' | t }}">
             {% render 'icon', name: 'close' %}
           </button>
           <div class="youtube-reels__modal-frame" data-video-modal-frame></div>
@@ -89,20 +89,18 @@
 {% stylesheet %}
 .youtube-reels__heading {
   text-align: center;
-  font-family: var(--font-heading);
   font-size: clamp(24px, 20px + 1.2vw, 34px);
   font-weight: 600;
+  font-family: var(--font-accent);
   color: var(--color-primary);
   margin: 0 0 12px;
 }
 
 .youtube-reels__channel {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   gap: 8px;
   color: var(--color-primary);
   font-weight: 600;
+  font-family: var(--font-accent);
   font-size: 14px;
   margin-bottom: 32px;
 }
@@ -117,7 +115,6 @@
 }
 
 .youtube-reels__grid {
-  display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 14px;
 }
@@ -158,9 +155,6 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
   width: 46px;
   height: 32px;
   border-radius: var(--radius-s);
@@ -225,9 +219,6 @@
 }
 
 .youtube-reels__modal-close {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
   min-width: 44px;
   min-height: 44px;
   margin-left: auto;

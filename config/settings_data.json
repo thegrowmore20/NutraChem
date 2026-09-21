@@ -12,6 +12,8 @@
     "favicon": "shopify://shop_images/Png_white_1.png",
     "font_heading": "playfair_display_n4",
     "font_body": "poppins_n4",
+    "font_subheading": "poppins_n5",
+    "font_accent": "poppins_n6",
     "show_free_shipping_bar": false,
     "color_primary": "#18252B",
     "color_secondary": "#008FA3",
@@ -105,11 +107,6 @@
     },
     "content_for_index": [],
     "blocks": {
-      "2567389343055140935": {
-        "type": "shopify://apps/microsoft-clarity/blocks/clarity_js/31c3d126-8116-4b4a-8ba1-baeda7c4aeea",
-        "disabled": true,
-        "settings": {}
-      },
       "14710238943034738919": {
         "type": "shopify://apps/ag-product-reviews/blocks/app-embed/c4e1e9ca-4d46-4e76-bc39-7e42417cb327",
         "disabled": false,
@@ -118,6 +115,16 @@
       "16462826257733288596": {
         "type": "shopify://apps/vensa-wishlist-back-in-stock/blocks/wishlist-loader/019f9be2-4682-783c-bf16-0376fe0b8d5d",
         "disabled": false,
+        "settings": {}
+      },
+      "13305437469741356523": {
+        "type": "shopify://apps/gsc-instagram-feed/blocks/embed/96970b1b-b770-454f-b16b-51f47e1aa4ed",
+        "disabled": false,
+        "settings": {}
+      },
+      "2567389343055140935": {
+        "type": "shopify://apps/microsoft-clarity/blocks/clarity_js/31c3d126-8116-4b4a-8ba1-baeda7c4aeea",
+        "disabled": true,
         "settings": {}
       }
     }

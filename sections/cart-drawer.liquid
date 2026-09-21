@@ -1,13 +1,13 @@
 <div class="cart-drawer-backdrop" id="CartDrawerBackdrop" hidden></div>
-<div class="cart-drawer" id="CartDrawer" role="dialog" aria-modal="true" aria-labelledby="CartDrawerHeading" aria-hidden="true" hidden>
-  <div class="cart-drawer__header">
+<div class="u-flex u-flex-col cart-drawer" id="CartDrawer" role="dialog" aria-modal="true" aria-labelledby="CartDrawerHeading" aria-hidden="true" hidden>
+  <div class="u-flex u-items-center u-justify-between cart-drawer__header">
     <h2 class="cart-drawer__heading" id="CartDrawerHeading">{{ 'general.cart.title' | t }}</h2>
-    <button type="button" class="cart-drawer__close" id="CartDrawerClose" aria-label="{{ 'general.accessibility.close' | t }}">
+    <button type="button" class="u-inline-flex u-items-center u-justify-center cart-drawer__close" id="CartDrawerClose" aria-label="{{ 'general.accessibility.close' | t }}">
       {% render 'icon', name: 'close' %}
     </button>
   </div>
 
-  <div id="CartDrawerContent" class="cart-drawer__content">
+  <div id="CartDrawerContent" class="u-flex u-flex-col cart-drawer__content">
     {%- liquid
       assign show_shipping_bar = false
       if settings.show_free_shipping_bar
@@ -63,16 +63,16 @@
     {%- endif -%}
 
     {%- if cart.item_count > 0 -%}
-      <ul class="cart-drawer__items" role="list">
+      <ul class="u-flex u-flex-col cart-drawer__items" role="list">
         {%- for item in cart.items -%}
-          <li class="cart-drawer__item" data-cart-item data-line="{{ forloop.index }}">
+          <li class="u-grid cart-drawer__item" data-cart-item data-line="{{ forloop.index }}">
             <a href="{{ item.url }}" class="cart-drawer__item-media">
               {{ item.image | image_url: width: 140 | image_tag: loading: 'lazy', widths: '70, 105, 140', width: 70, height: 70, alt: item.image.alt | default: item.product.title }}
             </a>
             <div class="cart-drawer__item-body">
-              <div class="cart-drawer__item-title-row">
+              <div class="u-flex u-justify-between cart-drawer__item-title-row">
                 <a href="{{ item.url }}" class="cart-drawer__item-title">{{ item.product.title }}</a>
-                <button type="button" class="cart-drawer__remove" data-cart-remove aria-label="{{ 'general.cart.remove' | t: title: item.product.title }}">
+                <button type="button" class="u-inline-flex u-items-center u-justify-center cart-drawer__remove" data-cart-remove aria-label="{{ 'general.cart.remove' | t: title: item.product.title }}">
                   {% render 'icon', name: 'trash' %}
                 </button>
               </div>
@@ -82,37 +82,34 @@
               {%- if item.line_level_discount_allocations.size > 0 -%}
                 <div class="cart-drawer__item-discounts">
                   {%- for discount_allocation in item.line_level_discount_allocations -%}
-                    <span class="cart-drawer__discount-badge">
+                    <span class="u-inline-flex u-items-center cart-drawer__discount-badge">
                       {% render 'icon', name: 'tag' %}
                       {{ discount_allocation.discount_application.title }}
                     </span>
                   {%- endfor -%}
                 </div>
               {%- endif -%}
-              <div class="cart-drawer__item-bottom-row">
-                <div class="cart-drawer__item-price">
+              <div class="u-flex u-items-center u-justify-between cart-drawer__item-bottom-row">
+                <div class="u-flex cart-drawer__item-price">
                   <span class="price-item price-item--regular">{{ item.final_line_price | money }}</span>
                   {%- if item.variant.compare_at_price > item.variant.price -%}
                     {%- assign line_compare_at = item.variant.compare_at_price | times: item.quantity -%}
                     <s class="price-item price-item--compare">{{ line_compare_at | money }}</s>
+                    <span class="cart-drawer__save-badge">Save {{ line_compare_at | minus: item.final_line_price | money }}</span>
                   {%- endif -%}
                 </div>
-                <div class="cart-drawer__qty" role="group" aria-label="{{ 'general.cart.quantity' | t }}">
+                <div class="u-flex u-items-center cart-drawer__qty" role="group" aria-label="{{ 'general.cart.quantity' | t }}">
                   <button type="button" class="cart-drawer__qty-btn" data-cart-qty-decrease aria-label="{{ 'general.cart.decrease_quantity' | t }}">&minus;</button>
-                  <input type="number" class="cart-drawer__qty-input" data-cart-qty-input value="{{ item.quantity }}" min="0" aria-label="{{ 'general.cart.quantity' | t }}">
+                  <input type="number" id="CartDrawerQuantity-{{ section.id }}-{{ forloop.index }}" name="updates[]" class="cart-drawer__qty-input" data-cart-qty-input value="{{ item.quantity }}" min="0" step="1" aria-label="{{ 'general.cart.quantity' | t }}: {{ item.product.title | escape }}">
                   <button type="button" class="cart-drawer__qty-btn" data-cart-qty-increase aria-label="{{ 'general.cart.increase_quantity' | t }}">+</button>
                 </div>
               </div>
-              {%- if item.variant.compare_at_price > item.variant.price -%}
-                {%- assign line_compare_at = item.variant.compare_at_price | times: item.quantity -%}
-                <span class="cart-drawer__save-badge">Save {{ line_compare_at | minus: item.final_line_price | money }}</span>
-              {%- endif -%}
             </div>
           </li>
         {%- endfor -%}
       </ul>
     {%- else -%}
-      <div class="cart-drawer__empty">
+      <div class="u-flex u-items-center u-justify-center u-flex-col cart-drawer__empty">
         <p class="cart-drawer__empty-heading">{{ 'general.cart.empty_heading' | t }}</p>
         <a href="{{ settings.cart_empty_button_link | default: routes.all_products_collection_url }}" class="button button--dark">{{ 'general.cart.empty_cta' | t }}</a>
       </div>
@@ -121,7 +118,7 @@
 
   {%- if cart.item_count > 0 -%}
     <div id="CartDrawerFooter" class="cart-drawer__footer">
-      <div class="cart-drawer__subtotal">
+      <div class="u-flex u-items-center u-justify-between cart-drawer__subtotal">
         <span>{{ 'general.cart.subtotal' | t }}</span>
         <span>{{ cart.total_price | money }}</span>
       </div>
@@ -153,8 +150,6 @@
   max-width: 400px;
   background: var(--color-background);
   z-index: 10011;
-  display: flex;
-  flex-direction: column;
   transform: translateX(100%);
   transition: transform 0.3s ease;
 }
@@ -164,25 +159,19 @@
 }
 
 .cart-drawer__header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
   padding: 20px;
   border-bottom: 1px solid var(--color-surface);
 }
 
 .cart-drawer__heading {
-  font-family: var(--font-heading);
   font-size: 20px;
   font-weight: 500;
+  font-family: var(--font-subheading);
   margin: 0;
   color: var(--color-primary);
 }
 
 .cart-drawer__close {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
   min-width: 44px;
   min-height: 44px;
   margin: -11px;
@@ -197,8 +186,6 @@
   flex: 1;
   overflow-y: auto;
   padding: 20px;
-  display: flex;
-  flex-direction: column;
   position: relative;
 }
 
@@ -247,13 +234,10 @@
 }
 
 .cart-drawer__items {
-  display: flex;
-  flex-direction: column;
   gap: 20px;
 }
 
 .cart-drawer__item {
-  display: grid;
   grid-template-columns: 70px minmax(0, 1fr);
   gap: 14px;
 }
@@ -285,15 +269,14 @@
 }
 
 .cart-drawer__item-title-row {
-  display: flex;
   align-items: flex-start;
-  justify-content: space-between;
   gap: 8px;
 }
 
 .cart-drawer__item-title {
   font-size: 14px;
   font-weight: 600;
+  font-family: var(--font-accent);
   color: var(--color-primary);
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -303,9 +286,6 @@
 }
 
 .cart-drawer__item-bottom-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
   gap: 12px;
   margin-top: 8px;
 }
@@ -321,20 +301,17 @@
 }
 
 .cart-drawer__discount-badge {
-  display: inline-flex;
-  align-items: center;
   gap: 4px;
   background: var(--button-primary, var(--color-secondary));
   color: #fff;
   font-size: 11px;
   font-weight: 600;
+  font-family: var(--font-accent);
   padding: 3px 8px;
   border-radius: var(--radius-s);
 }
 
 .cart-drawer__qty {
-  display: flex;
-  align-items: center;
   border: 1px solid var(--color-surface);
   border-radius: var(--radius-s);
 }
@@ -366,14 +343,11 @@
 }
 
 .cart-drawer__item-price {
-  display: flex;
   align-items: baseline;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   gap: 6px;
   font-size: 14px;
-  white-space: nowrap;
   min-width: 0;
-  overflow: hidden;
 }
 
 .cart-drawer__item-price .price-item {
@@ -382,21 +356,14 @@
 }
 
 .cart-drawer__save-badge {
-  display: inline-flex;
-  align-items: center;
-  align-self: flex-start;
   background: var(--button-primary, var(--color-secondary));
   color: #fff;
   font-size: 11px;
-  margin-top: 8px;
   padding: 3px 8px;
   border-radius: var(--radius-s);
 }
 
 .cart-drawer__remove {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
   min-width: 44px;
   min-height: 44px;
   margin: -11px -11px -11px 0;
@@ -415,11 +382,9 @@
 }
 
 .cart-drawer__subtotal {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
   font-size: 15px;
   font-weight: 600;
+  font-family: var(--font-accent);
   color: var(--color-primary);
   margin-bottom: 16px;
 }
@@ -430,10 +395,6 @@
 
 .cart-drawer__empty {
   flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
   text-align: center;
   padding: 60px 0;
 }
@@ -441,6 +402,7 @@
 .cart-drawer__empty-heading {
   font-size: 18px;
   font-weight: 600;
+  font-family: var(--font-accent);
   color: var(--color-primary);
   margin: 0 0 20px;
 }

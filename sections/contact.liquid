@@ -38,7 +38,7 @@
                 {%- endif -%}
 
               {%- when 'cards' -%}
-                <div class="contact-cards" {{ block.shopify_attributes }}>
+                <div class="u-grid contact-cards" {{ block.shopify_attributes }}>
                   {%- for i in (1..2) -%}
                     {%- liquid
                       if i == 1
@@ -66,15 +66,15 @@
                     -%}
                     {%- if card_head != blank or card_body != blank -%}
                       <{{ card_tag }}
-                        class="contact-card"
+                        class="u-flex u-flex-col contact-card"
                         style="background-color: {{ card_bg }}; color: {{ card_color }};"
                         {%- if card_link != blank %}
                           href="{{ card_link }}"
                           {% unless card_link contains 'mailto:' or card_link contains 'tel:' %}target="_blank" rel="noopener noreferrer"{% endunless %}
                         {%- endif %}
                       >
-                        <div class="contact-card__header">
-                          <div class="contact-card__icon">
+                        <div class="u-flex u-items-center contact-card__header">
+                          <div class="u-flex u-items-center contact-card__icon">
                             {%- if card_image != blank -%}
                               {{ card_image | image_url: width: 48 | image_tag: loading: 'lazy', width: 24, height: 24, alt: '' }}
                             {%- else -%}
@@ -105,18 +105,18 @@
                   endfor
                 -%}
                 {%- if has_social -%}
-                  <div class="contact-social" {{ block.shopify_attributes }}>
+                  <div class="u-flex u-items-center u-justify-between contact-social" {{ block.shopify_attributes }}>
                     {%- if block.settings.label != blank -%}
                       <p class="contact-social__label">{{ block.settings.label }}</p>
                     {%- endif -%}
-                    <div class="contact-social__icons">
+                    <div class="u-flex u-items-center contact-social__icons">
                       {%- for key in social_keys -%}
                         {%- assign url_key = 'social_' | append: key | append: '_url' -%}
                         {%- assign url_val = block.settings[url_key] -%}
                         {%- if url_val != blank -%}
                           <a
                             href="{{ url_val }}"
-                            class="contact-social__link"
+                            class="u-flex u-items-center contact-social__link"
                             target="_blank"
                             rel="noopener noreferrer"
                             aria-label="{{ key | capitalize }}"
@@ -156,19 +156,19 @@
               </div>
             {%- endif -%}
 
-            <div class="contact-form__row">
-              <div class="contact-form__field">
+            <div class="u-grid contact-form__row">
+              <div class="u-flex u-flex-col contact-form__field">
                 <label for="ContactForm-first-name">{{ 'sections.contact.form.first_name' | t }}</label>
                 <input type="text" id="ContactForm-first-name" name="contact[first_name]" autocomplete="given-name" value="{{ form.first_name }}">
               </div>
-              <div class="contact-form__field">
+              <div class="u-flex u-flex-col contact-form__field">
                 <label for="ContactForm-last-name">{{ 'sections.contact.form.last_name' | t }}</label>
                 <input type="text" id="ContactForm-last-name" name="contact[last_name]" autocomplete="family-name" value="{{ form.last_name }}">
               </div>
             </div>
 
-            <div class="contact-form__row">
-              <div class="contact-form__field">
+            <div class="u-grid contact-form__row">
+              <div class="u-flex u-flex-col contact-form__field">
                 <label for="ContactForm-email">
                   {{ 'sections.contact.form.email' | t }} <span aria-hidden="true">*</span>
                 </label>
@@ -183,13 +183,13 @@
                   value="{{ form.email }}"
                 >
               </div>
-              <div class="contact-form__field">
+              <div class="u-flex u-flex-col contact-form__field">
                 <label for="ContactForm-phone">{{ 'sections.contact.form.phone' | t }}</label>
                 <input type="tel" id="ContactForm-phone" name="contact[phone]" autocomplete="tel" value="{{ form.phone }}">
               </div>
             </div>
 
-            <div class="contact-form__field">
+            <div class="u-flex u-flex-col contact-form__field">
               <label for="ContactForm-body">
                 {{ 'sections.contact.form.message' | t }} <span aria-hidden="true">*</span>
               </label>
@@ -230,6 +230,7 @@
 .contact-section__subheading {
   font-size: 12px;
   font-weight: 600;
+  font-family: var(--font-accent);
   letter-spacing: 0.08em;
   text-transform: uppercase;
   margin: 0 0 12px;
@@ -249,7 +250,6 @@
 }
 
 .contact-cards {
-  display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 16px;
   margin-bottom: 28px;
@@ -264,8 +264,6 @@
 .contact-card {
   padding: 20px;
   border-radius: var(--radius-m);
-  display: flex;
-  flex-direction: column;
   gap: 8px;
   text-decoration: none;
 }
@@ -280,14 +278,10 @@ a.contact-card:focus-visible {
 }
 
 .contact-card__header {
-  display: flex;
-  align-items: center;
   gap: 8px;
 }
 
 .contact-card__icon {
-  display: flex;
-  align-items: center;
 }
 
 .contact-card__icon img,
@@ -300,6 +294,7 @@ a.contact-card:focus-visible {
 .contact-card__heading {
   font-size: 15px;
   font-weight: 600;
+  font-family: var(--font-accent);
   margin: 0;
 }
 
@@ -319,16 +314,14 @@ a.contact-card:focus-visible {
 
 .contact-social {
   margin-bottom: 24px;
-  display: flex;
-  align-items: center;
   gap: 16px;
-  justify-content: space-between;
   flex-wrap: wrap;
 }
 
 .contact-social__label {
   font-size: 12px;
   font-weight: 600;
+  font-family: var(--font-accent);
   letter-spacing: 0.08em;
   text-transform: uppercase;
   margin: 0;
@@ -337,14 +330,10 @@ a.contact-card:focus-visible {
 }
 
 .contact-social__icons {
-  display: flex;
-  align-items: center;
   gap: 14px;
 }
 
 .contact-social__link {
-  display: flex;
-  align-items: center;
   color: var(--color-primary);
   opacity: 0.75;
   transition: opacity 0.2s ease;
@@ -386,7 +375,6 @@ a.contact-card:focus-visible {
 }
 
 .contact-form__row {
-  display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 16px;
 }
@@ -398,8 +386,6 @@ a.contact-card:focus-visible {
 }
 
 .contact-form__field {
-  display: flex;
-  flex-direction: column;
   gap: 6px;
   margin-bottom: 16px;
 }
@@ -411,6 +397,7 @@ a.contact-card:focus-visible {
 .contact-form__field label {
   font-size: 13px;
   font-weight: 500;
+  font-family: var(--font-subheading);
   color: var(--color-primary);
 }
 
@@ -445,6 +432,7 @@ a.contact-card:focus-visible {
   color: #1e7e34;
   font-size: 14px;
   font-weight: 600;
+  font-family: var(--font-accent);
   margin: 0 0 16px;
 }
 
@@ -461,6 +449,7 @@ a.contact-card:focus-visible {
 .contact-form__error p {
   margin: 0 0 4px;
   font-weight: 600;
+  font-family: var(--font-accent);
 }
 {% endstylesheet %}
 

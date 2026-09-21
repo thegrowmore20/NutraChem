@@ -42,9 +42,15 @@ document.addEventListener('submit', (event) => {
   if (!(form instanceof HTMLFormElement) || !form.matches('[data-product-form]')) return
   event.preventDefault()
 
-  const button = form.querySelector('button[type="submit"]')
-  button?.classList.add('is-loading')
-  button?.setAttribute('disabled', 'disabled')
+  if (form.dataset.cartSubmitting === 'true') return
+  form.dataset.cartSubmitting = 'true'
+  const buttons = Array.from(form.elements).filter((element) => element.matches('button[type="submit"]'))
+  const disabledStates = new Map(buttons.map((button) => [button, button.disabled]))
+  for (const button of buttons) {
+    button.classList.add('is-loading')
+    button.disabled = true
+    button.setAttribute('aria-busy', 'true')
+  }
 
   const formData = new FormData(form)
   formData.append('sections_url', window.location.pathname)
@@ -68,7 +74,12 @@ document.addEventListener('submit', (event) => {
       document.dispatchEvent(new CustomEvent('cart:error', { detail: null }))
     })
     .finally(() => {
-      button?.classList.remove('is-loading')
-      button?.removeAttribute('disabled')
+      delete form.dataset.cartSubmitting
+      for (const button of buttons) {
+        button.classList.remove('is-loading')
+        button.disabled = disabledStates.get(button)
+        button.removeAttribute('aria-busy')
+      }
+      form.dispatchEvent(new CustomEvent('cart:complete'))
     })
 })

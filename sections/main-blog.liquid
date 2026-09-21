@@ -21,7 +21,7 @@
 
     {%- paginate blog.articles by section.settings.articles_per_page -%}
       {%- if blog.articles.size > 0 -%}
-        <div class="blog-listing__grid">
+        <div class="u-grid blog-listing__grid">
           {%- for article in blog.articles -%}
             {%- render 'article-card',
               article: article,
@@ -36,19 +36,19 @@
         </div>
 
         {%- if paginate.pages > 1 -%}
-          <nav class="pagination" aria-label="pagination">
+          <nav class="u-flex u-items-center u-justify-center pagination" aria-label="pagination">
             {%- if paginate.previous -%}
-              <a href="{{ paginate.previous.url }}" class="pagination__link pagination__link--prev" aria-label="{{ 'collections.general.pagination_previous' | t }}">{% render 'icon', name: 'chevron-right' %}</a>
+              <a href="{{ paginate.previous.url }}" class="u-inline-flex u-items-center u-justify-center pagination__link pagination__link--prev" aria-label="{{ 'collections.general.pagination_previous' | t }}">{% render 'icon', name: 'chevron-right' %}</a>
             {%- endif -%}
             {%- for part in paginate.parts -%}
               {%- if part.is_link -%}
-                <a href="{{ part.url }}" class="pagination__link">{{ part.title }}</a>
+                <a href="{{ part.url }}" class="u-inline-flex u-items-center u-justify-center pagination__link">{{ part.title }}</a>
               {%- else -%}
                 <span class="pagination__link{% if part.title == paginate.current_page %} pagination__link--current{% endif %}" {% if part.title == paginate.current_page %}aria-current="page"{% endif %}>{{ part.title }}</span>
               {%- endif -%}
             {%- endfor -%}
             {%- if paginate.next -%}
-              <a href="{{ paginate.next.url }}" class="pagination__link" aria-label="{{ 'collections.general.pagination_next' | t }}">{% render 'icon', name: 'chevron-right' %}</a>
+              <a href="{{ paginate.next.url }}" class="u-inline-flex u-items-center u-justify-center pagination__link" aria-label="{{ 'collections.general.pagination_next' | t }}">{% render 'icon', name: 'chevron-right' %}</a>
             {%- endif -%}
           </nav>
         {%- endif -%}
@@ -101,7 +101,6 @@
 }
 
 .blog-listing__grid {
-  display: grid;
   grid-template-columns: 1fr;
   gap: 28px;
 }
@@ -148,6 +147,7 @@
   gap: 6px;
   font-size: 12px;
   font-weight: 600;
+  font-family: var(--font-accent);
   letter-spacing: 0.04em;
   text-transform: uppercase;
   color: #7c8a90;
@@ -157,6 +157,7 @@
 .blog-listing-card__title {
   font-size: 18px;
   font-weight: 600;
+  font-family: var(--font-accent);
   line-height: 1.35;
   margin: 0 0 10px;
 }
@@ -187,6 +188,7 @@
 .blog-listing-card__link {
   font-size: 14px;
   font-weight: 600;
+  font-family: var(--font-accent);
   color: var(--color-secondary);
   text-decoration: underline;
 }
@@ -210,17 +212,11 @@
 }
 
 .pagination {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   gap: 8px;
   margin-top: 40px;
 }
 
 .pagination__link {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
   min-width: 36px;
   height: 36px;
   padding: 0 6px;

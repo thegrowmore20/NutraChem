@@ -109,7 +109,7 @@
                     >
                       <button
                         type="button"
-                        class="product-accordion__summary"
+                        class="u-flex u-items-center u-justify-between product-accordion__summary"
                         data-accordion-trigger
                         aria-expanded="{% if block.settings.open_by_default %}true{% else %}false{% endif %}"
                         aria-controls="{{ accordion_panel_id }}"
@@ -117,7 +117,7 @@
                         <span>{{ block.settings.heading }}</span>
                         {% render 'icon', name: 'chevron-down' %}
                       </button>
-                      <div class="product-accordion__panel" id="{{ accordion_panel_id }}" data-accordion-panel>
+                      <div class="u-grid product-accordion__panel" id="{{ accordion_panel_id }}" data-accordion-panel>
                         <div class="product-accordion__panel-inner">
                           <div class="product-accordion__content rte">{{ block.settings.content }}</div>
                         </div>
@@ -127,7 +127,7 @@
 
                 {%- when 'icons_with_text' -%}
                   <div
-                    class="icons-with-text icons-with-text--{{ block.settings.layout }} icons-with-text--columns-{{ block.settings.columns }}"
+                    class="u-grid icons-with-text icons-with-text--{{ block.settings.layout }} icons-with-text--columns-{{ block.settings.columns }}"
                     style="--icons-icon-size: {{ block.settings.icon_size }}px; --icons-bg: {{ block.settings.background_color }};"
                     {{ block.shopify_attributes }}
                   >
@@ -139,7 +139,7 @@
                       {%- assign item_heading = block.settings[heading_key] -%}
                       {%- assign item_text = block.settings[text_key] -%}
                       {%- if item_heading != blank or item_text != blank -%}
-                        <div class="icons-with-text__item">
+                        <div class="u-flex u-items-center icons-with-text__item">
                           {%- if item_icon != blank -%}
                             <div class="icons-with-text__icon">
                               {{ item_icon | image_url: width: 80 | image_tag: loading: 'lazy', width: 40, height: 40, alt: item_heading | default: '' }}
@@ -156,12 +156,12 @@
 
                 {%- when 'share' -%}
                   <share-button
-                    class="product-share"
+                    class="u-inline-flex u-flex-col product-share"
                     data-share-url="{{ shop.url }}{{ product.url }}"
                     data-share-title="{{ product.title | escape }}"
                     {{ block.shopify_attributes }}
                   >
-                    <button type="button" class="product-share__button" data-share-button>
+                    <button type="button" class="u-inline-flex u-items-center product-share__button" data-share-button>
                       {% render 'icon', name: 'share' %}
                       <span>
                         {%- if block.settings.label != blank -%}{{ block.settings.label }}{%- else -%}{{ 'products.product.share' | t }}{%- endif -%}
@@ -461,6 +461,7 @@
   color: #fff;
   font-size: 11px;
   font-weight: 500;
+  font-family: var(--font-subheading);
   padding: 3px 8px;
   border-radius: var(--radius-s, 4px);
 }
@@ -495,6 +496,7 @@
 .variant-picker__label {
   display: block;
   font-weight: 600;
+  font-family: var(--font-accent);
   margin-bottom: 8px;
   padding: 0;
   color: var(--color-primary);
@@ -718,14 +720,12 @@
 }
 
 .product-accordion__summary {
-  display: flex;
   width: 100%;
-  align-items: center;
-  justify-content: space-between;
   padding: 16px 0;
   cursor: pointer;
   font: inherit;
   font-weight: 600;
+  font-family: var(--font-accent);
   color: var(--color-primary);
   background: none;
   border: 0;
@@ -744,7 +744,6 @@
 /* grid-template-rows 0fr -> 1fr (with an inner overflow: hidden wrapper)
    animates open/close smoothly without a JS-measured max-height. */
 .product-accordion__panel {
-  display: grid;
   grid-template-rows: 0fr;
   transition: grid-template-rows 0.25s ease;
 }
@@ -765,7 +764,6 @@
 
 /* Icons with text */
 .icons-with-text {
-  display: grid;
   gap: 0.8rem;
   margin: 1.5rem 0;
 }
@@ -787,11 +785,9 @@
 }
 
 .icons-with-text__item {
-  display: flex;
   gap: 10px;
   /* Horizontal layout: center the icon and heading/text against each other
      on the cross axis, not top-align them. */
-  align-items: center;
   background: var(--icons-bg, transparent);
   border-radius: var(--radius-m);
   padding: 12px 14px;
@@ -815,10 +811,16 @@
 }
 
 .icons-with-text__heading {
-  font-weight: 600;
+  font-weight: 500;
+  font-family: var(--font-subheading);
   margin: 0px;
   font-size: 0.9rem;
+  line-height: 1.2;
   color: var(--color-primary);
+
+  @media screen and (max-width: 749px) {
+    font-size: 0.75rem;
+  }
 }
 
 .icons-with-text__text {
@@ -837,16 +839,12 @@
 
 /* Share */
 .product-share {
-  display: inline-flex;
-  flex-direction: column;
   gap: 6px;
   margin: 16px 0;
   position: relative;
 }
 
 .product-share__button {
-  display: inline-flex;
-  align-items: center;
   gap: 8px;
   background: transparent;
   border: 0;
@@ -876,7 +874,9 @@
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 40;
+  /* On mobile, must sit above the mobile-bottom-nav (z-index 400)
+     but below header (z-index 10011 when drawer open). */
+  z-index: 500;
   background: var(--color-background);
   border-top: 1px solid #e2e6e8;
   box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.06);
@@ -893,10 +893,12 @@
     left: 50%;
     right: auto;
     bottom: 20px;
-    width: min(480px, calc(100% - 32px));
+    width: min(23rem, calc(100% - 32px));
     border: 1px solid #e2e6e8;
     border-radius: var(--radius-m, 12px);
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    /* Override to desktop-safe z-index — no mobile-bottom-nav on desktop */
+    z-index: 10005;
     transform: translate(-50%, 150%);
   }
 
@@ -910,6 +912,7 @@
   align-items: center;
   gap: 14px;
   padding: 10px 16px;
+  padding-bottom: max(10px, env(safe-area-inset-bottom));
 }
 
 .sticky-cart-bar__media {
@@ -924,46 +927,22 @@
   display: block;
 }
 
-.sticky-cart-bar__info {
-  flex: 1 1 auto;
-  min-width: 0;
-}
-
-.sticky-cart-bar__title {
-  margin: 0;
-  font-weight: 600;
-  font-size: 0.9rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  color: var(--color-primary);
-}
-
-.sticky-cart-bar__variant {
-  margin: 0;
-  font-size: 0.8rem;
-  color: #7c8a90;
-}
-
-.sticky-cart-bar__price {
-  flex: 0 0 auto;
-}
-
-.sticky-cart-bar__price .price {
-  font-size: 1rem;
-  margin: 0;
+.sticky-cart-bar__cart-icon {
+  display: inline-flex;
+  flex-shrink: 0;
 }
 
 .sticky-cart-bar__submit {
-  flex: 0 0 auto;
-  padding: 0 20px;
-  height: 40px;
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 8px 12px;
+  min-height: 40px;
+  height: auto;
+  flex-wrap: wrap;
 }
 
-@media screen and (max-width: 600px) {
-  .sticky-cart-bar__variant {
-    display: none;
-  }
+.sticky-cart-bar__action {
+  white-space: nowrap;
 }
 {% endstylesheet %}
 
@@ -1008,6 +987,10 @@ class ProductInfo extends HTMLElement {
     this.addEventListener('input', (event) => this.#onInput(event))
     this.#form.addEventListener('submit', () => {
       this.#pendingSubmit = true
+    })
+    this.#form.addEventListener('cart:complete', () => {
+      this.#updateAvailability(this.#currentVariant)
+      this.#updateStickyCart(this.#currentVariant)
     })
 
     document.addEventListener('cart:updated', () => this.#onCartUpdated())
@@ -1168,7 +1151,7 @@ class ProductInfo extends HTMLElement {
     for (const box of this.querySelectorAll('[data-buy-box]')) {
       const submit = box.querySelector('[data-add-to-cart]')
       if (submit) {
-        submit.disabled = !variant.available
+        submit.disabled = !variant.available || this.#form.dataset.cartSubmitting === 'true'
         const text = submit.querySelector('[data-add-to-cart-text]')
         if (text) text.textContent = variant.available ? submit.dataset.labelAvailable : submit.dataset.labelUnavailable
       }
@@ -1182,13 +1165,13 @@ class ProductInfo extends HTMLElement {
   #updateStickyCart(variant) {
     const bar = this.querySelector('[data-sticky-cart]')
     if (!bar) return
-    const variantLabel = bar.querySelector('[data-sticky-variant]')
-    if (variantLabel) variantLabel.textContent = variant.title === 'Default Title' ? '' : variant.title
     const submit = bar.querySelector('[data-sticky-add-to-cart]')
     if (submit) {
-      submit.disabled = !variant.available
+      submit.disabled = !variant.available || this.#form.dataset.cartSubmitting === 'true'
       const text = submit.querySelector('[data-sticky-add-to-cart-text]')
       if (text) text.textContent = variant.available ? submit.dataset.labelAvailable : submit.dataset.labelUnavailable
+      const price = submit.querySelector('[data-sticky-price]')
+      if (price) price.textContent = this.#formatMoney(variant.price)
     }
   }
 

@@ -8,7 +8,7 @@
   style="--padding-top: {{ section.settings.padding_top }}px; --padding-bottom: {{ section.settings.padding_bottom }}px;"
 >
   <div class="container">
-    <div class="about-hero__layout">
+    <div class="u-grid u-items-center about-hero__layout">
       <div class="about-hero__content">
         {%- if section.settings.eyebrow != blank -%}
           <p class="about-hero__eyebrow">{{ section.settings.eyebrow }}</p>
@@ -20,12 +20,12 @@
           <div class="about-hero__description">{{ section.settings.description }}</div>
         {%- endif -%}
         {%- if section.settings.button_1_label != blank or section.settings.button_2_label != blank -%}
-          <div class="about-hero__actions">
+          <div class="u-flex u-items-center about-hero__actions">
             {%- if section.settings.button_1_label != blank -%}
               <a href="{{ section.settings.button_1_link | default: '#' }}" class="button button--accent">{{ section.settings.button_1_label }}</a>
             {%- endif -%}
             {%- if section.settings.button_2_label != blank -%}
-              <a href="{{ section.settings.button_2_link | default: '#' }}" class="about-hero__link">
+              <a href="{{ section.settings.button_2_link | default: '#' }}" class="u-inline-flex u-items-center about-hero__link">
                 {{ section.settings.button_2_label }}
                 {% render 'icon', name: 'arrow-right' %}
               </a>
@@ -37,7 +37,7 @@
         {%- if section.settings.image != blank -%}
           {{ section.settings.image | image_url: width: 1000 | image_tag: loading: 'eager', fetchpriority: 'high', widths: '500, 750, 1000', sizes: '(min-width: 750px) 50vw, 100vw', alt: section.settings.image.alt | default: section.settings.heading }}
         {%- else -%}
-          <div class="about-hero__placeholder">{% render 'icon', name: 'sparkle' %}</div>
+          <div class="u-flex u-items-center u-justify-center about-hero__placeholder">{% render 'icon', name: 'sparkle' %}</div>
         {%- endif -%}
       </div>
     </div>
@@ -46,10 +46,8 @@
 
 {% stylesheet %}
 .about-hero__layout {
-  display: grid;
   grid-template-columns: 1fr;
   gap: 40px;
-  align-items: center;
 }
 
 @media screen and (min-width: 750px) {
@@ -62,6 +60,7 @@
 .about-hero__eyebrow {
   font-size: 12px;
   font-weight: 600;
+  font-family: var(--font-accent);
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--color-secondary);
@@ -85,18 +84,15 @@
 }
 
 .about-hero__actions {
-  display: flex;
-  align-items: center;
   gap: 24px;
   flex-wrap: wrap;
   margin-top: 28px;
 }
 
 .about-hero__link {
-  display: inline-flex;
-  align-items: center;
   gap: 8px;
   font-weight: 600;
+  font-family: var(--font-accent);
   color: var(--color-primary);
 }
 
@@ -119,9 +115,6 @@
 
 .about-hero__placeholder {
   aspect-ratio: 4 / 3;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   color: var(--color-secondary);
 }
 

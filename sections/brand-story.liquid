@@ -1,5 +1,5 @@
 <section class="brand-story section-padding" style="--padding-top: {{ section.settings.padding_top }}px; --padding-bottom: {{ section.settings.padding_bottom }}px;">
-  <div class="container brand-story__grid">
+  <div class="u-grid u-items-center container brand-story__grid">
     <div class="brand-story__content">
       <h2 class="brand-story__heading">{{ section.settings.heading }}</h2>
       <div class="brand-story__text">{{ section.settings.text }}</div>
@@ -8,7 +8,7 @@
       {%- endif -%}
     </div>
 
-    <div class="brand-story__reels">
+    <div class="u-grid brand-story__reels">
       {%- for block in section.blocks -%}
         <div class="reel-card" {{ block.shopify_attributes }}>
           {%- if block.settings.video -%}
@@ -23,16 +23,16 @@
                 image_size: '600x',
                 class: 'reel-card__media'
             }}
-            <button type="button" class="reel-card__play" data-reel-toggle aria-label="Pause video">
+            <button type="button" class="u-inline-flex u-items-center u-justify-center reel-card__play" data-reel-toggle aria-label="Pause video">
               <span class="reel-card__play-icon reel-card__play-icon--pause">{% render 'icon', name: 'pause' %}</span>
               <span class="reel-card__play-icon reel-card__play-icon--play">{% render 'icon', name: 'play' %}</span>
             </button>
           {%- elsif block.settings.poster -%}
             {{ block.settings.poster | image_url: width: 600 | image_tag: loading: 'lazy', widths: '300, 450, 600', sizes: '(min-width: 750px) 16vw, 33vw', width: 600, height: 800, class: 'reel-card__media', alt: block.settings.caption | default: '' }}
-            <span class="reel-card__play" aria-hidden="true">{% render 'icon', name: 'play' %}</span>
+            <span class="u-inline-flex u-items-center u-justify-center reel-card__play" aria-hidden="true">{% render 'icon', name: 'play' %}</span>
           {%- else -%}
             {{ 'lifestyle-1' | placeholder_svg_tag: 'reel-card__media' }}
-            <span class="reel-card__play" aria-hidden="true">{% render 'icon', name: 'play' %}</span>
+            <span class="u-inline-flex u-items-center u-justify-center reel-card__play" aria-hidden="true">{% render 'icon', name: 'play' %}</span>
           {%- endif -%}
           {%- if block.settings.caption != blank -%}
             <span class="reel-card__caption">{{ block.settings.caption }}</span>
@@ -45,10 +45,8 @@
 
 {% stylesheet %}
 .brand-story__grid {
-  display: grid;
   grid-template-columns: 1fr;
   gap: 40px;
-  align-items: center;
 }
 
 @media screen and (min-width: 990px) {
@@ -59,8 +57,8 @@
 }
 
 .brand-story__heading {
-  font-family: var(--font-heading);
   font-weight: 500;
+  font-family: var(--font-subheading);
   line-height: 1.2;
   font-size: clamp(28px, 22.88px + 1.37vw, 42px);
   color: var(--color-primary);
@@ -79,7 +77,6 @@
 }
 
 .brand-story__reels {
-  display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
 }
@@ -112,9 +109,6 @@
   height: 30px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.85);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
   color: var(--color-primary);
   border: none;
   padding: 0;

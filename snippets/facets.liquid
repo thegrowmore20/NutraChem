@@ -116,6 +116,7 @@
                   <input
                     type="checkbox"
                     class="facets__checkbox facets__checkbox--nav"
+                    id="FacetNav-{{ section.id }}-{{ forloop.index }}"
                     data-nav-url="{{ link.url }}"
                     {% if link.active %}checked{% endif %}
                   >

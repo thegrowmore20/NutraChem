@@ -1,6 +1,6 @@
 <header class="header{% if template.name == 'index' %} header--transparent{% endif %}">
   <div class="container header__inner">
-    <button class="header__menu-toggle" aria-label="Menu" aria-expanded="false" aria-controls="HeaderNav" type="button">
+    <button class="u-inline-flex u-items-center u-justify-center header__menu-toggle" aria-label="Menu" aria-expanded="false" aria-controls="HeaderNav" type="button">
       {% render 'icon', name: 'menu' %}
     </button>
 
@@ -24,9 +24,9 @@
       </button>
       {%- for link in section.settings.menu.links -%}
         {%- if link.links != blank -%}
-          <div class="header__nav-item has-menu">
-            <a href="{{ link.url }}" class="header__nav-link header__menu-trigger" aria-haspopup="true" aria-expanded="false" aria-controls="Menu-{{ forloop.index }}">
-              <span class="header__menu-trigger-label">
+          <div class="u-flex u-items-center header__nav-item has-menu">
+            <a href="{{ link.url }}" class="u-inline-flex u-items-center header__nav-link header__menu-trigger" aria-haspopup="true" aria-expanded="false" aria-controls="Menu-{{ forloop.index }}">
+              <span class="u-flex header__menu-trigger-label">
                 {{ link.title }}
                 <span class="header__menu-count">({{ link.links.size }})</span>
               </span>
@@ -41,7 +41,7 @@
             <div class="header__menu-panel" id="Menu-{{ forloop.index }}">
               <div class="header__menu-panel-inner">
                 <div class="mega-menu__inner container">
-                  <div class="mega-menu__cards">
+                  <div class="u-flex u-justify-center mega-menu__cards">
                     {%- for sub in link.links limit: 6 -%}
                       {%- if sub.type == 'product_link' and sub.object -%}
                         {% render 'mega-menu-product-card', product: sub.object %}
@@ -50,7 +50,7 @@
                       {%- endif -%}
                     {%- endfor -%}
                     {%- if link.links.size > 6 -%}
-                      <a class="mega-menu__view-all" href="{{ link.url }}">
+                      <a class="u-flex u-items-center u-justify-center mega-menu__view-all" href="{{ link.url }}">
                         <span>{{ 'general.navigation.view_all' | t }}</span>
                         {% render 'icon', name: 'arrow-right' %}
                       </a>
@@ -93,7 +93,7 @@
       </a>
     </nav>
 
-    <div class="header__icons">
+    <div class="u-flex u-items-center header__icons">
       <button type="button" id="SearchToggle" aria-label="{{ 'general.search.placeholder' | t }}" aria-expanded="false" aria-controls="HeaderSearchPopup">
         {% render 'icon', name: 'search' %}
       </button>
@@ -106,7 +106,7 @@
       </button>
       <div class="header__account-wrapper">
         {%- if shop.customer_accounts_enabled -%}
-          <shopify-account class="header__account" menu="{{ settings.customer_account_menu | default: 'customer-account-main-menu' }}">
+          <shopify-account class="u-inline-flex header__account" menu="{{ settings.customer_account_menu | default: 'customer-account-main-menu' }}">
             <span slot="signed-out-avatar">{% render 'icon', name: 'account' %}</span>
             <span slot="signed-out-avatar" class="visually-hidden">Account</span>
           </shopify-account>
@@ -127,7 +127,7 @@
 
   <div class="header__search-popup" id="HeaderSearchPopup" hidden>
     <div class="header__search-popup-inner container">
-      <div class="header__search-bar">
+      <div class="u-flex u-items-center header__search-bar">
         <form action="{{ routes.search_url }}" method="get" role="search" class="header__search-form">
           {%- comment -%}
             Restricted to products (not the predictive dropdown's broader
@@ -137,8 +137,8 @@
             pages, which needs that.
           {%- endcomment -%}
           <input type="hidden" name="type" value="product">
-          <div class="header__search-field">
-            <button type="submit" class="header__search-submit" aria-label="{{ 'general.search.submit' | t }}">
+          <div class="u-flex u-items-center header__search-field">
+            <button type="submit" class="u-inline-flex u-items-center u-justify-center header__search-submit" aria-label="{{ 'general.search.submit' | t }}">
               {% render 'icon', name: 'search' %}
             </button>
             <input
@@ -152,7 +152,7 @@
             >
           </div>
         </form>
-        <button type="button" class="header__search-popup-close" id="HeaderSearchClose" aria-label="{{ 'general.accessibility.close' | t }}">
+        <button type="button" class="u-inline-flex u-items-center u-justify-center header__search-popup-close" id="HeaderSearchClose" aria-label="{{ 'general.accessibility.close' | t }}">
           {% render 'icon', name: 'close' %}
         </button>
       </div>
@@ -317,8 +317,6 @@
 
 .header__nav-link,
 .header__menu-trigger {
-  display: inline-flex;
-  align-items: center;
   gap: 6px;
   font-size: 16px;
   color: var(--color-primary);
@@ -338,8 +336,6 @@
   }
 
 .header__nav-item {
-  display: flex;
-  align-items: center;
 }
 
 .header__nav-account {
@@ -354,7 +350,6 @@
 }
 
 .header__menu-trigger-label {
-  display: flex;
   align-items: baseline;
   gap: 6px;
 }
@@ -422,8 +417,6 @@
 }
 
 .header__icons {
-  display: flex;
-  align-items: center;
   color: var(--color-primary);
 }
 
@@ -451,9 +444,6 @@
 }
 
 .header__menu-toggle {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
   min-width: 44px;
   min-height: 44px;
   padding: 11px;
@@ -492,6 +482,7 @@
   color: #fff;
   font-size: 10px;
   font-weight: 600;
+  font-family: var(--font-accent);
   line-height: 16px;
   text-align: center;
   display: flex;
@@ -509,7 +500,6 @@
   --shopify-account-color-accent: var(--button-primary, var(--color-secondary));
   --shopify-account-color-text: var(--color-primary);
   --shopify-account-radius-base: var(--radius-m);
-  display: inline-flex;
 }
 
 .header__account:not(:defined) {
@@ -525,9 +515,7 @@
 }
 
 .mega-menu__cards {
-  display: flex;
   flex-flow: row wrap;
-  justify-content: center;
   align-items: flex-start;
   gap: 1rem;
   max-width: 100%;
@@ -539,15 +527,13 @@
 }
 
 .mega-menu__view-all {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   align-self: center;
   flex: 0 1 160px;
   width: 160px;
   color: var(--color-primary);
   font-size: 14px;
   font-weight: 600;
+  font-family: var(--font-accent);
   text-decoration: none;
   gap: 4px;
 }
@@ -584,6 +570,7 @@
 .mega-menu-card__title {
   font-size: 14px;
   font-weight: 600;
+  font-family: var(--font-accent);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -801,8 +788,6 @@ body.search-popup-open {
 }
 
 .header__search-bar {
-  display: flex;
-  align-items: center;
   gap: 12px;
 }
 
@@ -812,9 +797,6 @@ body.search-popup-open {
 }
 
 .header__search-popup-close {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
   min-width: 18px;
   min-height: 18px;
   aspect-ratio: 1 / 1;
@@ -834,8 +816,6 @@ body.search-popup-open {
 }
 
 .header__search-field {
-  display: flex;
-  align-items: center;
   gap: 8px;
   flex: 1;
   border: 1px solid var(--color-surface);
@@ -863,9 +843,6 @@ body.search-popup-open {
 }
 
 .header__search-submit {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
   min-width: 36px;
   min-height: 36px;
   background: none;
@@ -886,6 +863,7 @@ body.search-popup-open {
 .predictive-search__group-title {
   font-size: 12px;
   font-weight: 600;
+  font-family: var(--font-accent);
   letter-spacing: 1px;
   text-transform: uppercase;
   color: #55636b;
@@ -926,6 +904,7 @@ body.search-popup-open {
 .predictive-search__product-title {
   font-size: 14px;
   font-weight: 600;
+  font-family: var(--font-accent);
   color: var(--color-primary);
 }
 

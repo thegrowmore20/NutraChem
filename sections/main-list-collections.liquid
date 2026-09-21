@@ -36,7 +36,7 @@
     {%- if sorted_collections.size == 0 -%}
       <p class="collection-list-section__empty">{{ 'collections.general.empty' | t }}</p>
     {%- else -%}
-      <ul class="collection-directory-grid">
+      <ul class="u-grid collection-directory-grid">
         {%- for collection in sorted_collections -%}
           <li class="collection-directory-grid__item">
             <a href="{{ collection.url }}" class="collection-directory-card">
@@ -79,7 +79,6 @@
 }
 
 .collection-directory-grid {
-  display: grid;
   grid-template-columns: repeat(var(--grid-columns-mobile, 2), minmax(0, 1fr));
   gap: 20px;
 }
@@ -127,6 +126,7 @@
   padding: 12px 14px;
   font-size: 14px;
   font-weight: 600;
+  font-family: var(--font-accent);
   text-align: center;
   color: var(--color-primary);
   border-top: 1px solid #eceff1;

@@ -33,11 +33,11 @@
     </div>
 
     {%- if section.blocks.size > 0 -%}
-      <div class="about-mission__features">
+      <div class="u-grid about-mission__features">
         {%- for block in section.blocks -%}
           <div class="about-mission__feature" {{ block.shopify_attributes }}>
             {%- if block.settings.icon != blank -%}
-              <span class="about-mission__feature-icon" aria-hidden="true">{{ block.settings.icon }}</span>
+              <span class="u-inline-flex u-items-center u-justify-center about-mission__feature-icon" aria-hidden="true">{{ block.settings.icon }}</span>
             {%- endif -%}
             {%- if block.settings.heading != blank -%}
               <p class="about-mission__feature-heading">{{ block.settings.heading }}</p>
@@ -60,9 +60,9 @@
 }
 
 .about-mission__quote {
-  font-family: var(--font-heading);
   font-size: clamp(22px, 18px + 1.5vw, 32px);
   font-weight: 500;
+  font-family: var(--font-subheading);
   line-height: 1.35;
   color: var(--color-primary);
   margin: 0 0 12px;
@@ -81,6 +81,7 @@
 .about-mission__quote-attribution {
   font-size: 12px;
   font-weight: 600;
+  font-family: var(--font-accent);
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: #7c8a90;
@@ -96,6 +97,7 @@
 .about-mission__eyebrow {
   font-size: 12px;
   font-weight: 600;
+  font-family: var(--font-accent);
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--color-secondary);
@@ -122,7 +124,6 @@
 }
 
 .about-mission__features {
-  display: grid;
   grid-template-columns: 1fr;
   gap: 24px;
   max-width: 900px;
@@ -143,9 +144,6 @@
 }
 
 .about-mission__feature-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
   width: 48px;
   height: 48px;
   font-size: 22px;
@@ -157,6 +155,7 @@
 .about-mission__feature-heading {
   font-size: 16px;
   font-weight: 600;
+  font-family: var(--font-accent);
   color: var(--color-primary);
   margin: 0 0 6px;
 }

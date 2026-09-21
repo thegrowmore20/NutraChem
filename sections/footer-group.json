@@ -14,14 +14,17 @@
     "footer": {
       "type": "footer",
       "settings": {
+        "social_heading": "Social Media",
+        "pages_heading": "Products",
+        "policies_heading": "Quick links",
         "logo": "shopify://shop_images/footer_logo.webp",
         "background_image": "shopify://shop_images/footer_background.webp",
         "facebook": "https://www.facebook.com/p/Nutra-Chem-61587738555299/",
         "instagram": "https://www.instagram.com/nutrachem.official/",
         "tiktok": "https://www.tiktok.com/@nutrachem.official",
         "youtube": "",
-        "pages_menu": "",
-        "help_menu": ""
+        "pages_menu": "pages",
+        "help_menu": "quick-links"
       }
     }
   },
