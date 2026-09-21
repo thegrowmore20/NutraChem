@@ -173,6 +173,11 @@
                 {%- when '@app' -%}
                   {% render block %}
 
+                {%- when 'custom_liquid' -%}
+                  <div {{ block.shopify_attributes }}>
+                    {{ block.settings.custom_liquid }}
+                  </div>
+
               {%- endcase -%}
             {%- endfor -%}
           {%- endform -%}
@@ -1829,6 +1834,17 @@ if (!customElements.get('product-info')) {
     },
     {
       "type": "@app"
+    },
+    {
+      "type": "custom_liquid",
+      "name": "Custom Liquid",
+      "settings": [
+        {
+          "type": "liquid",
+          "id": "custom_liquid",
+          "label": "Custom Liquid"
+        }
+      ]
     }
   ],
   "presets": [
