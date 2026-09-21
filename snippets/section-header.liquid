@@ -1,0 +1,53 @@
+{% doc %}
+  Renders a standardized section header with a heading, subheading, and description.
+
+  @param {string} [heading] - The main heading text
+  @param {string} [subheading] - The secondary heading or intro text
+  @param {string} [text] - Additional description text
+  @param {string} [alignment='center'] - Text alignment (left, center, right)
+
+  @example
+  {% render 'section-header', heading: section.settings.heading, subheading: section.settings.subheading %}
+{% enddoc %}
+
+{%- if heading != blank or subheading != blank or text != blank -%}
+  <div class="section-header" style="text-align: {{ alignment | default: 'center' }};">
+    {%- if heading != blank -%}
+      <h2 class="section-header__heading h2">{{ heading | escape }}</h2>
+    {%- endif -%}
+    {%- if subheading != blank -%}
+      <div class="section-header__subheading">{{ subheading }}</div>
+    {%- endif -%}
+    {%- if text != blank -%}
+      <div class="section-header__text">{{ text }}</div>
+    {%- endif -%}
+  </div>
+{%- endif -%}
+
+{% stylesheet %}
+  .section-header {
+    max-width: 42rem;
+    margin: 0 auto 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .section-header__heading {
+    margin: 0;
+    color: var(--color-primary);
+  }
+
+  .section-header__subheading,
+  .section-header__text {
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--color-text);
+    margin: 0;
+  }
+
+  .section-header__subheading p,
+  .section-header__text p {
+    margin: 0;
+  }
+{% endstylesheet %}

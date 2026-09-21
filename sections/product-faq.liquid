@@ -6,15 +6,19 @@
   {%- for faq in faq_items -%}
     {%- if faq.question.value != blank and faq.answer.value != blank -%}
       {%- assign faq_count = faq_count | plus: 1 -%}
-      <details class="product-faq__item" name="ProductFaq-{{ section.id }}">
-        <summary class="product-faq__question">
+      <div class="product-faq__item" data-faq-item>
+        <button type="button" class="product-faq__question" aria-expanded="false" data-faq-trigger>
           <h3 class="product-faq__question-text">
             {% if section.settings.show_numbers %}<span>{{ faq_count }}.</span> {% endif %}{{ faq.question.value | escape }}
           </h3>
           <span class="product-faq__icon" aria-hidden="true">{% render 'icon', name: 'chevron-down' %}</span>
-        </summary>
-        <div class="product-faq__answer rte">{{ faq.answer | metafield_tag }}</div>
-      </details>
+        </button>
+        <div class="product-faq__panel">
+          <div class="product-faq__panel-inner">
+            <div class="product-faq__answer rte">{{ faq.answer | metafield_tag }}</div>
+          </div>
+        </div>
+      </div>
     {%- endif -%}
   {%- endfor -%}
 {%- endcapture -%}
@@ -22,26 +26,21 @@
 {%- if faq_count > 0 -%}
   <section class="product-faq section-padding" style="--padding-top: {{ section.settings.padding_top }}px; --padding-bottom: {{ section.settings.padding_bottom }}px; --faq-width: {{ section.settings.content_width }}px;">
     <div class="container">
-      <div class="product-faq__content">
-        {%- if section.settings.heading != blank -%}
-          <h2 class="product-faq__heading h2">{{ section.settings.heading | escape }}</h2>
-        {%- endif -%}
+      <product-faq class="product-faq__content">
+        {% render 'section-header', 
+          heading: section.settings.heading 
+        %}
         {{ faq_markup }}
-      </div>
+      </product-faq>
     </div>
   </section>
 {%- endif -%}
 
 {% stylesheet %}
   .product-faq__content {
+    display: block;
     max-width: var(--faq-width, 1000px);
     margin-inline: auto;
-  }
-
-  .product-faq__heading {
-    margin: 0 0 32px;
-    text-align: center;
-    color: var(--color-primary);
   }
 
   .product-faq__item {
@@ -62,10 +61,12 @@
     cursor: pointer;
     list-style: none;
     color: var(--color-primary);
-  }
-
-  .product-faq__question::-webkit-details-marker {
-    display: none;
+    width: 100%;
+    text-align: left;
+    background: transparent;
+    border: none;
+    font: inherit;
+    padding-inline: 0;
   }
 
   .product-faq__question:focus-visible {
@@ -89,17 +90,31 @@
     width: 30px;
     height: 30px;
     border-radius: 50%;
-    background: var(--color-primary);
-    color: var(--color-background);
+    background: rgba(var(--color-button, var(--color-foreground)), 1);
+    color: rgba(var(--color-button-text, var(--color-background)), 1);
     transition: transform 200ms ease;
   }
 
-  .product-faq__item[open] .product-faq__icon {
+  .product-faq__item[data-faq-open] .product-faq__icon {
     transform: rotate(180deg);
   }
 
+  .product-faq__panel {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.25s ease;
+  }
+
+  .product-faq__item[data-faq-open] > .product-faq__panel {
+    grid-template-rows: 1fr;
+  }
+
+  .product-faq__panel-inner {
+    overflow: hidden;
+  }
+
   .product-faq__answer {
-    padding: 0 50px 20px 0;
+    padding: 0 0.5rem 20px 0.5rem;
     color: var(--color-text);
     line-height: 1.7;
     overflow-wrap: anywhere;
@@ -117,6 +132,38 @@
     }
   }
 {% endstylesheet %}
+
+{% javascript %}
+class ProductFaq extends HTMLElement {
+  constructor() {
+    super();
+    this.addEventListener('click', this.#onClick.bind(this));
+  }
+
+  #onClick(event) {
+    const trigger = event.target.closest('[data-faq-trigger]');
+    if (!trigger) return;
+
+    const item = trigger.closest('[data-faq-item]');
+    if (!item) return;
+    
+    const willOpen = !item.hasAttribute('data-faq-open');
+
+    for (const other of this.querySelectorAll('[data-faq-item]')) {
+      if (other === item) continue;
+      other.removeAttribute('data-faq-open');
+      other.querySelector('[data-faq-trigger]')?.setAttribute('aria-expanded', 'false');
+    }
+
+    item.toggleAttribute('data-faq-open', willOpen);
+    trigger.setAttribute('aria-expanded', String(willOpen));
+  }
+}
+
+if (!customElements.get('product-faq')) {
+  customElements.define('product-faq', ProductFaq);
+}
+{% endjavascript %}
 
 {% schema %}
 {

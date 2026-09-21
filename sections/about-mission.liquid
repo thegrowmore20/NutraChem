@@ -20,17 +20,11 @@
       </div>
     {%- endif -%}
 
-    <div class="about-mission__intro">
-      {%- if section.settings.eyebrow != blank -%}
-        <p class="about-mission__eyebrow">{{ section.settings.eyebrow }}</p>
-      {%- endif -%}
-      {%- if section.settings.heading != blank -%}
-        <h2 class="about-mission__heading h2">{{ section.settings.heading }}</h2>
-      {%- endif -%}
-      {%- if section.settings.description != blank -%}
-        <div class="about-mission__description">{{ section.settings.description }}</div>
-      {%- endif -%}
-    </div>
+    {% render 'section-header', 
+      subheading: section.settings.eyebrow, 
+      heading: section.settings.heading, 
+      text: section.settings.description 
+    %}
 
     {%- if section.blocks.size > 0 -%}
       <div class="u-grid about-mission__features">

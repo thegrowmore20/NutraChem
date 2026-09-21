@@ -1,6 +1,6 @@
 <section class="collections-section section-padding" style="--padding-top: {{ section.settings.padding_top }}px; --padding-bottom: {{ section.settings.padding_bottom }}px;">
   <div class="container">
-    <h2 class="section-heading">{{ section.settings.heading | default: 'Shop by Concern' }}</h2>
+    {% render 'section-header', heading: section.settings.heading %}
 
     <div class="collections-grid" style="--collections-columns-desktop: {{ section.settings.columns_desktop }};">
       {%- for block in section.blocks -%}
@@ -76,9 +76,15 @@
   left: 20px;
   font-size: 18px;
   font-weight: 500;
-  font-family: var(--font-subheading);
+  font-family: var(--font-heading);
   color: #fff;
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+
+  @emdia screen and (max-width: 992px) {
+    font-size: 16px;
+    top: 15px;
+    left: 15px;
+  }
 }
 {% endstylesheet %}
 

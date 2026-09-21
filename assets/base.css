@@ -43,9 +43,16 @@ body {
   margin: 0;
   overflow-x: clip;
   font-family: var(--font-body);
+  font-size: 14px;
   color: var(--color-text);
   background: var(--color-background);
   -webkit-font-smoothing: antialiased;
+}
+
+@media screen and (min-width: 750px) {
+  body {
+    font-size: 16px;
+  }
 }
 
 img {
@@ -138,6 +145,7 @@ h2[class] {
   font-family: var(--font-heading);
   line-height: 1.1;
   font-size: clamp(44px, 34.49px + 2.54vw, 70px);
+  text-wrap: balance;
 }
 
 .h1 {
@@ -145,6 +153,7 @@ h2[class] {
   font-family: var(--font-heading);
   line-height: 1.15;
   font-size: clamp(34px, 25.95px + 2.15vw, 56px);
+  text-wrap: balance;
 }
 
 .h2 {
@@ -152,6 +161,7 @@ h2[class] {
   font-family: var(--font-heading);
   line-height: 1.2;
   font-size: clamp(28px, 22.88px + 1.37vw, 42px);
+   text-wrap: balance;
 }
 
 .h3 {
@@ -310,18 +320,17 @@ h2[class] {
 
 .product-card__badge {
   position: absolute;
-  top: 16px;
-  left: 16px;
+  top: 6px;
+  left: 6px;
   background: var(--color-secondary);
   color: #fff;
   font-size: 10px;
   font-weight: 500;
   font-family: var(--font-subheading);
-  padding: 6px 12px;
+  padding: 4px 10px;
   border-radius: var(--radius-s);
 
-  @media screen and (max-width: 600px) {    
-    padding: 4px 8px;
+  @media screen and (max-width: 600px) {        
     top: 5px;
     left: 5px;
   }

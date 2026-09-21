@@ -129,6 +129,7 @@ Findings from an audit against `shopify.dev/docs/storefronts/themes/best-practic
 - Footer column headings changed from `<h3>` to `<h2>` (no `h2` ancestor existed in that landmark)
 - `aria-current="page"` added to the active nav link in `header.liquid`
 - Removed the dead dropdown chevron in `header.liquid` (no submenu markup ever existed)
+
 - Added a gradient scrim behind `.header--transparent` so nav text/icons keep contrast over any hero photo
 - Footer social links now have a visually-hidden "(opens in a new tab)" cue
 - Added `Organization` JSON-LD and a fallback `og:image` (via `shop.brand`) in `meta-tags.liquid`
@@ -140,3 +141,11 @@ Findings from an audit against `shopify.dev/docs/storefronts/themes/best-practic
 ```
 {%schema%}{"name": "Section Name","tag": "section","class": "section-class","settings": [{"type": "text","id": "heading","label": "t:sections.section_name.settings.heading.label","default": "Default Heading"}],"blocks": [],"presets": [{"name": "t:sections.section_name.presets.name"}]}{%endschema%}
 ```
+
+## UI Components
+
+### Section Headers
+- ALWAYS use the `section-header` snippet (`{% render 'section-header', heading: ..., subheading: ..., text: ... %}`) for section introductions instead of hardcoding `<h2>` and `<p>`. This ensures a standardized `42rem` max-width and perfect symmetry across all sections.
+
+### Sliders
+- When creating sliders, standardize arrow controls to be 40x40px, with a white background (`#ffffff`), `box-shadow: 0 4px 12px rgba(0,0,0,0.1)`, and the icon colored using `var(--color-primary)`. Position them symmetrically on the left and right (`left: 10px; right: 10px;`). Do not let them overflow negative margins.

@@ -153,6 +153,52 @@
         "padding_bottom": 0
       }
     },
+    "features_slider_L7eGgy": {
+      "type": "features-slider",
+      "blocks": {
+        "feature_fi9PmB": {
+          "type": "feature",
+          "settings": {
+            "heading": "Dermatologist Tested",
+            "text": "Carefully formulated and evaluated by skincare professionals to ensure safety, effectiveness, and compatibility with everyday skincare routines."
+          }
+        },
+        "feature_FUwzAK": {
+          "type": "feature",
+          "settings": {
+            "heading": "Vegan & Cruelty-Free",
+            "text": "Made without animal-derived ingredients and never tested on animals at any stage of development."
+          }
+        },
+        "feature_JVjUeM": {
+          "type": "feature",
+          "settings": {
+            "heading": "Clinically Proven",
+            "text": "Formulated with research-backed active ingredients known to support brighter, clearer, and healthier-looking skin."
+          }
+        },
+        "feature_Pc94in": {
+          "type": "feature",
+          "settings": {
+            "heading": "Sustainable Packaging",
+            "text": "Eco-conscious glass packaging designed to reduce environmental impact while preserving product quality."
+          }
+        }
+      },
+      "block_order": [
+        "feature_fi9PmB",
+        "feature_FUwzAK",
+        "feature_JVjUeM",
+        "feature_Pc94in"
+      ],
+      "name": "Features Slider",
+      "settings": {
+        "heading": "Uncompromising Standards",
+        "subheading": "<p>From powerful active ingredients to eco-conscious glass packaging, we never cut corners on your skin's health.</p>",
+        "padding_top": 40,
+        "padding_bottom": 40
+      }
+    },
     "comparison-table": {
       "type": "comparison-table",
       "blocks": {
@@ -234,6 +280,7 @@
   "order": [
     "main",
     "custom_section_BcGjnE",
+    "features_slider_L7eGgy",
     "comparison-table",
     "related-products",
     "product-faq"

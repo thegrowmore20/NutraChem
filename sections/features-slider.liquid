@@ -1,0 +1,376 @@
+{%- comment -%}
+  Features Slider Section
+  Displays a row of feature cards with an icon, heading, and text.
+  On mobile, it turns into a horizontally scrollable carousel.
+{%- endcomment -%}
+
+<section
+  class="features-slider section-padding"
+  style="--padding-top: {{ section.settings.padding_top }}px; --padding-bottom: {{ section.settings.padding_bottom }}px;"
+>
+  <div class="container">
+    {% render 'section-header', 
+      heading: section.settings.heading, 
+      subheading: section.settings.subheading 
+    %}
+
+    <features-slider class="features-slider__wrapper">
+      <button type="button" class="features-slider__arrow features-slider__arrow--prev" aria-label="Previous slide" disabled>
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+      </button>
+
+      <div class="features-slider__track" data-slider-track>
+        {%- for block in section.blocks -%}
+          <div class="features-slider__card" data-slider-slide {{ block.shopify_attributes }}>
+            {%- if block.settings.icon != blank -%}
+              <div class="features-slider__icon">
+                {{ block.settings.icon | image_url: width: 64 | image_tag: loading: 'lazy' }}
+              </div>
+            {%- endif -%}
+            
+            {%- if block.settings.heading != blank -%}
+              <h3 class="features-slider__card-heading">{{ block.settings.heading | escape }}</h3>
+            {%- endif -%}
+            
+            {%- if block.settings.text != blank -%}
+              <div class="features-slider__card-text">{{ block.settings.text | escape }}</div>
+            {%- endif -%}
+          </div>
+        {%- endfor -%}
+      </div>
+
+      <button type="button" class="features-slider__arrow features-slider__arrow--next" aria-label="Next slide" disabled>
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+      </button>
+
+      <div class="features-slider__dots" data-slider-dots>
+        {%- for block in section.blocks -%}
+          <button type="button" class="features-slider__dot" aria-label="Go to slide {{ forloop.index }}" data-index="{{ forloop.index0 }}"></button>
+        {%- endfor -%}
+      </div>
+    </features-slider>
+  </div>
+</section>
+
+{% stylesheet %}
+  .features-slider {
+    background-color: var(--color-background);
+  }
+
+  .features-slider__wrapper {
+    position: relative;
+    display: block;
+  }
+
+  .features-slider__track {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 100%; /* 1 item on mobile */
+    gap: 12px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding-bottom: 8px;
+  }
+
+  .features-slider__track::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Arrows */
+  .features-slider__arrow {
+    position: absolute;
+    top: calc(50% - 20px);
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    background: #ffffff;
+    border: none;
+    border-radius: 50%;
+    display: none; /* hidden by default, shown by JS if needed */
+    align-items: center;
+    justify-content: center;
+    color: var(--color-primary);
+    cursor: pointer;
+    z-index: 2;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transition: all 0.2s ease;
+  }
+  .features-slider__arrow:hover:not(:disabled) {
+    background: var(--color-primary);
+    color: #ffffff;
+  }
+  .features-slider__arrow:disabled {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .features-slider__arrow--prev {
+    left: 10px;
+  }
+  .features-slider__arrow--next {
+    right: 10px;
+  }
+
+  /* Dots */
+  .features-slider__dots {
+    display: none; /* hidden by default, shown by JS */
+    justify-content: center;
+    gap: 8px;
+    margin-top: 16px;
+  }
+  .features-slider__dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--button-primary) 20%, transparent);
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+  .features-slider__dot.is-active {
+    background: var(--button-primary);
+  }
+
+  /* JS dynamically adds these classes if slider needs to be active */
+  features-slider.has-arrows .features-slider__arrow {
+    display: flex;
+  }
+  features-slider.has-dots .features-slider__dots {
+    display: flex;
+  }
+
+  /* Cards */
+  .features-slider__card {
+    scroll-snap-align: start;
+    background: var(--color-surface, #ffffff);
+    border: 1px solid color-mix(in srgb, var(--color-primary) 10%, transparent);
+    border-radius: var(--radius-m, 12px);
+    padding: 1.25rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+
+    @media screen and (min-width: 750px) {
+      padding: 1rem;
+    }
+  }
+
+  @media screen and (min-width: 750px) {
+    .features-slider__track {
+      grid-auto-columns: calc(33.33333% - 13.33333px); /* 3 items tablet */
+      gap: 1rem;
+    }
+    
+    .features-slider__card {
+      padding: 32px 24px;
+    }
+  }
+
+  @media screen and (min-width: 990px) {
+    .features-slider__track {
+      grid-auto-columns: calc(25% - 15px); /* 4 items desktop */
+    }
+  }
+
+  .features-slider__icon {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .features-slider__icon img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+
+  .features-slider__card-heading {
+    font-family: var(--font-heading, serif);
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0 0 12px;
+    color: var(--color-primary);
+
+    @media screen and (min-width: 750px) {
+      font-size: 1rem;
+    }
+  }
+
+  .features-slider__card-text {
+    font-size: 13px;    
+    color: var(--color-text);
+    margin: 0;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Features Slider",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Why Choose Nutrachem?"
+    },
+    {
+      "type": "richtext",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "<p>Our advanced skincare solutions are carefully formulated to deliver visible results while keeping your skin healthy, hydrated, and naturally radiant.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "icon",
+          "label": "Icon Image"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Feature Heading"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Text",
+          "default": "Describe the feature here in a few words."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Features Slider",
+      "blocks": [
+        { "type": "feature", "settings": { "heading": "Dermatologist Tested", "text": "Carefully formulated and evaluated by skincare professionals to ensure safety, effectiveness, and compatibility with everyday skincare routines." } },
+        { "type": "feature", "settings": { "heading": "Vegan & Cruelty-Free", "text": "Made without animal-derived ingredients and never tested on animals at any stage of development." } },
+        { "type": "feature", "settings": { "heading": "Clinically Proven", "text": "Formulated with research-backed active ingredients known to support brighter, clearer, and healthier-looking skin." } },
+        { "type": "feature", "settings": { "heading": "Sustainable Packaging", "text": "Eco-conscious glass packaging designed to reduce environmental impact while preserving product quality." } }
+      ]
+    }
+  ]
+}
+{% endschema %}
+
+{% javascript %}
+  class FeaturesSlider extends HTMLElement {
+    constructor() {
+      super();
+      this.track = this.querySelector('[data-slider-track]');
+      this.prevBtn = this.querySelector('.features-slider__arrow--prev');
+      this.nextBtn = this.querySelector('.features-slider__arrow--next');
+      this.dots = Array.from(this.querySelectorAll('.features-slider__dot'));
+      this.slides = Array.from(this.querySelectorAll('[data-slider-slide]'));
+
+      this.init();
+      window.addEventListener('resize', () => this.init());
+      this.track.addEventListener('scroll', () => this.updateUI());
+
+      if (this.prevBtn) this.prevBtn.addEventListener('click', () => this.scrollByDirection(-1));
+      if (this.nextBtn) this.nextBtn.addEventListener('click', () => this.scrollByDirection(1));
+      
+      this.dots.forEach(dot => {
+        dot.addEventListener('click', (e) => {
+          const index = parseInt(e.target.dataset.index);
+          if (!isNaN(index) && this.slides[index]) {
+            const scrollPos = this.slides[index].offsetLeft - this.track.offsetLeft;
+            this.track.scrollTo({ left: scrollPos, behavior: 'smooth' });
+          }
+        });
+      });
+    }
+
+    init() {
+      if (!this.track) return;
+      
+      // Check if track has overflow
+      const hasOverflow = this.track.scrollWidth > this.track.clientWidth + 2;
+      
+      if (hasOverflow) {
+        this.classList.add('has-arrows', 'has-dots');
+        this.updateUI();
+      } else {
+        this.classList.remove('has-arrows', 'has-dots');
+      }
+    }
+
+    updateUI() {
+      if (!this.classList.contains('has-arrows')) return;
+      
+      // Arrows state
+      const isAtStart = this.track.scrollLeft <= 2;
+      const isAtEnd = this.track.scrollLeft + this.track.clientWidth >= this.track.scrollWidth - 2;
+      
+      if (this.prevBtn) this.prevBtn.disabled = isAtStart;
+      if (this.nextBtn) this.nextBtn.disabled = isAtEnd;
+
+      // Dots state based on closest slide to the left edge of track
+      let activeIndex = 0;
+      let minDistance = Infinity;
+
+      this.slides.forEach((slide, index) => {
+        const slideLeft = slide.offsetLeft - this.track.offsetLeft;
+        const distance = Math.abs(slideLeft - this.track.scrollLeft);
+        if (distance < minDistance) {
+          minDistance = distance;
+          activeIndex = index;
+        }
+      });
+
+      this.dots.forEach((dot, index) => {
+        dot.classList.toggle('is-active', index === activeIndex);
+      });
+    }
+
+    scrollByDirection(direction) {
+      const slideWidth = this.slides[0]?.clientWidth || 0;
+      const gap = parseInt(window.getComputedStyle(this.track).gap) || 0;
+      const scrollAmount = slideWidth + gap;
+      
+      this.track.scrollBy({ left: scrollAmount * direction, behavior: 'smooth' });
+    }
+  }
+
+  if (!customElements.get('features-slider')) {
+    customElements.define('features-slider', FeaturesSlider);
+  }
+{% endjavascript %}

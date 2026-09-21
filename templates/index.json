@@ -147,6 +147,44 @@
         "padding_bottom": 40
       }
     },
+    "image_gallery_RGGFDx": {
+      "type": "image-gallery",
+      "blocks": {
+        "image_tPVLBb": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/Ethical_Certfications.webp",
+            "link": ""
+          }
+        },
+        "image_3wnnt4": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/Quality_Reasearch_Organization.webp",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "image_tPVLBb",
+        "image_3wnnt4"
+      ],
+      "name": "Image Gallery",
+      "settings": {
+        "heading": "Certified for Your Peace of Mind",
+        "subheading": "",
+        "text": "<p>Manufactured under strict ISO 9001 controls and proudly Halal-certified. We guarantee ethical, premium quality in every drop of our skincare and cosmetics.</p>",
+        "text_image_space": 28,
+        "image_space": 24,
+        "aspect_ratio": "adapt",
+        "border_radius": 8,
+        "enable_border": true,
+        "border_color": "#e2e6e8",
+        "content_max_width": 800,
+        "padding_top": 40,
+        "padding_bottom": 40
+      }
+    },
     "custom_section_dHGKA6": {
       "type": "custom-section",
       "blocks": {
@@ -258,6 +296,7 @@
     "best-sellers",
     "shop-by-concern",
     "ingredients",
+    "image_gallery_RGGFDx",
     "custom_section_dHGKA6",
     "custom_section_LCMcUH",
     "real-results",

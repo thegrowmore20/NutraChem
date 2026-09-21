@@ -10,21 +10,27 @@
       {{ 'lifestyle-2' | placeholder_svg_tag }}
     {%- endif -%}
   </div>
-  <div class="split-banner__content{% if section.settings.style == 'light' %} split-banner__content--light{% endif %}">
-    <h2 class="split-banner__title">{{ section.settings.heading }}</h2>
-    {%- if section.settings.subheading != blank -%}
-      <p class="split-banner__text" style="font-weight:600;font-family: var(--font-accent);margin-bottom:16px;">{{ section.settings.subheading }}</p>
-    {%- endif -%}
-    <div class="split-banner__text">{{ section.settings.text }}</div>
-    {%- if section.settings.button_label != blank -%}
-      <a href="{{ section.settings.button_link | default: routes.root_url }}" class="button button--light">
-        {{ section.settings.button_label }}
-        {%- if section.settings.heading != blank -%}
-          <span class="visually-hidden"> &ndash; {{ section.settings.heading }}</span>
-        {%- endif -%}
-      </a>
-    {%- endif -%}
-  </div>
+  {%- if section.settings.heading != blank or section.settings.subheading != blank or section.settings.text != blank or section.settings.button_label != blank -%}
+    <div class="split-banner__content{% if section.settings.style == 'light' %} split-banner__content--light{% endif %}">
+      {%- if section.settings.heading != blank -%}
+        <h2 class="split-banner__title">{{ section.settings.heading }}</h2>
+      {%- endif -%}
+      {%- if section.settings.subheading != blank -%}
+        <p class="split-banner__text" style="font-weight:600;font-family: var(--font-accent);margin-bottom:16px;">{{ section.settings.subheading }}</p>
+      {%- endif -%}
+      {%- if section.settings.text != blank -%}
+        <div class="split-banner__text">{{ section.settings.text }}</div>
+      {%- endif -%}
+      {%- if section.settings.button_label != blank -%}
+        <a href="{{ section.settings.button_link | default: routes.root_url }}" class="button button--light">
+          {{ section.settings.button_label }}
+          {%- if section.settings.heading != blank -%}
+            <span class="visually-hidden"> &ndash; {{ section.settings.heading }}</span>
+          {%- endif -%}
+        </a>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
   {%- if section.settings.image_2 -%}
     <div class="split-banner__media">
       {%- assign media_2_h = 1400 | divided_by: section.settings.image_2.aspect_ratio | round -%}

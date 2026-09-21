@@ -10,17 +10,11 @@
   style="--padding-top: {{ section.settings.padding_top }}px; --padding-bottom: {{ section.settings.padding_bottom }}px;"
 >
   <div class="container">
-    <div class="about-certifications__intro">
-      {%- if section.settings.eyebrow != blank -%}
-        <p class="about-certifications__eyebrow">{{ section.settings.eyebrow }}</p>
-      {%- endif -%}
-      {%- if section.settings.heading != blank -%}
-        <h2 class="about-certifications__heading h2">{{ section.settings.heading }}</h2>
-      {%- endif -%}
-      {%- if section.settings.description != blank -%}
-        <div class="about-certifications__description">{{ section.settings.description }}</div>
-      {%- endif -%}
-    </div>
+    {% render 'section-header', 
+      subheading: section.settings.eyebrow, 
+      heading: section.settings.heading, 
+      text: section.settings.description 
+    %}
 
     {%- assign badges = section.blocks | where: 'type', 'badge' -%}
     {%- if badges.size > 0 -%}
