@@ -508,6 +508,15 @@ summary:focus-visible {
 
 
 /* custom app css */
+/* The star-rating widget (rendered via a Custom Liquid block right under the
+   product title) starts empty and is populated by the AirReviews app's own
+   script after load, so its box grows from 0 to ~29px - this reserves that
+   height upfront to avoid a layout shift (CLS) when it populates. */
+.ProductPage-StarRating,
+.AirReviews-Widget--Stars {
+  min-height: 29px;
+}
+
 .AirReviews-Widget__V2.desktop {
     padding-top: 0 !important;
 }
