@@ -1,0 +1,588 @@
+{%- comment -%}
+  "What's Inside" - active ingredient breakdown, driven entirely by the
+  current product's custom.ingredients_list JSON metafield. Renders nothing
+  when the metafield is empty or has no valid entries (see schema paragraph
+  for the expected JSON shape). The "Trust Bar" footer (heading, subtext,
+  badges) is merchant-editable via section settings/blocks - it is the same
+  for every product, not metafield-driven.
+{%- endcomment -%}
+{%- liquid
+  assign items = product.metafields.custom.ingredients_list.value
+  assign item_count = 0
+  for item in items
+    if item.name != blank and item.desc != blank
+      assign item_count = item_count | plus: 1
+    endif
+  endfor
+  assign trust_badges = section.blocks | where: 'type', 'trust_badge'
+-%}
+
+{%- if item_count > 0 -%}
+  <section
+    class="product-ingredients section-padding"
+    style="--padding-top: {{ section.settings.padding_top }}px; --padding-bottom: {{ section.settings.padding_bottom }}px;"
+  >
+    <div class="container">
+      {% render 'section-header',
+        eyebrow: section.settings.eyebrow,
+        heading: section.settings.heading,
+        text: section.settings.text
+      %}
+
+      <product-ingredients>
+      <div class="product-ingredients__layout">
+        <div class="product-ingredients__content">
+          <div class="product-ingredients__list" role="tablist">
+            {%- assign visible_index = 0 -%}
+            {%- for item in items -%}
+              {%- if item.name != blank and item.desc != blank -%}
+                <button
+                  type="button"
+                  class="product-ingredients__trigger{% if visible_index == 0 %} is-active{% endif %}"
+                  id="ProductIngredientTab-{{ section.id }}-{{ forloop.index0 }}"
+                  role="tab"
+                  aria-selected="{% if visible_index == 0 %}true{% else %}false{% endif %}"
+                  aria-controls="ProductIngredientPanel-{{ section.id }}-{{ forloop.index0 }}"
+                  data-ingredient-trigger
+                  data-index="{{ forloop.index0 }}"
+                  data-name="{{ item.name | escape }}"
+                  data-short="{{ item.short_name | default: item.name | escape }}"
+                  data-formula="{{ item.formula | escape }}"
+                  data-percent="{{ item.percent | escape }}"
+                >
+                  <span class="product-ingredients__trigger-icon" aria-hidden="true">{{ item.icon | default: '✦' }}</span>
+                  <span class="product-ingredients__trigger-info">
+                    <span class="product-ingredients__trigger-name">{{ item.short_name | default: item.name | escape }}</span>
+                    {%- if item.claim != blank -%}
+                      <span class="product-ingredients__trigger-claim">{{ item.claim | escape }}</span>
+                    {%- endif -%}
+                  </span>
+                  {%- if item.percent != blank -%}
+                    <span class="product-ingredients__trigger-percent">{{ item.percent | escape }}</span>
+                  {%- endif -%}
+                </button>
+                {%- assign visible_index = visible_index | plus: 1 -%}
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+
+          <div class="product-ingredients__panels">
+            {%- assign visible_index = 0 -%}
+            {%- for item in items -%}
+              {%- if item.name != blank and item.desc != blank -%}
+                <div
+                  class="product-ingredients__panel"
+                  id="ProductIngredientPanel-{{ section.id }}-{{ forloop.index0 }}"
+                  role="tabpanel"
+                  aria-labelledby="ProductIngredientTab-{{ section.id }}-{{ forloop.index0 }}"
+                  data-ingredient-panel
+                  data-index="{{ forloop.index0 }}"
+                  {% unless visible_index == 0 %}hidden{% endunless %}
+                >
+                  <p class="product-ingredients__description">{{ item.desc | escape }}</p>
+
+                  {%- if item.does != blank or item.see != blank or item.who != blank -%}
+                    <dl class="product-ingredients__specs">
+                      {%- if item.does != blank -%}
+                        <div><dt>{{ section.settings.spec_does_label | escape }}</dt><dd>{{ item.does | escape }}</dd></div>
+                      {%- endif -%}
+                      {%- if item.see != blank -%}
+                        <div><dt>{{ section.settings.spec_see_label | escape }}</dt><dd>{{ item.see | escape }}</dd></div>
+                      {%- endif -%}
+                      {%- if item.who != blank -%}
+                        <div><dt>{{ section.settings.spec_who_label | escape }}</dt><dd>{{ item.who | escape }}</dd></div>
+                      {%- endif -%}
+                  </dl>
+                  {%- endif -%}
+
+                  {%- if item.study != blank -%}
+                    <p class="product-ingredients__study">🔬 {{ item.study | escape }}</p>
+                  {%- endif -%}
+                </div>
+                {%- assign visible_index = visible_index | plus: 1 -%}
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+        </div>
+
+        <div class="product-ingredients__visual">
+          {%- assign first_item = items | first -%}
+          <div class="product-ingredients__orb">
+            <span class="product-ingredients__orb-name" data-orb-name>{{ first_item.short_name | default: first_item.name }}</span>
+            {%- if first_item.formula != blank -%}
+              <span class="product-ingredients__orb-formula" data-orb-formula>{{ first_item.formula }}</span>
+            {%- endif -%}
+          </div>
+        </div>
+      </div>
+
+      {%- if section.settings.trust_heading != blank or section.settings.trust_subtext != blank or trust_badges.size > 0 -%}
+        <div class="product-ingredients__footer">
+          {%- if section.settings.trust_heading != blank -%}
+            <p class="product-ingredients__footer-heading">{{ section.settings.trust_heading | escape }}</p>
+          {%- endif -%}
+          {%- if section.settings.trust_subtext != blank -%}
+            <p class="product-ingredients__footer-subtext">{{ section.settings.trust_subtext | escape }}</p>
+          {%- endif -%}
+
+          {%- if trust_badges.size > 0 -%}
+            <div class="product-ingredients__badges">
+              {%- for block in trust_badges -%}
+                {%- assign badge_icon = block.settings.icon -%}
+                {%- if badge_icon == 'ban' -%}
+                  {%- assign badge_icon = 'no' -%}
+                {%- endif -%}
+                <div class="product-ingredients__badge" {{ block.shopify_attributes }}>
+                  <span class="product-ingredients__badge-icon" aria-hidden="true">{% render 'icon', name: badge_icon %}</span>
+                  {%- if block.settings.title != blank -%}
+                    <p class="product-ingredients__badge-title">{{ block.settings.title | escape }}</p>
+                  {%- endif -%}
+                  {%- if block.settings.description != blank -%}
+                    <p class="product-ingredients__badge-desc">{{ block.settings.description | escape }}</p>
+                  {%- endif -%}
+                </div>
+              {%- endfor -%}
+            </div>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+      </product-ingredients>
+    </div>
+  </section>
+{%- endif -%}
+
+{% stylesheet %}
+product-ingredients {
+  display: block;
+}
+
+.product-ingredients__layout {
+  display: block;
+}
+
+.product-ingredients__content {
+  min-width: 0;
+}
+
+.product-ingredients__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.product-ingredients__trigger {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  text-align: left;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-border);
+  border-left: 3px solid var(--color-border);
+  border-radius: var(--radius-s);
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.product-ingredients__trigger:hover {
+  background: var(--color-surface);
+}
+
+.product-ingredients__trigger.is-active {
+  background: var(--color-surface);
+  border-left-color: var(--color-secondary);
+  box-shadow: 0 2px 10px color-mix(in srgb, var(--color-primary) 8%, transparent);
+}
+
+.product-ingredients__trigger-icon {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--color-secondary) 12%, white);
+  font-size: 16px;
+}
+
+.product-ingredients__trigger-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+
+.product-ingredients__trigger-name {
+  font-size: 16px;
+  font-weight: 500;
+  font-family: var(--font-heading);
+  color: var(--color-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.product-ingredients__trigger-claim {
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.product-ingredients__trigger-percent {
+  flex: 0 0 auto;
+  font-size: 15px;
+  font-weight: 500;
+  font-family: var(--font-heading);
+  color: var(--color-secondary);
+}
+
+.product-ingredients__panels {
+  margin-top: var(--space-4);
+  padding: var(--space-5);
+  border-radius: var(--radius-m);
+  background: var(--color-surface);
+}
+
+.product-ingredients__description {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--color-text);
+}
+
+.product-ingredients__specs {
+  margin: var(--space-4) 0 0;
+  border-top: 1px solid var(--color-border);
+}
+
+.product-ingredients__specs div {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  gap: var(--space-3);
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--color-border);
+  font-size: 14px;
+}
+
+.product-ingredients__specs dt {
+  margin: 0;
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+.product-ingredients__specs dd {
+  margin: 0;
+  color: var(--color-text-muted);
+}
+
+.product-ingredients__study {
+  margin: var(--space-4) 0 0;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-s);
+  background: #fff;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--color-text-muted);
+}
+
+@media screen and (max-width: 480px) {
+  .product-ingredients__specs div {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+}
+
+.product-ingredients__visual {
+  margin-top: var(--space-6);
+  display: flex;
+  justify-content: center;
+}
+
+.product-ingredients__orb {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  text-align: center;
+  padding: var(--space-5);
+  background: radial-gradient(circle at 32% 28%, color-mix(in srgb, var(--color-secondary) 35%, white), color-mix(in srgb, var(--color-secondary) 75%, black 5%));
+  box-shadow:
+    0 24px 60px color-mix(in srgb, var(--color-secondary) 30%, transparent),
+    inset 8px 8px 24px color-mix(in srgb, #fff 30%, transparent);
+  animation: product-ingredients-float 5s ease-in-out infinite;
+}
+
+.product-ingredients__orb::before,
+.product-ingredients__orb::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, #fff 30%, transparent);
+  pointer-events: none;
+}
+
+.product-ingredients__orb::before {
+  inset: 8%;
+}
+
+.product-ingredients__orb::after {
+  inset: 22%;
+  border-style: dashed;
+}
+
+@media screen and (min-width: 750px) {
+  .product-ingredients__orb {
+    width: 300px;
+    height: 300px;
+  }
+}
+
+@media screen and (prefers-reduced-motion: reduce) {
+  .product-ingredients__orb {
+    animation: none;
+  }
+}
+
+@keyframes product-ingredients-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.product-ingredients__orb-name {
+  position: relative;
+  z-index: 1;
+  font-size: 20px;
+  font-weight: 500;
+  font-family: var(--font-heading);
+  color: #fff;
+  transition: opacity 0.2s ease;
+}
+
+.product-ingredients__orb-formula {
+  position: relative;
+  z-index: 1;
+  margin-top: var(--space-2);
+  font-size: 13px;
+  font-style: italic;
+  color: color-mix(in srgb, #fff 80%, transparent);
+  transition: opacity 0.2s ease;
+}
+
+.product-ingredients__footer {
+  margin: var(--space-8) auto 0;
+  text-align: center;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--color-secondary) 4%, white), color-mix(in srgb, var(--color-secondary) 9%, white));
+  border: 1px solid color-mix(in srgb, var(--color-secondary) 18%, white);
+  border-radius: 20px;
+  padding: 24px 16px;
+}
+
+.product-ingredients__footer-heading {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 400;
+  font-family: var(--font-heading);
+  color: var(--color-primary);
+}
+
+.product-ingredients__footer-subtext {
+  margin: var(--space-2) 0 var(--space-6);
+  font-size: 15px;
+  font-family: var(--font-body);
+  color: var(--color-text-muted);
+}
+
+.product-ingredients__badges {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 6px 24px color-mix(in srgb, var(--color-secondary) 8%, transparent);
+}
+
+.product-ingredients__badge {
+  padding: 22px 14px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.product-ingredients__badge:nth-child(3),
+.product-ingredients__badge:nth-child(4) {
+  border-bottom: none;
+}
+
+.product-ingredients__badge-icon {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  margin: 0 auto var(--space-3);
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--color-secondary) 10%, white);
+  color: var(--color-secondary);
+}
+
+.product-ingredients__badge-icon svg {
+  width: 22px;
+  height: 22px;
+  stroke-width: 1.7;
+}
+
+.product-ingredients__badge-title {
+  margin: 0;
+  font-size: 14.5px;
+  font-weight: 600;
+  font-family: var(--font-accent);
+  color: var(--color-primary);
+}
+
+.product-ingredients__badge-desc {
+  margin: 4px 0 0;
+  font-size: 12.5px;
+  line-height: 1.45;
+  font-family: var(--font-body);
+  color: var(--color-text-muted);
+}
+
+@media screen and (min-width: 768px) {
+  .product-ingredients__footer {
+    padding: 34px 28px;
+  }
+
+  .product-ingredients__footer-heading {
+    font-size: 30px;
+  }
+
+  .product-ingredients__badges {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .product-ingredients__badge {
+    border-bottom: none;
+    border-right: 1px solid var(--color-border);
+  }
+
+  .product-ingredients__badge:nth-child(3) {
+    border-bottom: none;
+  }
+
+  .product-ingredients__badge:last-child {
+    border-right: none;
+  }
+}
+
+@media screen and (min-width: 750px) {
+  .product-ingredients__layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 400px);
+    gap: var(--space-8);
+    align-items: start;
+  }
+
+  .product-ingredients__visual { margin-top: 0; position: sticky; top: var(--space-6); }
+}
+{% endstylesheet %}
+
+{% javascript %}
+class ProductIngredients extends HTMLElement {
+  constructor() {
+    super();
+    this.orbName = this.querySelector('[data-orb-name]');
+    this.orbFormula = this.querySelector('[data-orb-formula]');
+    this.addEventListener('click', this.#onClick.bind(this));
+  }
+
+  #onClick(event) {
+    const trigger = event.target.closest('[data-ingredient-trigger]');
+    if (!trigger) return;
+
+    const index = trigger.dataset.index;
+
+    for (const btn of this.querySelectorAll('[data-ingredient-trigger]')) {
+      const active = btn.dataset.index === index;
+      btn.classList.toggle('is-active', active);
+      btn.setAttribute('aria-selected', String(active));
+    }
+
+    for (const panel of this.querySelectorAll('[data-ingredient-panel]')) {
+      panel.hidden = panel.dataset.index !== index;
+    }
+
+    if (this.orbName) this.orbName.textContent = trigger.dataset.short;
+    if (this.orbFormula) this.orbFormula.textContent = trigger.dataset.formula;
+  }
+}
+
+if (!customElements.get('product-ingredients')) {
+  customElements.define('product-ingredients', ProductIngredients);
+}
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Product ingredients",
+  "enabled_on": { "templates": ["product"] },
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Reads custom.ingredients_list JSON metafield: array of {icon, name, short_name, claim, percent, desc, study, formula, does, see, who}. icon is a single emoji character (e.g. ✨). does/see/who are optional benefit rows. Hidden entirely if empty or no item has both name and desc."
+    },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Active Ingredients" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "What's Inside" },
+    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Every ingredient is carefully selected to support skin clarity, hydration, and overall radiance.</p>" },
+    { "type": "header", "content": "Benefit spec labels" },
+    { "type": "text", "id": "spec_does_label", "label": "\"What it does\" label", "default": "What it does" },
+    { "type": "text", "id": "spec_see_label", "label": "\"You'll notice\" label", "default": "You'll notice" },
+    { "type": "text", "id": "spec_who_label", "label": "\"Best for\" label", "default": "Best for" },
+    { "type": "header", "content": "Trust bar" },
+    {
+      "type": "paragraph",
+      "content": "Same for every product (not metafield-driven). Add up to 4 \"Trust badge\" blocks below for the icon cards."
+    },
+    { "type": "text", "id": "trust_heading", "label": "Heading", "default": "Concentration" },
+    { "type": "textarea", "id": "trust_subtext", "label": "Subtext", "default": "Formulated at clinically validated concentration" },
+    { "type": "header", "content": "Section padding" },
+    { "type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 40 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 40 }
+  ],
+  "blocks": [
+    {
+      "type": "trust_badge",
+      "name": "Trust badge",
+      "limit": 4,
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "flask", "label": "Flask" },
+            { "value": "shield", "label": "Shield" },
+            { "value": "ban", "label": "Ban / circle-slash" },
+            { "value": "leaf", "label": "Leaf" }
+          ],
+          "default": "flask"
+        },
+        { "type": "text", "id": "title", "label": "Title", "default": "Clinically-Studied Actives" },
+        { "type": "text", "id": "description", "label": "Description", "default": "Proven brightening ingredients" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product ingredients",
+      "blocks": [
+        { "type": "trust_badge", "settings": { "icon": "flask", "title": "Clinically-Studied Actives", "description": "Proven brightening ingredients" } },
+        { "type": "trust_badge", "settings": { "icon": "shield", "title": "Dermatologically Tested", "description": "Gentle for daily use" } },
+        { "type": "trust_badge", "settings": { "icon": "ban", "title": "No Fillers", "description": "Every ingredient has a job" } },
+        { "type": "trust_badge", "settings": { "icon": "leaf", "title": "Vegan Formula", "description": "No animal-derived ingredients" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

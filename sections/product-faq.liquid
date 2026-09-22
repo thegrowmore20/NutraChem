@@ -55,9 +55,9 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 20px;
+    gap: var(--space-5);
     min-height: 52px;
-    padding-block: 12px;
+    padding-block: var(--space-3);
     cursor: pointer;
     list-style: none;
     color: var(--color-primary);
@@ -90,8 +90,8 @@
     width: 30px;
     height: 30px;
     border-radius: 50%;
-    background: rgba(var(--color-button, var(--color-foreground)), 1);
-    color: rgba(var(--color-button-text, var(--color-background)), 1);
+    background: var(--button-primary, var(--color-secondary));
+    color: #fff;
     transition: transform 200ms ease;
   }
 
@@ -114,7 +114,7 @@
   }
 
   .product-faq__answer {
-    padding: 0 0.5rem 20px 0.5rem;
+    padding: 0 0.5rem var(--space-5) 0.5rem;
     color: var(--color-text);
     line-height: 1.7;
     overflow-wrap: anywhere;

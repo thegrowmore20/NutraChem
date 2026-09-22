@@ -199,6 +199,83 @@
         "padding_bottom": 40
       }
     },
+    "product-ingredients": {
+      "type": "product-ingredients",
+      "blocks": {
+        "trust_badge_1": {
+          "type": "trust_badge",
+          "settings": {
+            "icon": "flask",
+            "title": "Clinically-Studied Actives",
+            "description": "Proven brightening ingredients"
+          }
+        },
+        "trust_badge_2": {
+          "type": "trust_badge",
+          "settings": {
+            "icon": "shield",
+            "title": "Dermatologically Tested",
+            "description": "Gentle for daily use"
+          }
+        },
+        "trust_badge_3": {
+          "type": "trust_badge",
+          "settings": {
+            "icon": "ban",
+            "title": "No Fillers",
+            "description": "Every ingredient has a job"
+          }
+        },
+        "trust_badge_4": {
+          "type": "trust_badge",
+          "settings": {
+            "icon": "leaf",
+            "title": "Vegan Formula",
+            "description": "No animal-derived ingredients"
+          }
+        }
+      },
+      "block_order": [
+        "trust_badge_1",
+        "trust_badge_2",
+        "trust_badge_3",
+        "trust_badge_4"
+      ],
+      "settings": {
+        "eyebrow": "Active Ingredients",
+        "heading": "What's Inside",
+        "text": "<p>Every ingredient is carefully selected to support skin clarity, hydration, and overall radiance.</p>",
+        "spec_does_label": "What it does",
+        "spec_see_label": "You'll notice",
+        "spec_who_label": "Best for",
+        "trust_heading": "Concentration",
+        "trust_subtext": "Formulated at clinically validated concentration",
+        "padding_top": 40,
+        "padding_bottom": 40
+      }
+    },
+    "product-how-it-works": {
+      "type": "product-how-it-works",
+      "settings": {
+        "eyebrow": "The Science",
+        "heading": "How It Works",
+        "subheading": "",
+        "text": "<p>Formulated to work in stages - here's what happens after each application.</p>",
+        "padding_top": 40,
+        "padding_bottom": 40
+      }
+    },
+    "product-how-to-apply": {
+      "type": "product-how-to-apply",
+      "settings": {
+        "eyebrow": "Application",
+        "heading": "How to Apply",
+        "text": "<p>For best results, use as part of your daily skincare routine.</p>",
+        "tip_label": "Expert Tip",
+        "padding_top": 40,
+        "padding_bottom": 40
+      }
+    },
     "comparison-table": {
       "type": "comparison-table",
       "blocks": {
@@ -256,14 +333,16 @@
         "header_3": "Regular Products"
       }
     },
-    "related-products": {
-      "type": "related-products",
+    "product-results": {
+      "type": "product-results",
       "settings": {
-        "heading": "You may also like",
-        "products_to_show": 4,
-        "columns_desktop": "4",
-        "padding_top": 40,
-        "padding_bottom": 40
+        "eyebrow": "Clinical Results",
+        "heading": "Visible Change. Proven Results.",
+        "text": "<p>Every claim is backed by independent testing on real participants - not model results.</p>",
+        "before_label": "Before",
+        "after_label": "After",
+        "padding_top": 80,
+        "padding_bottom": 80
       }
     },
     "product-faq": {
@@ -273,6 +352,16 @@
         "show_numbers": true,
         "content_width": 1000,
         "padding_top": 40,
+        "padding_bottom": 40
+      }
+    },
+    "related-products": {
+      "type": "related-products",
+      "settings": {
+        "heading": "You may also like",
+        "products_to_show": 4,
+        "columns_desktop": "4",
+        "padding_top": 40,
         "padding_bottom": 80
       }
     }
@@ -281,8 +370,12 @@
     "main",
     "custom_section_BcGjnE",
     "features_slider_L7eGgy",
+    "product-ingredients",
+    "product-how-it-works",
+    "product-how-to-apply",
     "comparison-table",
-    "related-products",
-    "product-faq"
+    "product-results",
+    "product-faq",
+    "related-products"
   ]
 }

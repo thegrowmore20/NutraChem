@@ -62,18 +62,18 @@
   line-height: 1.2;
   font-size: clamp(28px, 22.88px + 1.37vw, 42px);
   color: var(--color-primary);
-  margin: 0 0 20px;
+  margin: 0 0 var(--space-5);
 }
 
 .brand-story__text {
   font-size: 15px;
   line-height: 1.8;
   color: #45535c;
-  margin: 0 0 28px;
+  margin: 0 0 var(--space-7);
 }
 
 .brand-story__text p {
-  margin: 0 0 16px;
+  margin: 0 0 var(--space-4);
 }
 
 .brand-story__reels {
@@ -83,7 +83,7 @@
 
 @media screen and (min-width: 750px) {
   .brand-story__reels {
-    gap: 16px;
+    gap: var(--space-4);
   }
 }
 
@@ -132,7 +132,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  padding: 10px 12px;
+  padding: 10px var(--space-3);
   font-size: 12px;
   color: #fff;
   background: linear-gradient(to top, rgba(0, 0, 0, 0.65), transparent);

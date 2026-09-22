@@ -177,7 +177,7 @@
   margin: 0;
   padding: 0 0 15px;
   font-size: 14px;
-  color: #55636b;
+  color: var(--color-text-muted);
   list-style: none;
 }
 
@@ -189,11 +189,11 @@
 
 .article-template__breadcrumb li:not(:last-child)::after {
   content: '/';
-  color: #55636b;
+  color: var(--color-text-muted);
 }
 
 .article-template__breadcrumb a {
-  color: #55636b;
+  color: var(--color-text-muted);
 }
 
 .article-template__breadcrumb a:hover {
@@ -206,25 +206,25 @@
 
 .article-template__header {
   text-align: center;
-  margin-bottom: 28px;
+  margin-bottom: var(--space-7);
 }
 
 .article-template__title {
   color: var(--color-primary);
-  margin: 0 0 12px;
+  margin: 0 0 var(--space-3);
 }
 
 .article-template__meta {
   gap: 6px;
   font-size: 13px;
-  color: #7c8a90;
+  color: var(--color-text-muted);
   margin: 0;
 }
 
 .article-template__hero {
   border-radius: var(--radius-m);
   overflow: hidden;
-  margin-bottom: 28px;
+  margin-bottom: var(--space-7);
 }
 
 .article-template__hero img {
@@ -239,7 +239,7 @@
   color: var(--color-primary);
   font-weight: 500;
   font-family: var(--font-subheading);
-  margin: 0 0 24px;
+  margin: 0 0 var(--space-6);
 }
 
 .article-template__content {
@@ -250,7 +250,7 @@
 
 .article-template__content :is(h2, h3, h4) {
   color: var(--color-primary);
-  margin: 32px 0 14px;
+  margin: var(--space-8) 0 14px;
 }
 
 .article-template__content p {
@@ -270,14 +270,14 @@
 
 .article-template__share {
   display: block;
-  margin-top: 32px;
+  margin-top: var(--space-8);
 }
 
 .article-template__share-button {
   gap: 8px;
   height: 40px;
   padding: 0 18px;
-  border: 1px solid #eceff1;
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-m);
   background: none;
   color: var(--color-primary);
@@ -288,9 +288,9 @@
 }
 
 .article-template__back {
-  margin-top: 24px;
-  padding-top: 24px;
-  border-top: 1px solid #eceff1;
+  margin-top: var(--space-6);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--color-border);
 }
 
 .article-template__back-link {
@@ -312,22 +312,22 @@
 .article-template__comments-section {
   margin-top: 48px;
   padding-top: 40px;
-  border-top: 1px solid #eceff1;
+  border-top: 1px solid var(--color-border);
 }
 
 .article-template__comments-heading,
 .article-template__comment-form-heading {
   color: var(--color-primary);
-  margin: 0 0 20px;
+  margin: 0 0 var(--space-5);
 }
 
 .article-template__comments-list {
-  gap: 20px;
-  margin-bottom: 32px;
+  gap: var(--space-5);
+  margin-bottom: var(--space-8);
 }
 
 .article-template__comment {
-  padding: 18px 20px;
+  padding: 18px var(--space-5);
   background: var(--color-surface);
   border-radius: var(--radius-m);
 }
@@ -345,12 +345,12 @@
 .article-template__comment-meta {
   gap: 6px;
   font-size: 12px;
-  color: #7c8a90;
+  color: var(--color-text-muted);
   margin: 10px 0 0;
 }
 
 .article-template__comment-form-heading {
-  margin-top: 8px;
+  margin-top: var(--space-2);
 }
 
 .article-template__comment-success {
@@ -358,28 +358,28 @@
   font-size: 14px;
   font-weight: 600;
   font-family: var(--font-accent);
-  margin: 0 0 16px;
+  margin: 0 0 var(--space-4);
 }
 
 .article-template__comment-error {
-  color: #c0392b;
+  color: var(--color-error);
   font-size: 13px;
-  margin: 0 0 16px;
-  background: #fdecea;
-  border: 1px solid #f3c6c1;
+  margin: 0 0 var(--space-4);
+  background: color-mix(in srgb, var(--color-error) 8%, white);
+  border: 1px solid color-mix(in srgb, var(--color-error) 25%, white);
   border-radius: var(--radius-s);
   padding: 10px 14px;
 }
 
 .article-template__comment-error p {
-  margin: 0 0 4px;
+  margin: 0 0 var(--space-1);
   font-weight: 600;
   font-family: var(--font-accent);
 }
 
 .article-template__comment-row {
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  gap: var(--space-4);
 }
 
 @media screen and (max-width: 479px) {
@@ -390,7 +390,7 @@
 
 .article-template__comment-field {
   gap: 6px;
-  margin-bottom: 16px;
+  margin-bottom: var(--space-4);
 }
 
 .article-template__comment-field label {
@@ -403,8 +403,8 @@
 .article-template__comment-field input,
 .article-template__comment-field textarea {
   width: 100%;
-  padding: 12px 16px;
-  border: 1px solid #eceff1;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-s);
   font-family: var(--font-body);
   font-size: 15px;
@@ -425,13 +425,13 @@
 
 .article-template__comment-notice {
   font-size: 13px;
-  color: #7c8a90;
-  margin: 0 0 16px;
+  color: var(--color-text-muted);
+  margin: 0 0 var(--space-4);
 }
 
 .pagination {
-  gap: 8px;
-  margin-top: 32px;
+  gap: var(--space-2);
+  margin-top: var(--space-8);
 }
 
 .pagination__link {

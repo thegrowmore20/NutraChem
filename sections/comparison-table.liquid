@@ -74,7 +74,7 @@
 
 .comparison-table-scroll {
   overflow-x: auto;
-  padding-bottom: 8px;
+  padding-bottom: var(--space-2);
 }
 
 .comparison-table-scroll::-webkit-scrollbar {
@@ -106,19 +106,19 @@
 }
 
 .comparison-table th {
-  padding: 24px 24px;
+  padding: var(--space-6) var(--space-6);
   border-bottom: 1px solid var(--color-surface, #e2e8f0);
 }
 
 .comparison-table td {
-  padding: 20px 24px;
+  padding: var(--space-5) var(--space-6);
   border-bottom: 1px solid var(--color-surface, #f1f5f9);
 }
 
 @media screen and (min-width: 640px) {
   .comparison-table th, .comparison-table td {
-    padding-left: 32px;
-    padding-right: 32px;
+    padding-left: var(--space-8);
+    padding-right: var(--space-8);
   }
 }
 
@@ -209,7 +209,7 @@
 .comparison-td-feature {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: var(--space-4);
 }
 
 .comparison-icon-wrap {

@@ -1,32 +1,38 @@
 {%- comment -%}
-  About page stats row: up to 6 stat cards (icon, big number, label,
-  description).
+  About page pull-quote + stats row, merged into one section so they render
+  as a single visual block (no double section-padding boundary between them).
 {%- endcomment -%}
 
 <section
-  class="about-stats section-padding"
+  class="about-quote section-padding"
   style="--padding-top: {{ section.settings.padding_top }}px; --padding-bottom: {{ section.settings.padding_bottom }}px;"
 >
   <div class="container">
-    {%- if section.settings.heading != blank -%}
-      <h2 class="about-stats__heading h2">{{ section.settings.heading }}</h2>
+    {%- if section.settings.quote != blank or section.settings.quote_attribution != blank -%}
+      <div class="about-quote__block">
+        {% render 'section-header', eyebrow: section.settings.quote_attribution, text: section.settings.quote %}
+      </div>
     {%- endif -%}
 
     {%- if section.blocks.size > 0 -%}
-      <div class="u-grid about-stats__grid">
+      <div class="u-grid about-quote__stats-grid">
         {%- for block in section.blocks -%}
-          <div class="about-stats__item" {{ block.shopify_attributes }}>
-            {%- if block.settings.icon != blank -%}
-              <span class="u-inline-flex u-items-center u-justify-center about-stats__icon" aria-hidden="true">{{ block.settings.icon }}</span>
+          <div class="about-quote__stat" {{ block.shopify_attributes }}>
+            {%- if block.settings.icon_image != blank -%}
+              <span class="u-inline-flex u-items-center u-justify-center about-quote__stat-icon" aria-hidden="true">
+                {{ block.settings.icon_image | image_url: width: 96 | image_tag: loading: 'lazy', widths: '48, 96', sizes: '48px', width: 48, height: 48, alt: '' }}
+              </span>
+            {%- elsif block.settings.icon != blank -%}
+              <span class="u-inline-flex u-items-center u-justify-center about-quote__stat-icon" aria-hidden="true">{{ block.settings.icon }}</span>
             {%- endif -%}
             {%- if block.settings.number != blank -%}
-              <p class="about-stats__number">{{ block.settings.number }}</p>
+              <p class="about-quote__stat-number">{{ block.settings.number }}</p>
             {%- endif -%}
             {%- if block.settings.label != blank -%}
-              <p class="about-stats__label">{{ block.settings.label }}</p>
+              <p class="about-quote__stat-label">{{ block.settings.label }}</p>
             {%- endif -%}
             {%- if block.settings.description != blank -%}
-              <p class="about-stats__description">{{ block.settings.description }}</p>
+              <p class="about-quote__stat-description">{{ block.settings.description }}</p>
             {%- endif -%}
           </div>
         {%- endfor -%}
@@ -36,46 +42,74 @@
 </section>
 
 {% stylesheet %}
-.about-stats__heading {
-  text-align: center;
-  color: var(--color-primary);
-  margin: 0 0 40px;
+.about-quote__block {
+  margin-bottom: var(--space-6);
 }
 
-.about-stats__grid {
+.about-quote__block .section-header__text {
+  font-size: clamp(22px, 18px + 1.5vw, 32px);
+  font-weight: 500;
+  font-family: var(--font-heading);
+  line-height: 1.35;
+  color: var(--color-primary);
+}
+
+.about-quote__block .section-header__text p::before,
+.about-quote__block .section-header__text p::after {
+  content: '"';
+  color: var(--color-secondary);
+}
+
+.about-quote__stats-grid {
   grid-template-columns: 1fr;
-  gap: 24px;
+  gap: var(--space-3);
 }
 
 @media screen and (min-width: 550px) {
-  .about-stats__grid {
+  .about-quote__stats-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
 @media screen and (min-width: 990px) {
-  .about-stats__grid {
+  .about-quote__stats-grid {
     grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-4);
   }
 }
 
-.about-stats__item {
+.about-quote__stat {
   text-align: center;
-  padding: 28px 20px;
+  padding: var(--space-7) var(--space-5);
   border-radius: var(--radius-m);
   background: var(--color-surface);
+  transform-origin: center;
+  transition: transform 0.25s ease;
+  backface-visibility: hidden;
 }
 
-.about-stats__icon {
+.about-quote__stat:hover {
+  transform: translateY(-5px);
+}
+
+.about-quote__stat-icon {
   width: 48px;
   height: 48px;
   font-size: 22px;
   border-radius: 50%;
   background: var(--color-background);
   margin-bottom: 14px;
+  overflow: hidden;
 }
 
-.about-stats__number {
+.about-quote__stat-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.about-quote__stat-number {
   font-size: clamp(28px, 24px + 1.5vw, 40px);
   font-weight: 600;
   font-family: var(--font-accent);
@@ -83,30 +117,31 @@
   margin: 0 0 6px;
 }
 
-.about-stats__label {
+.about-quote__stat-label {
   font-size: 12px;
   font-weight: 600;
   font-family: var(--font-accent);
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--color-secondary);
-  margin: 0 0 8px;
+  margin: 0 0 var(--space-2);
 }
 
-.about-stats__description {
+.about-quote__stat-description {
   font-size: 13px;
   line-height: 1.6;
-  color: #55636b;
+  color: var(--color-text-muted);
   margin: 0;
 }
 {% endstylesheet %}
 
 {% schema %}
 {
-  "name": "About stats",
+  "name": "About quote & stats",
   "class": "section",
   "settings": [
-    { "type": "text", "id": "heading", "label": "Heading", "info": "Optional - leave blank to hide." },
+    { "type": "richtext", "id": "quote", "label": "Quote", "default": "<p>We believe in results, not marketing promises.</p>" },
+    { "type": "text", "id": "quote_attribution", "label": "Quote attribution", "default": "Formulated by industry specialists" },
     { "type": "header", "content": "Padding" },
     { "type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 60 },
     { "type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 60 }
@@ -117,6 +152,7 @@
       "name": "Stat",
       "settings": [
         { "type": "text", "id": "icon", "label": "Icon (emoji)", "default": "🔬" },
+        { "type": "image_picker", "id": "icon_image", "label": "Icon image", "info": "Overrides the emoji icon above when set." },
         { "type": "text", "id": "number", "label": "Number", "default": "95%" },
         { "type": "text", "id": "label", "label": "Label", "default": "Clinical Efficacy" },
         { "type": "text", "id": "description", "label": "Description", "default": "Average results across all product lines in independent trials." }
@@ -125,7 +161,7 @@
   ],
   "presets": [
     {
-      "name": "About stats",
+      "name": "About quote & stats",
       "blocks": [
         { "type": "stat", "settings": { "icon": "🔬", "number": "95%", "label": "Clinical Efficacy", "description": "Average results across all product lines in independent trials." } },
         { "type": "stat", "settings": { "icon": "🌍", "number": "5+", "label": "Countries Served", "description": "Trusted by customers on every continent." } },

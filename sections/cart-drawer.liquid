@@ -7,7 +7,7 @@
     </button>
   </div>
 
-  <div id="CartDrawerContent" class="u-flex u-flex-col cart-drawer__content">
+  <div id="CartDrawerContent" class="u-flex u-flex-col cart-drawer__content" data-cart-sections="cart-drawer,header">
     {%- liquid
       assign show_shipping_bar = false
       if settings.show_free_shipping_bar
@@ -159,7 +159,7 @@
 }
 
 .cart-drawer__header {
-  padding: 20px;
+  padding: var(--space-5);
   border-bottom: 1px solid var(--color-surface);
 }
 
@@ -185,7 +185,7 @@
 .cart-drawer__content {
   flex: 1;
   overflow-y: auto;
-  padding: 20px;
+  padding: var(--space-5);
   position: relative;
 }
 
@@ -212,7 +212,7 @@
 }
 
 .cart-drawer__shipping-bar {
-  margin-bottom: 20px;
+  margin-bottom: var(--space-5);
 }
 
 .cart-drawer__shipping-message {
@@ -234,7 +234,7 @@
 }
 
 .cart-drawer__items {
-  gap: 20px;
+  gap: var(--space-5);
 }
 
 .cart-drawer__item {
@@ -270,7 +270,7 @@
 
 .cart-drawer__item-title-row {
   align-items: flex-start;
-  gap: 8px;
+  gap: var(--space-2);
 }
 
 .cart-drawer__item-title {
@@ -286,28 +286,28 @@
 }
 
 .cart-drawer__item-bottom-row {
-  gap: 12px;
-  margin-top: 8px;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
 }
 
 .cart-drawer__item-variant {
   font-size: 12px;
-  color: #55636b;
-  margin: 0 0 8px;
+  color: var(--color-text-muted);
+  margin: 0 0 var(--space-2);
 }
 
 .cart-drawer__item-discounts {
-  margin-bottom: 8px;
+  margin-bottom: var(--space-2);
 }
 
 .cart-drawer__discount-badge {
-  gap: 4px;
+  gap: var(--space-1);
   background: var(--button-primary, var(--color-secondary));
   color: #fff;
   font-size: 11px;
   font-weight: 600;
   font-family: var(--font-accent);
-  padding: 3px 8px;
+  padding: 3px var(--space-2);
   border-radius: var(--radius-s);
 }
 
@@ -359,7 +359,7 @@
   background: var(--button-primary, var(--color-secondary));
   color: #fff;
   font-size: 11px;
-  padding: 3px 8px;
+  padding: 3px var(--space-2);
   border-radius: var(--radius-s);
 }
 
@@ -371,13 +371,13 @@
   background: none;
   border: none;
   cursor: pointer;
-  color: #55636b;
+  color: var(--color-text-muted);
   flex-shrink: 0;
 }
 
 .cart-drawer__footer {
   flex-shrink: 0;
-  padding: 20px;
+  padding: var(--space-5);
   border-top: 1px solid var(--color-surface);
 }
 
@@ -386,7 +386,7 @@
   font-weight: 600;
   font-family: var(--font-accent);
   color: var(--color-primary);
-  margin-bottom: 16px;
+  margin-bottom: var(--space-4);
 }
 
 .cart-drawer__checkout {
@@ -404,7 +404,7 @@
   font-weight: 600;
   font-family: var(--font-accent);
   color: var(--color-primary);
-  margin: 0 0 20px;
+  margin: 0 0 var(--space-5);
 }
 
 body.cart-drawer-open {
@@ -433,8 +433,6 @@ class CartDrawer {
     this.#closeButton.addEventListener('click', () => this.close())
     this.#backdrop.addEventListener('click', () => this.close())
     document.addEventListener('keydown', (event) => this.#onKeydown(event))
-    this.#content.addEventListener('click', (event) => this.#onContentClick(event))
-    this.#content.addEventListener('change', (event) => this.#onContentChange(event))
   }
 
   open() {
@@ -487,51 +485,6 @@ class CartDrawer {
     if (event.key === 'Escape' && this.#root.classList.contains('is-open')) {
       this.close()
     }
-  }
-
-  #onContentClick(event) {
-    const removeButton = event.target.closest('[data-cart-remove]')
-    if (removeButton) {
-      const line = removeButton.closest('[data-cart-item]').dataset.line
-      this.#updateLine(line, 0)
-      return
-    }
-    const decreaseButton = event.target.closest('[data-cart-qty-decrease]')
-    if (decreaseButton) {
-      const item = decreaseButton.closest('[data-cart-item]')
-      const input = item.querySelector('[data-cart-qty-input]')
-      this.#updateLine(item.dataset.line, Math.max(0, Number(input.value) - 1))
-      return
-    }
-    const increaseButton = event.target.closest('[data-cart-qty-increase]')
-    if (increaseButton) {
-      const item = increaseButton.closest('[data-cart-item]')
-      const input = item.querySelector('[data-cart-qty-input]')
-      this.#updateLine(item.dataset.line, Number(input.value) + 1)
-    }
-  }
-
-  #onContentChange(event) {
-    const input = event.target.closest('[data-cart-qty-input]')
-    if (!input) return
-    const item = input.closest('[data-cart-item]')
-    this.#updateLine(item.dataset.line, Math.max(0, Number(input.value)))
-  }
-
-  async #updateLine(line, quantity) {
-    this.#content.classList.add('is-loading')
-    const response = await fetch(window.routes.cartChangeUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-      body: JSON.stringify({
-        line,
-        quantity,
-        sections: ['cart-drawer', 'header'],
-        sections_url: window.location.pathname,
-      }),
-    })
-    const json = await response.json()
-    document.dispatchEvent(new CustomEvent('cart:updated', { detail: { sections: json.sections, openDrawer: false } }))
   }
 }
 

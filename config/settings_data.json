@@ -22,6 +22,8 @@
     "color_background": "#FFFFFF",
     "color_text": "#18252B",
     "color_star": "#F2A93B",
+    "color_border": "#ECEFF1",
+    "color_error": "#C0392B",
     "sections": {
       "header": {
         "type": "header",

@@ -171,6 +171,20 @@
         "id": "color_star",
         "label": "Star rating color",
         "default": "#F2A93B"
+      },
+      {
+        "type": "color",
+        "id": "color_border",
+        "label": "Border color",
+        "info": "Used for hairline borders and dividers (cards, inputs, panels)",
+        "default": "#ECEFF1"
+      },
+      {
+        "type": "color",
+        "id": "color_error",
+        "label": "Error color",
+        "info": "Used for form validation errors",
+        "default": "#C0392B"
       }
     ]
   }

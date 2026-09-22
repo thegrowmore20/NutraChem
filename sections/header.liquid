@@ -98,7 +98,7 @@
         {% render 'icon', name: 'search' %}
       </button>
       <!-- Vensa Wishlist icon. The app binds the click and the counter. -->
-      <button type="button" class="vensa-wl-header-btn" id="WishlistToggle" aria-label="Open wishlist">
+      <button type="button" class="vensa-wl-header-btn header__icon-btn--wishlist" id="WishlistToggle" aria-label="Open wishlist">
         <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" preserveAspectRatio="xMidYMid meet">
           <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="none" stroke="currentColor" stroke-width="1.8"/>
         </svg>
@@ -114,7 +114,7 @@
           <a href="{{ routes.account_url }}" aria-label="Account">{% render 'icon', name: 'account' %}</a>
         {%- endif -%}
       </div>
-      <a href="{{ routes.cart_url }}" id="CartToggle" aria-label="{{ 'general.cart.title' | t }}" aria-haspopup="dialog">
+      <a href="{{ routes.cart_url }}" id="CartToggle" class="header__icon-btn--cart" aria-label="{{ 'general.cart.title' | t }}" aria-haspopup="dialog">
         {% render 'icon', name: 'cart' %}
         {% render 'cart-icon-bubble' %}
       </a>
@@ -357,7 +357,7 @@
 .header__menu-count {
   font-size: 14px;
   font-weight: 400;
-  color: #55636b;
+  color: var(--color-text-muted);
   display: none;
 }
 
@@ -465,7 +465,7 @@
     display: none;
   }
 
-  #WishlistToggle {
+  .header__icon-btn--wishlist {
     display: none;
   }
 }
@@ -476,7 +476,7 @@
   right: 4px;
   min-width: 18px;
   height: 18px;
-  padding: 0 4px;
+  padding: 0 var(--space-1);
   border-radius: 50%;
   background: var(--color-secondary);
   color: #fff;
@@ -490,8 +490,8 @@
   align-items: center;
 }
 
-#CartToggle,
-#WishlistToggle {
+.header__icon-btn--cart,
+.header__icon-btn--wishlist {
   position: relative;
 }
 
@@ -511,14 +511,20 @@
 }
 
 .mega-menu__inner {
-  padding-block: 28px;
+  padding-block: var(--space-7);
 }
 
 .mega-menu__cards {
   flex-flow: row wrap;
   align-items: flex-start;
-  gap: 1rem;
+  gap: var(--space-3);
   max-width: 100%;
+}
+
+@media screen and (min-width: 990px) {
+  .mega-menu__cards {
+    gap: var(--space-4);
+  }
 }
 
 .mega-menu__text-link {
@@ -535,7 +541,7 @@
   font-weight: 600;
   font-family: var(--font-accent);
   text-decoration: none;
-  gap: 4px;
+  gap: var(--space-1);
 }
 
 .mega-menu-card {
@@ -549,6 +555,13 @@
   border: 1px solid rgba(0, 0, 0, 0.06);
   padding: 0.5rem;
   border-radius: var(--radius-m);
+  transform-origin: center;
+  transition: transform 0.25s ease;
+  backface-visibility: hidden;
+}
+
+.mega-menu-card:hover {
+  transform: translateY(-5px);
 }
 
 .mega-menu-card__media {
@@ -579,6 +592,13 @@
 
 .mega-menu-card__rating {
   font-size: 12px !important;
+}
+
+/* .mega-menu-card is itself the <a>, so the global a:hover color would
+   otherwise tint the rating text/stars teal on hover - pin it to the
+   normal body text color instead. */
+.mega-menu-card:hover .mega-menu-card__rating {
+  color: var(--color-text);
 }
 
 .header__nav-close {
@@ -625,7 +645,7 @@ body.search-popup-open {
     max-width: 400px;
     gap: 0;
     background: var(--color-background);
-    padding: 76px 20px 24px;
+    padding: 76px var(--space-5) var(--space-6);
     overflow-y: auto;
     overscroll-behavior: contain;
     transform: translateX(-100%);
@@ -677,7 +697,7 @@ body.search-popup-open {
   }
 
   .header__menu-count {
-    color: #55636b;
+    color: var(--color-text-muted);
   }
 
   .header__nav-item {
@@ -727,7 +747,7 @@ body.search-popup-open {
     width: 32px;
     height: 32px;
     object-fit: cover;
-    border: 1px solid #f5ebeb;
+    border: 1px solid var(--color-border);
     border-radius: var(--radius-s);
     background: var(--color-surface);
     flex-shrink: 0;
@@ -762,7 +782,7 @@ body.search-popup-open {
 }
 
 .header__search-popup-inner {
-  padding-block: 24px 32px;
+  padding-block: var(--space-6) var(--space-8);
 
   @media screen and (max-width: 992px) {
     padding-block: 1.5rem 2rem;
@@ -787,7 +807,7 @@ body.search-popup-open {
 }
 
 .header__search-bar {
-  gap: 12px;
+  gap: var(--space-3);
 }
 
 .header__search-form {
@@ -815,11 +835,11 @@ body.search-popup-open {
 }
 
 .header__search-field {
-  gap: 8px;
+  gap: var(--space-2);
   flex: 1;
   border: 1px solid var(--color-surface);
   border-radius: var(--radius-m);
-  padding-inline: 8px;
+  padding-inline: var(--space-2);
 }
 
 .header__search-input {
@@ -837,7 +857,7 @@ body.search-popup-open {
   }
 
   @media screen and (max-width: 600px) {
-    padding-block: 8px;    
+    padding-block: var(--space-2);
   }
 }
 
@@ -852,7 +872,7 @@ body.search-popup-open {
 }
 
 .header__search-results {
-  padding-top: 16px;
+  padding-top: var(--space-4);
 }
 
 .header__search-results:empty {
@@ -865,18 +885,18 @@ body.search-popup-open {
   font-family: var(--font-accent);
   letter-spacing: 1px;
   text-transform: uppercase;
-  color: #55636b;
-  margin: 0 0 12px;
+  color: var(--color-text-muted);
+  margin: 0 0 var(--space-3);
 }
 
 .predictive-search__group + .predictive-search__group {
-  margin-top: 24px;
+  margin-top: var(--space-6);
 }
 
 .predictive-search__products {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--space-4);
 }
 
 .predictive-search__product {
@@ -889,7 +909,7 @@ body.search-popup-open {
   width: 60px;
   height: 60px;
   object-fit: cover;
-  border: 1px solid #f5ebeb;
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-s);
   background: var(--color-surface);
 }
@@ -897,7 +917,7 @@ body.search-popup-open {
 .predictive-search__product-info {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--space-1);
 }
 
 .predictive-search__product-title {
@@ -919,7 +939,7 @@ body.search-popup-open {
 
 .predictive-search__no-results {
   font-size: 14px;
-  padding-block: 12px;
+  padding-block: var(--space-3);
 }
 {% endstylesheet %}
 

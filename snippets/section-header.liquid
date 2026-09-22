@@ -1,6 +1,7 @@
 {% doc %}
-  Renders a standardized section header with a heading, subheading, and description.
+  Renders a standardized section header with an eyebrow, heading, subheading, and description.
 
+  @param {string} [eyebrow] - Small uppercase label above the heading
   @param {string} [heading] - The main heading text
   @param {string} [subheading] - The secondary heading or intro text
   @param {string} [text] - Additional description text
@@ -10,8 +11,11 @@
   {% render 'section-header', heading: section.settings.heading, subheading: section.settings.subheading %}
 {% enddoc %}
 
-{%- if heading != blank or subheading != blank or text != blank -%}
+{%- if eyebrow != blank or heading != blank or subheading != blank or text != blank -%}
   <div class="section-header" style="text-align: {{ alignment | default: 'center' }};">
+    {%- if eyebrow != blank -%}
+      <p class="section-header__eyebrow">{{ eyebrow | escape }}</p>
+    {%- endif -%}
     {%- if heading != blank -%}
       <h2 class="section-header__heading h2">{{ heading | escape }}</h2>
     {%- endif -%}
@@ -27,15 +31,27 @@
 {% stylesheet %}
   .section-header {
     max-width: 42rem;
-    margin: 0 auto 32px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+    margin: 0 auto var(--space-8);
+  }
+
+  .section-header__eyebrow {
+    font-size: 12px;
+    font-weight: 600;
+    font-family: var(--font-accent);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-secondary);
+    margin: 0 0 var(--space-2);
   }
 
   .section-header__heading {
     margin: 0;
     color: var(--color-primary);
+  }
+
+  .section-header__heading + .section-header__subheading,
+  .section-header__heading + .section-header__text {
+    margin-top: var(--space-4);
   }
 
   .section-header__subheading,
@@ -48,6 +64,11 @@
 
   .section-header__subheading p,
   .section-header__text p {
-    margin: 0;
+    margin: 0 0 var(--space-3);
+  }
+
+  .section-header__subheading p:last-child,
+  .section-header__text p:last-child {
+    margin-bottom: 0;
   }
 {% endstylesheet %}

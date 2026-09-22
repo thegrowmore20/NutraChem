@@ -8,17 +8,11 @@
   style="--padding-top: {{ section.settings.padding_top }}px; --padding-bottom: {{ section.settings.padding_bottom }}px;"
 >
   <div class="container">
-    <div class="about-story__intro">
-      {%- if section.settings.eyebrow != blank -%}
-        <p class="about-story__eyebrow">{{ section.settings.eyebrow }}</p>
-      {%- endif -%}
-      {%- if section.settings.heading != blank -%}
-        <h2 class="about-story__heading h2">{{ section.settings.heading }}</h2>
-      {%- endif -%}
-      {%- if section.settings.description != blank -%}
-        <div class="about-story__description">{{ section.settings.description }}</div>
-      {%- endif -%}
-    </div>
+    {% render 'section-header',
+      eyebrow: section.settings.eyebrow,
+      heading: section.settings.heading,
+      text: section.settings.description
+    %}
 
     {%- if section.blocks.size > 0 -%}
       <ol class="u-flex u-flex-col about-story__timeline">
@@ -59,53 +53,18 @@
 </section>
 
 {% stylesheet %}
-.about-story__intro {
-  text-align: center;
-  max-width: 640px;
-  margin: 0 auto 48px;
-}
-
-.about-story__eyebrow {
-  font-size: 12px;
-  font-weight: 600;
-  font-family: var(--font-accent);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--color-secondary);
-  margin: 0 0 12px;
-}
-
-.about-story__heading {
-  color: var(--color-primary);
-  margin: 0 0 16px;
-}
-
-.about-story__description {
-  font-size: 15px;
-  line-height: 1.7;
-  color: var(--color-text);
-}
-
-.about-story__description p {
-  margin: 0 0 12px;
-}
-
-.about-story__description p:last-child {
-  margin-bottom: 0;
-}
-
 .about-story__timeline {
   list-style: none;
   margin: 0 auto;
   padding: 0;
   max-width: 720px;
-  gap: 28px;
+  gap: var(--space-7);
   border-left: 2px solid var(--color-surface);
 }
 
 .about-story__milestone {
   position: relative;
-  padding-left: 28px;
+  padding-left: var(--space-7);
 }
 
 .about-story__milestone::before {
@@ -125,7 +84,7 @@
   font-weight: 600;
   font-family: var(--font-accent);
   color: var(--color-secondary);
-  margin-bottom: 4px;
+  margin-bottom: var(--space-1);
 }
 
 .about-story__milestone-title {
@@ -139,15 +98,15 @@
 .about-story__milestone-text {
   font-size: 14px;
   line-height: 1.6;
-  color: #55636b;
+  color: var(--color-text-muted);
   margin: 0;
 }
 
 .about-story__founder {
-  gap: 16px;
+  gap: var(--space-4);
   max-width: 720px;
   margin: 48px auto 0;
-  padding-top: 32px;
+  padding-top: var(--space-8);
   border-top: 1px solid var(--color-surface);
 }
 
@@ -181,7 +140,7 @@
   font-family: var(--font-accent);
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: #7c8a90;
+  color: var(--color-text-muted);
   margin: 2px 0 0;
 }
 {% endstylesheet %}

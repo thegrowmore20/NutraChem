@@ -1,0 +1,330 @@
+{%- comment -%}
+  "Visible Change. Proven Results." - before/after proof + stat row + a
+  day-by-day results timeline, driven by the current product's
+  custom.results_timeline JSON metafield. Renders nothing when the metafield
+  is empty or has no valid entries. custom.stats (JSON) and the before/after
+  file metafields are optional add-ons.
+{%- endcomment -%}
+{%- liquid
+  assign timeline = product.metafields.custom.results_timeline.value
+  assign timeline_count = 0
+  for item in timeline
+    if item.title != blank
+      assign timeline_count = timeline_count | plus: 1
+    endif
+  endfor
+  assign stats = product.metafields.custom.stats.value
+  assign before_image = product.metafields.custom.before_image.value
+  assign after_image = product.metafields.custom.after_image.value
+  assign before_alt = section.settings.before_label | append: ' - ' | append: product.title
+  assign after_alt = section.settings.after_label | append: ' - ' | append: product.title
+-%}
+
+{%- if timeline_count > 0 -%}
+  <section class="product-results section-padding" style="--padding-top: {{ section.settings.padding_top }}px; --padding-bottom: {{ section.settings.padding_bottom }}px;">
+    <div class="product-results__glow" aria-hidden="true"></div>
+    <div class="container">
+      {% render 'section-header'
+        , eyebrow: section.settings.eyebrow
+        , heading: section.settings.heading
+        , text: section.settings.text
+      %}
+
+      <div class="u-grid product-results__layout">
+        <div class="product-results__content">
+          <ol class="product-results__timeline">
+            {%- for item in timeline -%}
+              {%- if item.title != blank -%}
+                <li class="product-results__step">
+                  <span class="product-results__step-badge">{{ item.label | default: forloop.index }}</span>
+                  <span class="product-results__step-body">
+                    <h3 class="product-results__step-title">{{ item.title | escape }}</h3>
+                    {%- if item.desc != blank -%}
+                      <span class="product-results__step-desc">{{ item.desc | escape }}</span>
+                    {%- endif -%}
+                  </span>
+                </li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ol>
+        </div>
+
+        <div class="product-results__proof">
+          {%- if before_image != blank or after_image != blank -%}
+            <div class="u-grid product-results__photos">
+              <div class="product-results__photo">
+                {%- if before_image != blank -%}
+                  {{ before_image | image_url: width: 600 | image_tag: loading: 'lazy', widths: '300, 450, 600', sizes: '(min-width: 750px) 25vw, 50vw', width: 600, height: 600, alt: before_alt }}
+                {%- else -%}
+                  {{ 'lifestyle-1' | placeholder_svg_tag }}
+                {%- endif -%}
+                <span class="product-results__photo-tag">{{ section.settings.before_label | escape }}</span>
+              </div>
+              <div class="product-results__photo">
+                {%- if after_image != blank -%}
+                  {{ after_image | image_url: width: 600 | image_tag: loading: 'lazy', widths: '300, 450, 600', sizes: '(min-width: 750px) 25vw, 50vw', width: 600, height: 600, alt: after_alt }}
+                {%- else -%}
+                  {{ 'lifestyle-2' | placeholder_svg_tag }}
+                {%- endif -%}
+                <span class="product-results__photo-tag product-results__photo-tag--accent">{{ section.settings.after_label | escape }}</span>
+              </div>
+            </div>
+          {%- endif -%}
+
+          {%- if stats.size > 0 -%}
+            <div class="u-grid product-results__stats">
+              {%- for stat in stats limit: 3 -%}
+                {%- if stat.number != blank -%}
+                  <div class="product-results__stat">
+                    <p class="product-results__stat-value">{{ stat.number | escape }}</p>
+                    {%- if stat.label != blank -%}
+                      <p class="product-results__stat-label">{{ stat.label | escape }}</p>
+                    {%- endif -%}
+                  </div>
+                {%- endif -%}
+              {%- endfor -%}
+            </div>
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+  </section>
+{%- endif -%}
+
+{% stylesheet %}
+  .product-results {
+    position: relative;
+    background: var(--color-primary);
+    color: #fff;
+    overflow: hidden;
+  }
+
+  .product-results__glow {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 15% 60%, color-mix(in srgb, var(--color-secondary) 18%, transparent) 0%, transparent 55%), radial-gradient(ellipse at 85% 15%, color-mix(in srgb, var(--color-secondary) 10%, transparent) 0%, transparent 45%);
+    pointer-events: none;
+  }
+
+  .product-results .container {
+    position: relative;
+  }
+
+  .product-results .section-header__eyebrow {
+    color: color-mix(in srgb, var(--color-secondary) 70%, white);
+  }
+
+  .product-results .section-header__heading {
+    color: #fff;
+  }
+
+  .product-results .section-header__text {
+    color: color-mix(in srgb, #fff 75%, transparent);
+  }
+
+  .product-results__layout {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+    align-items: center;
+  }
+
+  @media screen and (min-width: 850px) {
+    .product-results__layout {
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-8);
+    }
+  }
+
+  .product-results__timeline {
+    margin: var(--space-6) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .product-results__step {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-4);
+    padding-block: var(--space-4);
+    border-top: 1px solid color-mix(in srgb, #fff 12%, transparent);
+  }
+
+  .product-results__step:first-child {
+    border-top: 0;
+    padding-top: 0;
+  }
+
+  .product-results__step-badge {
+    flex: 0 0 auto;
+    display: grid;
+    place-items: center;
+    min-width: 40px;
+    height: 40px;
+    padding-inline: var(--space-2);
+    border-radius: 50%;
+    background: var(--color-secondary);
+    box-shadow: 0 4px 16px color-mix(in srgb, var(--color-secondary) 40%, transparent);
+    font-size: 13px;
+    font-weight: 600;
+    font-family: var(--font-accent);
+    letter-spacing: 0.02em;
+  }
+
+  .product-results__step-body {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .product-results__step-title {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+    font-family: var(--font-subheading);
+    color: #fff;
+  }
+
+  .product-results__step-desc {
+    font-size: 13px;
+    line-height: 1.6;
+    color: color-mix(in srgb, #fff 70%, transparent);
+  }
+
+  .product-results__photos {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-2);
+  }
+
+  .product-results__photo {
+    position: relative;
+    border-radius: var(--radius-m);
+    overflow: hidden;
+    aspect-ratio: 1 / 1;
+  }
+
+  .product-results__photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .product-results__photo-tag {
+    position: absolute;
+    bottom: var(--space-2);
+    left: var(--space-2);
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-s);
+    background: color-mix(in srgb, var(--color-primary) 70%, transparent);
+    font-size: 10px;
+    font-weight: 600;
+    font-family: var(--font-accent);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #fff;
+  }
+
+  .product-results__photo-tag--accent {
+    background: var(--color-secondary);
+  }
+
+  .product-results__stats {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-2);
+    margin-top: var(--space-2);
+  }
+
+  .product-results__stat {
+    padding: var(--space-4) var(--space-2);
+    border-radius: var(--radius-s);
+    background: color-mix(in srgb, #fff 6%, transparent);
+    text-align: center;
+  }
+
+  .product-results__stat-value {
+    margin: 0 0 2px;
+    font-size: 22px;
+    font-weight: 500;
+    font-family: var(--font-heading);
+  }
+
+  .product-results__stat-label {
+    margin: 0;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, #fff 65%, transparent);
+  }
+{% endstylesheet %}
+
+{% schema %}
+  {
+    "name": "Product results",
+    "enabled_on": {
+      "templates": ["product"]
+    },
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Reads custom.results_timeline JSON metafield: array of {label, title, desc}. label is a short day/week marker shown in the badge (e.g. D7, D14, D28) - falls back to a plain step number when blank. Hidden entirely if empty or no item has a title."
+      },
+      {
+        "type": "paragraph",
+        "content": "custom.stats (JSON array of {number, label}, up to 3) and the before_image/after_image file metafields are optional. All add credibility signals but aren't required for the section to render."
+      },
+      {
+        "type": "text",
+        "id": "eyebrow",
+        "label": "Eyebrow",
+        "default": "Clinical Results"
+      },
+      {
+        "type": "text",
+        "id": "heading",
+        "label": "Heading",
+        "default": "Visible Change. Proven Results."
+      }, {
+        "type": "richtext",
+        "id": "text",
+        "label": "Text",
+        "default": "<p>Every claim is backed by independent testing on real participants - not model results.</p>"
+      }, {
+        "type": "text",
+        "id": "before_label",
+        "label": "Before photo label",
+        "default": "Before"
+      }, {
+        "type": "text",
+        "id": "after_label",
+        "label": "After photo label",
+        "default": "After 28 Days"
+      }, {
+        "type": "header",
+        "content": "Section padding"
+      }, {
+        "type": "range",
+        "id": "padding_top",
+        "label": "Top padding",
+        "min": 0,
+        "max": 120,
+        "step": 4,
+        "unit": "px",
+        "default": 40
+      }, {
+        "type": "range",
+        "id": "padding_bottom",
+        "label": "Bottom padding",
+        "min": 0,
+        "max": 120,
+        "step": 4,
+        "unit": "px",
+        "default": 40
+      }
+    ],
+    "presets": [
+      {
+        "name": "Product results"
+      }
+    ]
+  }
+{% endschema %}

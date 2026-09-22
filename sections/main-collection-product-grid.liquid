@@ -146,7 +146,7 @@ facet-filters-form {
 
 /* ---------- Breadcrumb ---------- */
 .collection-breadcrumb {
-  margin-bottom: 20px;
+  margin-bottom: var(--space-5);
 }
 
 .collection-breadcrumb ol {
@@ -156,7 +156,7 @@ facet-filters-form {
   gap: 6px;
   margin: 0;
   font-size: 14px;
-  color: #55636b;
+  color: var(--color-text-muted);
   padding: 0;
   padding-bottom: 15px;
 }
@@ -169,11 +169,11 @@ facet-filters-form {
 
 .collection-breadcrumb li:not(:last-child)::after {
   content: '/';
-  color: #55636b;
+  color: var(--color-text-muted);
 }
 
 .collection-breadcrumb a {
-  color: #55636b;
+  color: var(--color-text-muted);
 }
 
 .collection-breadcrumb a:hover {
@@ -188,7 +188,7 @@ facet-filters-form {
 .collection-layout {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: var(--space-5);
 }
 
 @media screen and (min-width: 990px) {
@@ -196,7 +196,7 @@ facet-filters-form {
     display: grid;
     grid-template-columns: 260px 1fr;
     column-gap: 36px;
-    row-gap: 24px;
+    row-gap: var(--space-6);
   }
 
   /* .collection-topbar is a real grid row on mobile/tablet (filter, count, sort
@@ -234,7 +234,7 @@ facet-filters-form {
 /* ---------- Topbar row: filter trigger (left) / count (center) / sort (right) ---------- */
 .collection-topbar {
   grid-template-columns: auto 1fr auto;
-  gap: 12px;
+  gap: var(--space-3);
 }
 
 .collection-topbar > collection-filters,
@@ -247,7 +247,7 @@ facet-filters-form {
   margin: 0;
   text-align: center;
   font-size: 13px;
-  color: #55636b;
+  color: var(--color-text-muted);
 }
 
 @media screen and (max-width: 600px) {
@@ -264,10 +264,10 @@ facet-filters-form {
 .collection-filters__toggle {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 10px 16px;
+  gap: var(--space-2);
+  padding: 10px var(--space-4);
   background: #fff;
-  border: 1px solid #eceff1;
+  border: 1px solid var(--color-border);
   border-radius: 999px;
   color: var(--color-primary);
   font-family: var(--font-body);
@@ -315,8 +315,8 @@ facet-filters-form {
 }
 
 .collection-filters__panel-header {
-  padding: 20px;
-  border-bottom: 1px solid #eceff1;
+  padding: var(--space-5);
+  border-bottom: 1px solid var(--color-border);
   flex-shrink: 0;
 }
 
@@ -341,7 +341,7 @@ facet-filters-form {
 .collection-filters__panel-inner {
   flex: 1;
   overflow-y: auto;
-  padding: 20px;
+  padding: var(--space-5);
 }
 
 body.collection-filters-open {
@@ -384,7 +384,7 @@ body.collection-filters-open {
 }
 
 .facets__group {
-  border-bottom: 1px solid #eceff1;
+  border-bottom: 1px solid var(--color-border);
   padding: 14px 0;
 }
 
@@ -401,7 +401,7 @@ body.collection-filters-open {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
+  gap: var(--space-2);
   cursor: pointer;
   list-style: none;
   font-size: 14px;
@@ -425,7 +425,7 @@ details[open] > .facets__summary .facets__chevron--down {
 }
 
 .facets__body {
-  padding-top: 12px;
+  padding-top: var(--space-3);
 }
 
 .facets__list {
@@ -444,7 +444,7 @@ details[open] > .facets__summary .facets__chevron--down {
 }
 
 .facets__item--disabled .facets__checkbox-label {
-  color: #55636b;
+  color: var(--color-text-muted);
   cursor: not-allowed;
 }
 
@@ -456,21 +456,21 @@ details[open] > .facets__summary .facets__chevron--down {
 }
 
 .facets__count.text-muted {
-  color: #55636b;
+  color: var(--color-text-muted);
   font-size: 13px;
 }
 
 /* ---------- Active filter pills ---------- */
 .active-filters {
-  padding-bottom: 16px;
-  margin-bottom: 4px;
-  border-bottom: 1px solid #eceff1;
+  padding-bottom: var(--space-4);
+  margin-bottom: var(--space-1);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .active-filters__pills {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: var(--space-2);
   margin-bottom: 10px;
 }
 
@@ -479,7 +479,7 @@ details[open] > .facets__summary .facets__chevron--down {
   align-items: center;
   gap: 6px;
   padding: 6px 10px;
-  background: #eef2f4;
+  background: var(--color-surface);
   border-radius: var(--radius-s);
   font-size: 12px;
   color: var(--color-primary);
@@ -521,7 +521,7 @@ details[open] > .facets__summary .facets__chevron--down {
   right: 0;
   height: 4px;
   border-radius: 2px;
-  background: #eceff1;
+  background: var(--color-border);
   transform: translateY(-50%);
 }
 
@@ -590,15 +590,15 @@ details[open] > .facets__summary .facets__chevron--down {
 .price-range__field label {
   display: block;
   font-size: 12px;
-  color: #55636b;
-  margin-bottom: 4px;
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-1);
 }
 
 .price-range__input-wrap {
   display: flex;
   align-items: center;
-  gap: 4px;
-  border: 1px solid #eceff1;
+  gap: var(--space-1);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-s);
   padding: 6px 10px;
 }
@@ -617,12 +617,12 @@ details[open] > .facets__summary .facets__chevron--down {
 
 .price-range__separator {
   padding-bottom: 6px;
-  color: #55636b;
+  color: var(--color-text-muted);
 }
 
 /* ---------- Toolbar sort control ---------- */
 .collection-toolbar__sort {
-  gap: 8px;
+  gap: var(--space-2);
   font-size: 13px;
   color: var(--color-primary);
 }
@@ -631,7 +631,7 @@ details[open] > .facets__summary .facets__chevron--down {
   font-family: var(--font-body);
   font-size: 13px;
   padding: 6px 10px;
-  border: 1px solid #eceff1;
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-s);
   color: var(--color-primary);
 }
@@ -653,20 +653,20 @@ details[open] > .facets__summary .facets__chevron--down {
 /* ---------- Grid ---------- */
 .collection-grid {
   grid-template-columns: repeat(var(--grid-columns-mobile, 2), minmax(0, 1fr));
-  gap: 10px;
+  gap: var(--space-3);
 }
 
 @media screen and (min-width: 768px) and (max-width: 1199px) {
   .collection-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 14px;
+    gap: var(--space-4);
   }
 }
 
 @media screen and (min-width: 1200px) {
   .collection-grid {
     grid-template-columns: repeat(var(--grid-columns-desktop, 4), minmax(0, 1fr));
-    gap: 16px;
+    gap: var(--space-4);
   }
 }
 
@@ -687,7 +687,7 @@ details[open] > .facets__summary .facets__chevron--down {
   width: 28px;
   height: 28px;
   margin-left: -14px;
-  border: 3px solid #eceff1;
+  border: 3px solid var(--color-border);
   border-top-color: var(--button-primary, var(--color-secondary));
   border-radius: 50%;
   animation: button-spin 0.6s linear infinite;
@@ -707,8 +707,8 @@ details[open] > .facets__summary .facets__chevron--down {
 }
 
 .pagination {
-  gap: 8px;
-  margin-top: 32px;
+  gap: var(--space-2);
+  margin-top: var(--space-8);
 }
 
 .pagination__link {

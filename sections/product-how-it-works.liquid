@@ -1,0 +1,156 @@
+{%- comment -%}
+  "How It Works" - numbered science/benefit cards, driven entirely by the
+  current product's custom.how_it_works JSON metafield. Renders nothing when
+  the metafield is empty or has no valid entries.
+{%- endcomment -%}
+{%- liquid
+  assign items = product.metafields.custom.how_it_works.value
+  assign item_count = 0
+  for item in items
+    if item.title != blank and item.desc != blank
+      assign item_count = item_count | plus: 1
+    endif
+  endfor
+-%}
+
+{%- if item_count > 0 -%}
+  <section
+    class="product-how-it-works section-padding"
+    style="--padding-top: {{ section.settings.padding_top }}px; --padding-bottom: {{ section.settings.padding_bottom }}px;"
+  >
+    <div class="container">
+      {% render 'section-header',
+        eyebrow: section.settings.eyebrow,
+        heading: section.settings.heading,
+        subheading: section.settings.subheading,
+        text: section.settings.text
+      %}
+
+      <div class="u-grid product-how-it-works__grid">
+        {%- for item in items -%}
+          {%- if item.title != blank and item.desc != blank -%}
+            <div class="product-how-it-works__card">
+              <div class="u-flex u-items-center u-justify-between product-how-it-works__card-header">
+                <span class="product-how-it-works__index">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
+                {%- if item.icon != blank -%}
+                  <span class="product-how-it-works__icon" aria-hidden="true">{{ item.icon }}</span>
+                {%- endif -%}
+              </div>
+              <h3 class="product-how-it-works__title">{{ item.title | escape }}</h3>
+              <p class="product-how-it-works__description">{{ item.desc | escape }}</p>
+              {%- if item.science != blank -%}
+                <p class="product-how-it-works__note">{{ item.science | escape }}</p>
+              {%- endif -%}
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    </div>
+  </section>
+{%- endif -%}
+
+{% stylesheet %}
+.product-how-it-works__grid {
+  grid-template-columns: 1fr;
+  gap: var(--space-3);
+}
+
+@media screen and (min-width: 600px) {
+  .product-how-it-works__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media screen and (min-width: 990px) {
+  .product-how-it-works__grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-4);
+  }
+}
+
+.product-how-it-works__card {
+  position: relative;
+  padding: var(--space-7) var(--space-6) var(--space-6);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-m);
+  background: #fff;
+  overflow: hidden;
+  transform-origin: center;
+  transition: transform 0.25s ease;
+  backface-visibility: hidden;
+}
+
+.product-how-it-works__card:hover {
+  transform: translateY(-5px);
+}
+
+.product-how-it-works__card-header {
+  margin-bottom: var(--space-4);
+}
+
+.product-how-it-works__index {
+  font-size: 48px;
+  font-weight: 500;
+  font-family: var(--font-heading);
+  line-height: 1;
+  color: color-mix(in srgb, var(--color-secondary) 30%, white);
+}
+
+.product-how-it-works__icon {
+  font-size: 24px;
+}
+
+.product-how-it-works__title {
+  margin: 0 0 var(--space-3);
+  font-size: 19px;
+  font-weight: 500;
+  font-family: var(--font-heading);
+  line-height: 1.25;
+  color: var(--color-primary);
+}
+
+.product-how-it-works__description {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.75;
+  color: var(--color-text-muted);
+}
+
+.product-how-it-works__note {
+  margin: var(--space-4) 0 0;
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-border);
+  font-size: 13px;
+  font-style: italic;
+  font-family: var(--font-heading);
+  line-height: 1.6;
+  color: var(--color-secondary);
+}
+
+@media screen and (prefers-reduced-motion: reduce) {
+  .product-how-it-works__card {
+    transition: none;
+  }
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Product how it works",
+  "enabled_on": { "templates": ["product"] },
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Reads the current product's custom.how_it_works JSON metafield - an array of objects like {\"icon\" (emoji), \"title\", \"desc\", \"science\"}. Hidden entirely when the metafield is empty or has no item with both a title and desc."
+    },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "The Science" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "How It Works" },
+    { "type": "text", "id": "subheading", "label": "Subheading" },
+    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Formulated to work in stages - here's what happens after each application.</p>" },
+    { "type": "header", "content": "Section padding" },
+    { "type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 40 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 40 }
+  ],
+  "presets": [{ "name": "Product how it works" }]
+}
+{% endschema %}

@@ -26,15 +26,22 @@
       <h2 class="youtube-reels__heading">{{ section.settings.heading }}</h2>
     {%- endif -%}
     {%- if section.settings.channel_handle != blank -%}
-      <a
-        href="{{ section.settings.channel_url | default: '#' }}"
-        class="u-flex u-items-center u-justify-center youtube-reels__channel"
-        {% if section.settings.channel_url != blank %}target="_blank" rel="noopener noreferrer"{% endif %}
-      >
-        {% render 'icon', name: 'youtube' %}
-        <span>{{ section.settings.channel_handle }}</span>
-        {% render 'icon', name: 'chevron-right' %}
-      </a>
+      {%- if section.settings.channel_url != blank -%}
+        <a
+          href="{{ section.settings.channel_url }}"
+          class="u-flex u-items-center u-justify-center youtube-reels__channel"
+          target="_blank" rel="noopener noreferrer"
+        >
+          {% render 'icon', name: 'youtube' %}
+          <span>{{ section.settings.channel_handle }}</span>
+          {% render 'icon', name: 'chevron-right' %}
+        </a>
+      {%- else -%}
+        <div class="u-flex u-items-center u-justify-center youtube-reels__channel">
+          {% render 'icon', name: 'youtube' %}
+          <span>{{ section.settings.channel_handle }}</span>
+        </div>
+      {%- endif -%}
     {%- endif -%}
 
     {%- assign reels = shop.metaobjects.youtube_reel.values -%}
@@ -93,16 +100,16 @@
   font-weight: 600;
   font-family: var(--font-accent);
   color: var(--color-primary);
-  margin: 0 0 12px;
+  margin: 0 0 var(--space-3);
 }
 
 .youtube-reels__channel {
-  gap: 8px;
+  gap: var(--space-2);
   color: var(--color-primary);
   font-weight: 600;
   font-family: var(--font-accent);
   font-size: 14px;
-  margin-bottom: 32px;
+  margin-bottom: var(--space-8);
 }
 
 .youtube-reels__channel svg {
@@ -122,7 +129,7 @@
 @media screen and (min-width: 750px) {
   .youtube-reels__grid {
     grid-template-columns: repeat(var(--reels-columns-desktop, 4), minmax(0, 1fr));
-    gap: 20px;
+    gap: var(--space-5);
   }
 }
 
@@ -189,7 +196,7 @@
   z-index: 10021;
   width: 100%;
   max-width: 420px;
-  padding: 0 16px;
+  padding: 0 var(--space-4);
   opacity: 0;
   transition: opacity 0.25s ease, transform 0.25s ease;
 }
@@ -222,7 +229,7 @@
   min-width: 44px;
   min-height: 44px;
   margin-left: auto;
-  margin-bottom: 4px;
+  margin-bottom: var(--space-1);
   background: none;
   border: none;
   cursor: pointer;

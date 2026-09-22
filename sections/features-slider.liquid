@@ -15,10 +15,6 @@
     %}
 
     <features-slider class="features-slider__wrapper">
-      <button type="button" class="features-slider__arrow features-slider__arrow--prev" aria-label="Previous slide" disabled>
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
-      </button>
-
       <div class="features-slider__track" data-slider-track>
         {%- for block in section.blocks -%}
           <div class="features-slider__card" data-slider-slide {{ block.shopify_attributes }}>
@@ -27,11 +23,11 @@
                 {{ block.settings.icon | image_url: width: 64 | image_tag: loading: 'lazy' }}
               </div>
             {%- endif -%}
-            
+
             {%- if block.settings.heading != blank -%}
               <h3 class="features-slider__card-heading">{{ block.settings.heading | escape }}</h3>
             {%- endif -%}
-            
+
             {%- if block.settings.text != blank -%}
               <div class="features-slider__card-text">{{ block.settings.text | escape }}</div>
             {%- endif -%}
@@ -39,14 +35,20 @@
         {%- endfor -%}
       </div>
 
-      <button type="button" class="features-slider__arrow features-slider__arrow--next" aria-label="Next slide" disabled>
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-      </button>
+      <div class="features-slider__controls" data-slider-controls>
+        <button type="button" class="features-slider__arrow features-slider__arrow--prev" aria-label="Previous slide" disabled>
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="16" height="16"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+        </button>
 
-      <div class="features-slider__dots" data-slider-dots>
-        {%- for block in section.blocks -%}
-          <button type="button" class="features-slider__dot" aria-label="Go to slide {{ forloop.index }}" data-index="{{ forloop.index0 }}"></button>
-        {%- endfor -%}
+        <div class="features-slider__dots" data-slider-dots>
+          {%- for block in section.blocks -%}
+            <button type="button" class="features-slider__dot" aria-label="Go to slide {{ forloop.index }}" data-index="{{ forloop.index0 }}"></button>
+          {%- endfor -%}
+        </div>
+
+        <button type="button" class="features-slider__arrow features-slider__arrow--next" aria-label="Next slide" disabled>
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="16" height="16"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+        </button>
       </div>
     </features-slider>
   </div>
@@ -66,26 +68,40 @@
     display: grid;
     grid-auto-flow: column;
     grid-auto-columns: 100%; /* 1 item on mobile */
-    gap: 12px;
+    gap: var(--space-3);
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     scroll-behavior: smooth;
     scrollbar-width: none;
     -ms-overflow-style: none;
-    padding-bottom: 8px;
+    padding-bottom: var(--space-2);
+    cursor: grab;
   }
 
   .features-slider__track::-webkit-scrollbar {
     display: none;
   }
 
+  .features-slider__track.is-dragging {
+    scroll-snap-type: none;
+    scroll-behavior: auto;
+    cursor: grabbing;
+    user-select: none;
+  }
+
+  /* Controls row: prev arrow, dots, next arrow */
+  .features-slider__controls {
+    display: none; /* hidden by default, shown by JS if needed */
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-4);
+    margin-top: var(--space-4);
+  }
+
   /* Arrows */
   .features-slider__arrow {
-    position: absolute;
-    top: calc(50% - 20px);
-    transform: translateY(-50%);
-    width: 40px;
-    height: 40px;
+    width: 30px;
+    height: 30px;
     background: #ffffff;
     border: none;
     border-radius: 50%;
@@ -95,6 +111,7 @@
     color: var(--color-primary);
     cursor: pointer;
     z-index: 2;
+    flex-shrink: 0;
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     transition: all 0.2s ease;
   }
@@ -106,19 +123,24 @@
     opacity: 0;
     pointer-events: none;
   }
-  .features-slider__arrow--prev {
-    left: 10px;
-  }
-  .features-slider__arrow--next {
-    right: 10px;
+
+  @media screen and (min-width: 750px) {
+    .features-slider__arrow {
+      width: 40px;
+      height: 40px;
+    }
+
+    .features-slider__arrow svg {
+      width: 24px;
+      height: 24px;
+    }
   }
 
   /* Dots */
   .features-slider__dots {
-    display: none; /* hidden by default, shown by JS */
+    display: flex;
     justify-content: center;
-    gap: 8px;
-    margin-top: 16px;
+    gap: var(--space-2);
   }
   .features-slider__dot {
     width: 10px;
@@ -135,10 +157,11 @@
   }
 
   /* JS dynamically adds these classes if slider needs to be active */
-  features-slider.has-arrows .features-slider__arrow {
+  features-slider.has-arrows .features-slider__controls,
+  features-slider.has-dots .features-slider__controls {
     display: flex;
   }
-  features-slider.has-dots .features-slider__dots {
+  features-slider.has-arrows .features-slider__arrow {
     display: flex;
   }
 
@@ -167,7 +190,7 @@
     }
     
     .features-slider__card {
-      padding: 32px 24px;
+      padding: var(--space-8) var(--space-6);
     }
   }
 
@@ -180,7 +203,7 @@
   .features-slider__icon {
     width: 48px;
     height: 48px;
-    margin-bottom: 20px;
+    margin-bottom: var(--space-5);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -196,7 +219,7 @@
     font-family: var(--font-heading, serif);
     font-size: 18px;
     font-weight: 600;
-    margin: 0 0 12px;
+    margin: 0 0 var(--space-3);
     color: var(--color-primary);
 
     @media screen and (min-width: 750px) {
@@ -301,13 +324,24 @@
       this.dots = Array.from(this.querySelectorAll('.features-slider__dot'));
       this.slides = Array.from(this.querySelectorAll('[data-slider-slide]'));
 
+      this.isDragging = false;
+      this.dragStartX = 0;
+      this.dragScrollLeft = 0;
+
       this.init();
       window.addEventListener('resize', () => this.init());
       this.track.addEventListener('scroll', () => this.updateUI());
 
+      // Touch already drag-scrolls natively (native overflow-x + scroll-snap);
+      // this only adds click-and-drag support for mouse, matching the product gallery.
+      this.track.addEventListener('pointerdown', (e) => this.onDragStart(e));
+      this.track.addEventListener('pointermove', (e) => this.onDragMove(e));
+      this.track.addEventListener('pointerup', (e) => this.onDragEnd(e));
+      this.track.addEventListener('pointercancel', (e) => this.onDragEnd(e));
+
       if (this.prevBtn) this.prevBtn.addEventListener('click', () => this.scrollByDirection(-1));
       if (this.nextBtn) this.nextBtn.addEventListener('click', () => this.scrollByDirection(1));
-      
+
       this.dots.forEach(dot => {
         dot.addEventListener('click', (e) => {
           const index = parseInt(e.target.dataset.index);
@@ -365,8 +399,30 @@
       const slideWidth = this.slides[0]?.clientWidth || 0;
       const gap = parseInt(window.getComputedStyle(this.track).gap) || 0;
       const scrollAmount = slideWidth + gap;
-      
+
       this.track.scrollBy({ left: scrollAmount * direction, behavior: 'smooth' });
+    }
+
+    onDragStart(event) {
+      if (event.pointerType !== 'mouse' || event.button !== 0) return;
+      this.isDragging = true;
+      this.dragStartX = event.clientX;
+      this.dragScrollLeft = this.track.scrollLeft;
+      this.track.classList.add('is-dragging');
+      this.track.setPointerCapture(event.pointerId);
+    }
+
+    onDragMove(event) {
+      if (!this.isDragging) return;
+      event.preventDefault();
+      this.track.scrollLeft = this.dragScrollLeft - (event.clientX - this.dragStartX);
+    }
+
+    onDragEnd(event) {
+      if (!this.isDragging) return;
+      this.isDragging = false;
+      this.track.classList.remove('is-dragging');
+      this.track.releasePointerCapture(event.pointerId);
     }
   }
 

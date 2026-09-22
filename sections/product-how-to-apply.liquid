@@ -1,0 +1,220 @@
+{%- comment -%}
+  "How to Apply" - step-by-step routine list beside a lifestyle image, driven
+  by the current product's custom.usage_steps JSON metafield. Renders nothing
+  when the metafield is empty or has no valid entries. An optional expert-tip
+  callout and image are also metafield-driven.
+{%- endcomment -%}
+{%- liquid
+  assign steps = product.metafields.custom.usage_steps.value
+  assign step_count = 0
+  for step in steps
+    if step.title != blank and step.desc != blank
+      assign step_count = step_count | plus: 1
+    endif
+  endfor
+  assign usage_image = product.metafields.custom.usage_image.value | default: product.featured_image
+  assign pro_tip = product.metafields.custom.pro_tip.value
+-%}
+
+{%- if step_count > 0 -%}
+  <section
+    class="product-how-to-apply section-padding"
+    style="--padding-top: {{ section.settings.padding_top }}px; --padding-bottom: {{ section.settings.padding_bottom }}px;"
+  >
+    <div class="container">
+      <div class="u-grid product-how-to-apply__layout">
+        <div class="product-how-to-apply__content">
+          {% render 'section-header',
+            eyebrow: section.settings.eyebrow,
+            heading: section.settings.heading,
+            text: section.settings.text,
+            alignment: 'left'
+          %}
+
+          <ol class="product-how-to-apply__steps">
+            {%- for step in steps -%}
+              {%- if step.title != blank and step.desc != blank -%}
+                {%- assign step_num = forloop.index | prepend: '0' | slice: -2, 2 -%}
+                {%- assign step_num_prefix = step_num | append: ' ' -%}
+                {%- assign step_title = step.title -%}
+                {%- if step_title contains step_num_prefix -%}
+                  {%- assign step_title = step_title | remove_first: step_num_prefix -%}
+                {%- endif -%}
+                <li class="product-how-to-apply__step">
+                  <span class="product-how-to-apply__step-index">{{ step_num }}</span>
+                  <span class="product-how-to-apply__step-body">
+                    <span class="u-flex u-justify-between product-how-to-apply__step-head">
+                      <h3 class="product-how-to-apply__step-title">{{ step_title | escape }}</h3>
+                      {%- if step.time != blank -%}
+                        <span class="product-how-to-apply__step-duration">{{ step.time | escape }}</span>
+                      {%- endif -%}
+                    </span>
+                    <span class="product-how-to-apply__step-description">{{ step.desc | escape }}</span>
+                  </span>
+                </li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ol>
+        </div>
+
+        <div class="product-how-to-apply__visual">
+          <div class="product-how-to-apply__media">
+            {%- if usage_image != blank -%}
+              {%- assign usage_image_h = 900 | divided_by: usage_image.aspect_ratio | round -%}
+              {{ usage_image | image_url: width: 900 | image_tag: loading: 'lazy', widths: '450, 700, 900', sizes: '(min-width: 750px) 50vw, 100vw', width: 900, height: usage_image_h, alt: usage_image.alt | default: section.settings.heading }}
+            {%- else -%}
+              {{ 'lifestyle-1' | placeholder_svg_tag }}
+            {%- endif -%}
+          </div>
+
+          {%- if pro_tip != blank -%}
+            <div class="product-how-to-apply__tip">
+              <p class="product-how-to-apply__tip-label">{{ section.settings.tip_label | escape }}</p>
+              <p class="product-how-to-apply__tip-text">{{ pro_tip | escape }}</p>
+            </div>
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+  </section>
+{%- endif -%}
+
+{% stylesheet %}
+.product-how-to-apply__layout {
+  grid-template-columns: 1fr;
+  gap: var(--space-6);
+  align-items: center;
+}
+
+@media screen and (min-width: 750px) {
+  .product-how-to-apply__layout {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-8);
+  }
+}
+
+.product-how-to-apply__steps {
+  margin: var(--space-6) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.product-how-to-apply__step {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-4);
+  padding-block: var(--space-4);
+  border-top: 1px solid var(--color-border);
+}
+
+.product-how-to-apply__step:last-child {
+  padding-bottom: 0;
+}
+
+.product-how-to-apply__step-index {
+  flex: 0 0 auto;
+  font-size: 2rem;
+  font-weight: 500;
+  font-family: var(--font-heading);
+  line-height: 1;
+  color: color-mix(in srgb, var(--color-secondary) 30%, white);
+}
+
+.product-how-to-apply__step-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.product-how-to-apply__step-title {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 500;
+  font-family: var(--font-heading);
+  color: var(--color-primary);
+}
+
+.product-how-to-apply__step-duration {
+  flex: 0 0 auto;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: var(--font-accent);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.product-how-to-apply__step-description {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--color-text);
+}
+
+.product-how-to-apply__visual {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.product-how-to-apply__media {
+  border-radius: var(--radius-m);
+  overflow: hidden;
+}
+
+.product-how-to-apply__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.product-how-to-apply__tip {
+  padding: var(--space-4) var(--space-5);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-m);
+  background: var(--color-surface);
+}
+
+.product-how-to-apply__tip-label {
+  margin: 0 0 var(--space-2);
+  font-size: 11px;
+  font-weight: 600;
+  font-family: var(--font-accent);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-secondary);
+}
+
+.product-how-to-apply__tip-text {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--color-text);
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Product how to apply",
+  "enabled_on": { "templates": ["product"] },
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Reads the current product's custom.usage_steps JSON metafield - an array of objects like {\"title\", \"desc\", \"time\"}. Hidden entirely when the metafield is empty or has no item with both a title and desc."
+    },
+    {
+      "type": "paragraph",
+      "content": "Image comes from custom.usage_image (falls back to the product's featured image). The expert-tip callout is optional and comes from custom.pro_tip (plain text)."
+    },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Application" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "How to Apply" },
+    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>For best results, use as part of your daily skincare routine.</p>" },
+    { "type": "text", "id": "tip_label", "label": "Expert tip label", "default": "Expert Tip" },
+    { "type": "header", "content": "Section padding" },
+    { "type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 40 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 40 }
+  ],
+  "presets": [{ "name": "Product how to apply" }]
+}
+{% endschema %}

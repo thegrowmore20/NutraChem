@@ -83,3 +83,63 @@ document.addEventListener('submit', (event) => {
       form.dispatchEvent(new CustomEvent('cart:complete'))
     })
 })
+
+/* AJAX line-quantity changes: the same single-listener exception as add-to-cart above.
+   Cart drawer and cart page reuse identical [data-cart-item] markup, so one delegated
+   handler beats duplicating the /cart/change.js fetch in both sections (see CLAUDE.md). */
+function updateCartLine(item, quantity) {
+  const container = item.closest('[data-cart-sections]')
+  if (!container) return
+
+  container.classList.add('is-loading')
+
+  fetch(window.routes.cartChangeUrl, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+    body: JSON.stringify({
+      line: item.dataset.line,
+      quantity,
+      sections: container.dataset.cartSections.split(','),
+      sections_url: window.location.pathname,
+    }),
+  })
+    .then((response) => response.json())
+    .then((json) => {
+      if (json.status) {
+        console.error('Cart error:', json.description || json.message || json)
+        document.dispatchEvent(new CustomEvent('cart:error', { detail: json }))
+        return
+      }
+      document.dispatchEvent(new CustomEvent('cart:updated', { detail: { sections: json.sections, openDrawer: false } }))
+    })
+    .catch((error) => {
+      console.error('Cart error:', error)
+      document.dispatchEvent(new CustomEvent('cart:error', { detail: null }))
+    })
+    .finally(() => {
+      container.classList.remove('is-loading')
+    })
+}
+
+document.addEventListener('click', (event) => {
+  const control = event.target.closest('[data-cart-remove], [data-cart-qty-decrease], [data-cart-qty-increase]')
+  if (!control) return
+  const item = control.closest('[data-cart-item]')
+  const input = item.querySelector('[data-cart-qty-input]')
+
+  let quantity
+  if (control.matches('[data-cart-remove]')) {
+    quantity = 0
+  } else if (control.matches('[data-cart-qty-decrease]')) {
+    quantity = Math.max(0, Number(input.value) - 1)
+  } else {
+    quantity = Number(input.value) + 1
+  }
+  updateCartLine(item, quantity)
+})
+
+document.addEventListener('change', (event) => {
+  const input = event.target.closest('[data-cart-qty-input]')
+  if (!input) return
+  updateCartLine(input.closest('[data-cart-item]'), Math.max(0, Number(input.value)))
+})

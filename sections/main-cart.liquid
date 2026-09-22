@@ -2,7 +2,7 @@
   <div class="container">
     <h1 class="cart-page__heading h2">{{ 'general.cart.title' | t }}</h1>
 
-    <div id="MainCartContent" class="cart-page__content" data-section-id="{{ section.id }}">
+    <div id="MainCartContent" class="cart-page__content" data-section-id="{{ section.id }}" data-cart-sections="{{ section.id }},header">
       {%- if cart.item_count > 0 -%}
         <div class="u-flex u-flex-col cart-page__table" role="table" aria-label="{{ 'general.cart.title' | t }}">
           <div class="u-grid u-items-center cart-page__row cart-page__row--head" role="row">
@@ -92,7 +92,7 @@
 
 {% stylesheet %}
 .cart-page__heading {
-  margin: 0 0 32px;
+  margin: 0 0 var(--space-8);
 }
 
 .cart-page__content {
@@ -126,8 +126,8 @@
 
 .cart-page__row {
   grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) 120px minmax(0, 1fr);
-  gap: 20px;
-  padding-block: 20px;
+  gap: var(--space-5);
+  padding-block: var(--space-5);
   border-bottom: 1px solid var(--color-surface);
 }
 
@@ -137,8 +137,8 @@
   font-family: var(--font-accent);
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: #55636b;
-  padding-bottom: 12px;
+  color: var(--color-text-muted);
+  padding-bottom: var(--space-3);
 }
 
 @media screen and (max-width: 749px) {
@@ -180,7 +180,7 @@
 }
 
 .cart-page__product {
-  gap: 16px;
+  gap: var(--space-4);
   min-width: 0;
 }
 
@@ -213,22 +213,22 @@
 
 .cart-page__product-variant {
   font-size: 13px;
-  color: #55636b;
-  margin: 0 0 8px;
+  color: var(--color-text-muted);
+  margin: 0 0 var(--space-2);
 }
 
 .cart-page__product-discounts {
-  margin-bottom: 8px;
+  margin-bottom: var(--space-2);
 }
 
 .cart-page__discount-badge {
-  gap: 4px;
+  gap: var(--space-1);
   background: var(--button-primary, var(--color-secondary));
   color: #fff;
   font-size: 11px;
   font-weight: 600;
   font-family: var(--font-accent);
-  padding: 3px 8px;
+  padding: 3px var(--space-2);
   border-radius: var(--radius-s);
 }
 
@@ -238,7 +238,7 @@
   border: none;
   padding: 0;
   font-size: 13px;
-  color: #55636b;
+  color: var(--color-text-muted);
   text-decoration: underline;
   cursor: pointer;
 }
@@ -246,7 +246,7 @@
 .cart-page__price {
   align-items: baseline;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: var(--space-2);
   font-size: 15px;
   min-width: 0;
 }
@@ -255,7 +255,7 @@
   background: var(--button-primary, var(--color-secondary));
   color: #fff;
   font-size: 11px;
-  padding: 3px 8px;
+  padding: 3px var(--space-2);
   border-radius: var(--radius-s);
 }
 
@@ -306,7 +306,7 @@
 }
 
 .cart-page__subtotal {
-  gap: 12px;
+  gap: var(--space-3);
   font-size: 18px;
   font-weight: 600;
   font-family: var(--font-accent);
@@ -314,7 +314,7 @@
 }
 
 .cart-page__actions {
-  gap: 12px;
+  gap: var(--space-3);
 }
 
 .cart-page__actions .button {
@@ -332,7 +332,7 @@
   font-weight: 600;
   font-family: var(--font-accent);
   color: var(--color-primary);
-  margin: 0 0 20px;
+  margin: 0 0 var(--space-5);
 }
 {% endstylesheet %}
 
@@ -345,74 +345,16 @@ class MainCart {
     this.#content = document.getElementById('MainCartContent')
     if (!this.#content) return
     this.#sectionId = this.#content.dataset.sectionId
-    this.#content.addEventListener('click', (event) => this.#onClick(event))
-    this.#content.addEventListener('change', (event) => this.#onChange(event))
+    document.addEventListener('cart:updated', (event) => this.#onCartUpdated(event))
   }
 
-  #onClick(event) {
-    const removeButton = event.target.closest('[data-cart-remove]')
-    if (removeButton) {
-      const line = removeButton.closest('[data-cart-item]').dataset.line
-      this.#updateLine(line, 0)
-      return
-    }
-    const decreaseButton = event.target.closest('[data-cart-qty-decrease]')
-    if (decreaseButton) {
-      const item = decreaseButton.closest('[data-cart-item]')
-      const input = item.querySelector('[data-cart-qty-input]')
-      this.#updateLine(item.dataset.line, Math.max(0, Number(input.value) - 1))
-      return
-    }
-    const increaseButton = event.target.closest('[data-cart-qty-increase]')
-    if (increaseButton) {
-      const item = increaseButton.closest('[data-cart-item]')
-      const input = item.querySelector('[data-cart-qty-input]')
-      this.#updateLine(item.dataset.line, Number(input.value) + 1)
-    }
-  }
-
-  #onChange(event) {
-    const input = event.target.closest('[data-cart-qty-input]')
-    if (!input) return
-    const item = input.closest('[data-cart-item]')
-    this.#updateLine(item.dataset.line, Math.max(0, Number(input.value)))
-  }
-
-  async #updateLine(line, quantity) {
-    this.#content.classList.add('is-loading')
-    try {
-      const response = await fetch(window.routes.cartChangeUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify({
-          line,
-          quantity,
-          sections: [this.#sectionId, 'header'],
-          sections_url: window.location.pathname,
-        }),
-      })
-      if (!response.ok) {
-        console.error('Cart error: request failed with status', response.status)
-        return
-      }
-      const json = await response.json()
-
-      if (!json.sections || !json.sections[this.#sectionId]) {
-        console.error('Cart error: no cart-content section in response', json)
-        return
-      }
-
-      const newContent = new DOMParser()
-        .parseFromString(json.sections[this.#sectionId], 'text/html')
-        .getElementById('MainCartContent')
-      if (newContent) this.#content.innerHTML = newContent.innerHTML
-
-      document.dispatchEvent(new CustomEvent('cart:updated', { detail: { sections: json.sections, openDrawer: false } }))
-    } catch (error) {
-      console.error('Cart error:', error)
-    } finally {
-      this.#content.classList.remove('is-loading')
-    }
+  #onCartUpdated(event) {
+    const sections = event.detail?.sections
+    if (!sections || !sections[this.#sectionId]) return
+    const newContent = new DOMParser()
+      .parseFromString(sections[this.#sectionId], 'text/html')
+      .getElementById('MainCartContent')
+    if (newContent) this.#content.innerHTML = newContent.innerHTML
   }
 }
 

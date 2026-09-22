@@ -68,7 +68,7 @@
   margin: 0;
   padding: 0 0 15px;
   font-size: 14px;
-  color: #55636b;
+  color: var(--color-text-muted);
   list-style: none;
 }
 
@@ -80,11 +80,11 @@
 
 .blog-listing__breadcrumb li:not(:last-child)::after {
   content: '/';
-  color: #55636b;
+  color: var(--color-text-muted);
 }
 
 .blog-listing__breadcrumb a {
-  color: #55636b;
+  color: var(--color-text-muted);
 }
 
 .blog-listing__breadcrumb a:hover {
@@ -97,17 +97,18 @@
 
 .blog-listing__title {
   color: var(--color-primary);
-  margin: 0 0 32px;
+  margin: 0 0 var(--space-8);
 }
 
 .blog-listing__grid {
   grid-template-columns: 1fr;
-  gap: 28px;
+  gap: var(--space-3);
 }
 
 @media screen and (min-width: 750px) {
   .blog-listing__grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4);
   }
 }
 
@@ -120,6 +121,13 @@
 .blog-listing-card {
   display: flex;
   flex-direction: column;
+  transform-origin: center;
+  transition: transform 0.25s ease;
+  backface-visibility: hidden;
+}
+
+.blog-listing-card:hover {
+  transform: translateY(-5px);
 }
 
 .blog-listing-card__media {
@@ -138,7 +146,7 @@
 }
 
 .blog-listing-card__body {
-  padding-top: 16px;
+  padding-top: var(--space-4);
 }
 
 .blog-listing-card__meta {
@@ -150,8 +158,8 @@
   font-family: var(--font-accent);
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: #7c8a90;
-  margin: 0 0 8px;
+  color: var(--color-text-muted);
+  margin: 0 0 var(--space-2);
 }
 
 .blog-listing-card__title {
@@ -173,7 +181,7 @@
 .blog-listing-card__excerpt {
   font-size: 14px;
   line-height: 1.6;
-  color: #55636b;
+  color: var(--color-text-muted);
   margin: 0 0 14px;
 }
 
@@ -181,7 +189,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: var(--space-3);
   flex-wrap: wrap;
 }
 
@@ -198,7 +206,7 @@
   align-items: center;
   gap: 6px;
   font-size: 13px;
-  color: #7c8a90;
+  color: var(--color-text-muted);
 }
 
 .blog-listing-card__comments svg {
@@ -212,7 +220,7 @@
 }
 
 .pagination {
-  gap: 8px;
+  gap: var(--space-2);
   margin-top: 40px;
 }
 

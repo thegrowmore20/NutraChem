@@ -9,23 +9,19 @@
 >
   <div class="container">
     <div class="about-cta__inner">
-      {%- if section.settings.eyebrow != blank -%}
-        <p class="about-cta__eyebrow">{{ section.settings.eyebrow }}</p>
-      {%- endif -%}
-      {%- if section.settings.heading != blank -%}
-        <h2 class="about-cta__heading h2">{{ section.settings.heading }}</h2>
-      {%- endif -%}
-      {%- if section.settings.description != blank -%}
-        <div class="about-cta__description">{{ section.settings.description }}</div>
-      {%- endif -%}
+      {% render 'section-header',
+        eyebrow: section.settings.eyebrow,
+        heading: section.settings.heading,
+        text: section.settings.description
+      %}
 
       {%- if section.settings.button_1_label != blank or section.settings.button_2_label != blank -%}
         <div class="u-flex u-items-center u-justify-center about-cta__actions">
           {%- if section.settings.button_1_label != blank -%}
             <a href="{{ section.settings.button_1_link | default: routes.all_products_collection_url }}" class="button button--accent">{{ section.settings.button_1_label }}</a>
           {%- endif -%}
-          {%- if section.settings.button_2_label != blank -%}
-            <a href="{{ section.settings.button_2_link | default: '#' }}" class="button button--light">{{ section.settings.button_2_label }}</a>
+          {%- if section.settings.button_2_label != blank and section.settings.button_2_link != blank -%}
+            <a href="{{ section.settings.button_2_link }}" class="button button--light">{{ section.settings.button_2_label }}</a>
           {%- endif -%}
         </div>
       {%- endif -%}
@@ -34,7 +30,13 @@
         <div class="u-flex u-items-center u-justify-center about-cta__badges">
           {%- for block in section.blocks -%}
             <span class="u-inline-flex u-items-center about-cta__badge" {{ block.shopify_attributes }}>
-              {%- if block.settings.icon != blank -%}<span aria-hidden="true">{{ block.settings.icon }}</span>{%- endif -%}
+              {%- if block.settings.icon_image != blank -%}
+                <span class="about-cta__badge-icon" aria-hidden="true">
+                  {{ block.settings.icon_image | image_url: width: 32 | image_tag: loading: 'lazy', widths: '16, 32', sizes: '16px', width: 16, height: 16, alt: '' }}
+                </span>
+              {%- elsif block.settings.icon != blank -%}
+                <span aria-hidden="true">{{ block.settings.icon }}</span>
+              {%- endif -%}
               {{ block.settings.label }}
             </span>
           {%- endfor -%}
@@ -55,40 +57,17 @@
   margin: 0 auto;
 }
 
-.about-cta__eyebrow {
-  font-size: 12px;
-  font-weight: 600;
-  font-family: var(--font-accent);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--color-secondary);
-  margin: 0 0 12px;
-}
-
-.about-cta__heading {
-  color: var(--color-primary);
-  margin: 0 0 16px;
-}
-
-.about-cta__description {
-  font-size: 15px;
-  line-height: 1.7;
-  color: var(--color-text);
-  margin: 0;
-}
-
 .about-cta__actions {
-  gap: 16px;
+  gap: var(--space-4);
   flex-wrap: wrap;
-  margin-top: 28px;
+  margin-top: var(--space-7);
 }
 
 .about-cta__badges {
   flex-wrap: wrap;
-  gap: 10px 24px;
-  margin-top: 32px;
-  padding-top: 28px;
-  border-top: 1px solid #e2e8ea;
+  gap: 10px var(--space-6);  
+  padding-top: var(--space-7);
+  border-top: 1px solid var(--color-border);
 }
 
 .about-cta__badge {
@@ -97,6 +76,17 @@
   font-weight: 500;
   font-family: var(--font-subheading);
   color: var(--color-primary);
+}
+
+.about-cta__badge-icon {
+  display: inline-flex;
+}
+
+.about-cta__badge-icon img {
+  display: block;
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
 }
 {% endstylesheet %}
 
@@ -128,6 +118,7 @@
       "name": "Badge",
       "settings": [
         { "type": "text", "id": "icon", "label": "Icon (emoji)", "default": "🚚" },
+        { "type": "image_picker", "id": "icon_image", "label": "Icon image", "info": "Overrides the emoji icon above when set." },
         { "type": "text", "id": "label", "label": "Label", "default": "Free Shipping" }
       ]
     }
