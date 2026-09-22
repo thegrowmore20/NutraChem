@@ -31,17 +31,19 @@
   style="--padding-top: {{ section.settings.padding_top }}px; --padding-bottom: {{ section.settings.padding_bottom }}px; --grid-columns-desktop: {{ section.settings.columns_desktop }}; --grid-columns-mobile: {{ section.settings.columns_mobile }};"
 >
   <div class="container">
-    <h2 class="collection-list-section__title h2">{{ section.settings.title }}</h2>
+    <h1 class="collection-list-section__title h2">{{ section.settings.title }}</h1>
 
     {%- if sorted_collections.size == 0 -%}
       <p class="collection-list-section__empty">{{ 'collections.general.empty' | t }}</p>
     {%- else -%}
+      <h2 class="visually-hidden">{{ 'collections.general.heading' | t }}</h2>
       <ul class="u-grid collection-directory-grid">
         {%- for collection in sorted_collections -%}
           <li class="collection-directory-grid__item">
             <a href="{{ collection.url }}" class="collection-directory-card">
               <div class="collection-directory-card__media">
                 {%- if collection.featured_image -%}
+                  {%- assign collection_alt = collection.featured_image.alt | default: collection.title -%}
                   {{
                     collection.featured_image
                     | image_url: width: 600
@@ -50,13 +52,13 @@
                       widths: '300, 450, 600',
                       sizes: '(min-width: 1200px) 20vw, (min-width: 768px) 33vw, 50vw',
                       class: 'collection-directory-card__image',
-                      alt: collection.featured_image.alt | default: collection.title
+                      alt: collection_alt
                   }}
                 {%- else -%}
                   {{ 'collection-1' | placeholder_svg_tag: 'collection-directory-card__image collection-directory-card__image--placeholder' }}
                 {%- endif -%}
               </div>
-              <p class="collection-directory-card__title">{{ collection.title }}</p>
+              <h3 class="collection-directory-card__title">{{ collection.title }}</h3>
             </a>
           </li>
         {%- endfor -%}

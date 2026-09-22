@@ -5,17 +5,18 @@
     <div class="collections-grid" style="--collections-columns-desktop: {{ section.settings.columns_desktop }};">
       {%- for block in section.blocks -%}
         {%- assign product = block.settings.product -%}
+        {%- assign card_alt = block.settings.title | default: product.title -%}
         <a class="collection-card" href="{{ product.url | default: routes.all_products_collection_url }}" {{ block.shopify_attributes }}>
-          <span class="collection-card__media">
+          <div class="collection-card__media">
             {%- if block.settings.image -%}
-              {{ block.settings.image | image_url: width: 600 | image_tag: loading: 'lazy', widths: '300, 450, 600', sizes: '200px', width: 600, height: 600, alt: block.settings.title | default: product.title }}
+              {{ block.settings.image | image_url: width: 600 | image_tag: loading: 'lazy', widths: '300, 450, 600', sizes: '200px', width: 600, height: 600, alt: card_alt }}
             {%- elsif product.featured_image -%}
-              {{ product.featured_image | image_url: width: 600 | image_tag: loading: 'lazy', widths: '300, 450, 600', sizes: '200px', width: 600, height: 600, alt: block.settings.title | default: product.title }}
+              {{ product.featured_image | image_url: width: 600 | image_tag: loading: 'lazy', widths: '300, 450, 600', sizes: '200px', width: 600, height: 600, alt: card_alt }}
             {%- else -%}
               {{ 'product-1' | placeholder_svg_tag }}
             {%- endif -%}
-            <span class="collection-card__title">{{ block.settings.title | default: product.title }}</span>
-          </span>
+            <h3 class="collection-card__title">{{ block.settings.title | default: product.title }}</h3>
+          </div>
         </a>
       {%- endfor -%}
     </div>
@@ -81,6 +82,7 @@
   position: absolute;
   top: 20px;
   left: 20px;
+  margin: 0;
   font-size: 18px;
   font-weight: 500;
   font-family: var(--font-heading);

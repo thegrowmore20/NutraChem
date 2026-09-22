@@ -246,7 +246,7 @@ h2[class] {
 }
 
 .button--accent {
-  background: var(--button-primary, var(--color-secondary));
+  background: var(--button-primary, var(--color-secondary-a11y));
   color: #fff;
 }
 

@@ -36,6 +36,14 @@
       :root {
         --color-primary: {{ settings.color_primary }};
         --color-secondary: {{ settings.color_secondary }};
+        /* WCAG AA needs 4.5:1 for normal-size text; the brand teal above is
+           only ~3.85:1 against white either as text or as a button
+           background under white text. This ~10% black-mixed variant clears
+           4.5:1 and is visually indistinguishable from the brand color - use
+           it for any small/normal text or button using the brand teal, and
+           keep --color-secondary itself for large/decorative uses (badges,
+           icons, borders) where the lighter WCAG threshold already applies. */
+        --color-secondary-a11y: color-mix(in srgb, {{ settings.color_secondary }} 90%, black);
         --color-dark: {{ settings.color_dark }};
         --color-surface: {{ settings.color_surface }};
         --color-background: {{ settings.color_background }};

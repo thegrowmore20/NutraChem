@@ -79,6 +79,7 @@
       "next_image": "Next image"
     },
     "facets": {
+      "heading": "Products",
       "filter_button": "Filter",
       "sort_button": "Sort",
       "filter_and_sort": "Filter and sort",
@@ -119,7 +120,8 @@
   },
   "blogs": {
     "general": {
-      "no_articles": "No articles have been published yet."
+      "no_articles": "No articles have been published yet.",
+      "articles_heading": "Latest articles"
     },
     "article": {
       "read_more": "Read more",
@@ -142,6 +144,7 @@
   "collections": {
     "general": {
       "title": "Collection",
+      "heading": "All collections",
       "empty": "No products found",
       "use_fewer_filters_html": "Try removing some filters or <a href=\"{{ link }}\" class=\"{{ class }}\">clear all</a>",
       "remove": "Remove",

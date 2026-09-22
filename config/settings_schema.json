@@ -54,7 +54,8 @@
         "type": "color",
         "id": "button_primary_color",
         "label": "Primary button color",
-        "default": "#008FA3"
+        "info": "Darkened slightly from the brand teal (#008FA3) to clear WCAG AA's 4.5:1 text-contrast minimum for white button text.",
+        "default": "#007E8F"
       },
       {
         "type": "color",

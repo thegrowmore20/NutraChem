@@ -141,8 +141,9 @@
                       {%- if item_heading != blank or item_text != blank -%}
                         <div class="u-flex u-items-center icons-with-text__item">
                           {%- if item_icon != blank -%}
+                            {%- assign item_icon_alt = item_heading | default: '' -%}
                             <div class="icons-with-text__icon">
-                              {{ item_icon | image_url: width: 80 | image_tag: loading: 'lazy', width: 40, height: 40, alt: item_heading | default: '' }}
+                              {{ item_icon | image_url: width: 80 | image_tag: loading: 'lazy', width: 40, height: 40, alt: item_icon_alt }}
                             </div>
                           {%- endif -%}
                           <div class="icons-with-text__copy">

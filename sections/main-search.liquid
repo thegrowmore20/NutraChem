@@ -68,6 +68,7 @@
       <p class="search-results__empty">{{ 'general.search.enter_a_search_term' | t }}</p>
     {%- else -%}
       {%- paginate search.results by section.settings.products_per_page -%}
+        <h2 class="visually-hidden">{{ 'products.facets.heading' | t }}</h2>
         <div class="collection-layout{% if show_sidebar %} collection-layout--has-sidebar{% endif %}">
           <div class="u-grid u-items-center collection-topbar">
             {%- if show_sidebar -%}

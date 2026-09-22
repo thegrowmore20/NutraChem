@@ -33,6 +33,7 @@
     </header>
 
     {%- if section.settings.show_featured_image and article.image -%}
+      {%- assign article_alt = article.image.alt | default: article.title -%}
       <div class="article-template__hero">
         {{
           article.image
@@ -44,7 +45,7 @@
             sizes: '(min-width: 990px) 800px, 100vw',
             width: 1400,
             height: 700,
-            alt: article.image.alt | default: article.title
+            alt: article_alt
         }}
       </div>
     {%- endif -%}

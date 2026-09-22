@@ -31,7 +31,7 @@
           {%- if item.title != blank and item.desc != blank -%}
             <div class="product-how-it-works__card">
               <div class="u-flex u-items-center u-justify-between product-how-it-works__card-header">
-                <span class="product-how-it-works__index">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
+                <span class="product-how-it-works__index" aria-hidden="true">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
                 {%- if item.icon != blank -%}
                   <span class="product-how-it-works__icon" aria-hidden="true">{{ item.icon }}</span>
                 {%- endif -%}
@@ -124,7 +124,7 @@
   font-style: italic;
   font-family: var(--font-heading);
   line-height: 1.6;
-  color: var(--color-secondary);
+  color: var(--color-secondary-a11y, var(--color-secondary));
 }
 
 @media screen and (prefers-reduced-motion: reduce) {

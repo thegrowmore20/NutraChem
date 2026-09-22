@@ -21,6 +21,7 @@
 
     {%- paginate blog.articles by section.settings.articles_per_page -%}
       {%- if blog.articles.size > 0 -%}
+        <h2 class="visually-hidden">{{ 'blogs.general.articles_heading' | t }}</h2>
         <div class="u-grid blog-listing__grid">
           {%- for article in blog.articles -%}
             {%- render 'article-card',

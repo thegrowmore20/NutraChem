@@ -3,4 +3,4 @@
   Re-rendered server-side and swapped client-side after every cart mutation
   (see the `cart:updated` listener in sections/header.liquid).
 {%- endcomment -%}
-<span id="CartIconBubble" class="cart-icon-bubble"{% if cart.item_count == 0 %} hidden{% endif %}>{{ cart.item_count }}</span>
+<span id="CartIconBubble" class="cart-icon-bubble" aria-hidden="true"{% if cart.item_count == 0 %} hidden{% endif %}>{{ cart.item_count }}</span>

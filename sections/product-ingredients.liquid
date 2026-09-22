@@ -119,7 +119,7 @@
       {%- if section.settings.trust_heading != blank or section.settings.trust_subtext != blank or trust_badges.size > 0 -%}
         <div class="product-ingredients__footer">
           {%- if section.settings.trust_heading != blank -%}
-            <p class="product-ingredients__footer-heading">{{ section.settings.trust_heading | escape }}</p>
+            <h3 class="product-ingredients__footer-heading">{{ section.settings.trust_heading | escape }}</h3>
           {%- endif -%}
           {%- if section.settings.trust_subtext != blank -%}
             <p class="product-ingredients__footer-subtext">{{ section.settings.trust_subtext | escape }}</p>
@@ -135,7 +135,7 @@
                 <div class="product-ingredients__badge" {{ block.shopify_attributes }}>
                   <span class="product-ingredients__badge-icon" aria-hidden="true">{% render 'icon', name: badge_icon %}</span>
                   {%- if block.settings.title != blank -%}
-                    <p class="product-ingredients__badge-title">{{ block.settings.title | escape }}</p>
+                    <h4 class="product-ingredients__badge-title">{{ block.settings.title | escape }}</h4>
                   {%- endif -%}
                   {%- if block.settings.description != blank -%}
                     <p class="product-ingredients__badge-desc">{{ block.settings.description | escape }}</p>

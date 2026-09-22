@@ -18,7 +18,7 @@
         {%- for block in section.blocks -%}
           <div class="about-values__card" {{ block.shopify_attributes }}>
             <div class="u-flex u-items-center u-justify-between about-values__card-header">
-              <span class="about-values__number">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
+              <span class="about-values__number" aria-hidden="true">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
               {%- if block.settings.icon_image != blank -%}
                 <span class="about-values__icon" aria-hidden="true">
                   {{ block.settings.icon_image | image_url: width: 48 | image_tag: loading: 'lazy', widths: '24, 48', sizes: '24px', width: 24, height: 24, alt: '' }}
@@ -28,7 +28,7 @@
               {%- endif -%}
             </div>
             {%- if block.settings.heading != blank -%}
-              <p class="about-values__card-heading">{{ block.settings.heading }}</p>
+              <h3 class="about-values__card-heading">{{ block.settings.heading }}</h3>
             {%- endif -%}
             {%- if block.settings.text != blank -%}
               <p class="about-values__card-text">{{ block.settings.text }}</p>

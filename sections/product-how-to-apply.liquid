@@ -41,7 +41,7 @@
                   {%- assign step_title = step_title | remove_first: step_num_prefix -%}
                 {%- endif -%}
                 <li class="product-how-to-apply__step">
-                  <span class="product-how-to-apply__step-index">{{ step_num }}</span>
+                  <span class="product-how-to-apply__step-index" aria-hidden="true">{{ step_num }}</span>
                   <span class="product-how-to-apply__step-body">
                     <span class="u-flex u-justify-between product-how-to-apply__step-head">
                       <h3 class="product-how-to-apply__step-title">{{ step_title | escape }}</h3>
@@ -61,7 +61,8 @@
           <div class="product-how-to-apply__media">
             {%- if usage_image != blank -%}
               {%- assign usage_image_h = 900 | divided_by: usage_image.aspect_ratio | round -%}
-              {{ usage_image | image_url: width: 900 | image_tag: loading: 'lazy', widths: '450, 700, 900', sizes: '(min-width: 750px) 50vw, 100vw', width: 900, height: usage_image_h, alt: usage_image.alt | default: section.settings.heading }}
+              {%- assign usage_image_alt = usage_image.alt | default: section.settings.heading -%}
+              {{ usage_image | image_url: width: 900 | image_tag: loading: 'lazy', widths: '450, 700, 900', sizes: '(min-width: 750px) 50vw, 100vw', width: 900, height: usage_image_h, alt: usage_image_alt }}
             {%- else -%}
               {{ 'lifestyle-1' | placeholder_svg_tag }}
             {%- endif -%}

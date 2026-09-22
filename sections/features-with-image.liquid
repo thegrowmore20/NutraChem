@@ -25,7 +25,8 @@
       <div class="u-flex u-justify-center features-media">
         {%- if section.settings.image -%}
           {%- assign media_h = 700 | divided_by: section.settings.image.aspect_ratio | round -%}
-          {{ section.settings.image | image_url: width: 700 | image_tag: loading: 'lazy', widths: '350, 500, 700', sizes: '(min-width: 990px) 33vw, 100vw', width: 700, height: media_h, alt: section.settings.image.alt | default: section.settings.heading }}
+          {%- assign media_alt = section.settings.image.alt | default: section.settings.heading -%}
+          {{ section.settings.image | image_url: width: 700 | image_tag: loading: 'lazy', widths: '350, 500, 700', sizes: '(min-width: 990px) 33vw, 100vw', width: 700, height: media_h, alt: media_alt }}
         {%- else -%}
           <img src="{{ 'Group 79.png' | asset_url }}" width="438" height="509" loading="lazy" alt="{{ section.settings.heading }}">
         {%- endif -%}

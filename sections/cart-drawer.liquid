@@ -65,9 +65,10 @@
     {%- if cart.item_count > 0 -%}
       <ul class="u-flex u-flex-col cart-drawer__items" role="list">
         {%- for item in cart.items -%}
+          {%- assign item_alt = item.image.alt | default: item.product.title -%}
           <li class="u-grid cart-drawer__item" data-cart-item data-line="{{ forloop.index }}">
             <a href="{{ item.url }}" class="cart-drawer__item-media">
-              {{ item.image | image_url: width: 140 | image_tag: loading: 'lazy', widths: '70, 105, 140', width: 70, height: 70, alt: item.image.alt | default: item.product.title }}
+              {{ item.image | image_url: width: 140 | image_tag: loading: 'lazy', widths: '70, 105, 140', width: 70, height: 70, alt: item_alt }}
             </a>
             <div class="cart-drawer__item-body">
               <div class="u-flex u-justify-between cart-drawer__item-title-row">

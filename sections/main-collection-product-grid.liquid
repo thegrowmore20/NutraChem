@@ -30,6 +30,8 @@
       </ol>
     </nav>
 
+    <h2 class="visually-hidden">{{ 'products.facets.heading' | t }}</h2>
+
     {%- paginate collection.products by section.settings.products_per_page -%}
       <div class="collection-layout{% if show_sidebar %} collection-layout--has-sidebar{% endif %}">
         <div class="u-grid u-items-center collection-topbar">

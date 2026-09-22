@@ -32,7 +32,8 @@
             <li>
               <a href="{{ product.url }}" class="predictive-search__product">
                 {%- if product.featured_image -%}
-                  {{ product.featured_image | image_url: width: 120 | image_tag: loading: 'lazy', width: 60, height: 60, alt: product.featured_image.alt | default: product.title }}
+                  {%- assign product_alt = product.featured_image.alt | default: product.title -%}
+                  {{ product.featured_image | image_url: width: 120 | image_tag: loading: 'lazy', width: 60, height: 60, alt: product_alt }}
                 {%- endif -%}
                 <span class="predictive-search__product-info">
                   <span class="predictive-search__product-title">{{ product.title }}</span>

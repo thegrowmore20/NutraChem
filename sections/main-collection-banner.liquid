@@ -16,6 +16,7 @@
 >
   {%- if banner_image -%}
     {%- assign hero_h = 3200 | divided_by: banner_image.aspect_ratio | round -%}
+    {%- assign banner_alt = banner_image.alt | default: heading -%}
     {{
       banner_image
       | image_url: width: 3200
@@ -26,7 +27,7 @@
         width: 3200,
         height: hero_h,
         class: 'hero__image',
-        alt: banner_image.alt | default: heading
+        alt: banner_alt
     }}
   {%- else -%}
     {{ 'collection-1' | placeholder_svg_tag: 'hero__image' }}

@@ -71,7 +71,8 @@
                 aria-label="{{ 'sections.youtube_reels.play' | t }}{% if reel.title.value != blank %}: {{ reel.title.value }}{% endif %}"
               >
                 {%- if reel.thumbnail.value != blank -%}
-                  {{ reel.thumbnail.value | image_url: width: 500 | image_tag: loading: 'lazy', widths: '250, 375, 500', width: 500, height: 890, alt: reel.title.value | default: '' }}
+                  {%- assign reel_alt = reel.title.value | default: '' -%}
+                  {{ reel.thumbnail.value | image_url: width: 500 | image_tag: loading: 'lazy', widths: '250, 375, 500', width: 500, height: 890, alt: reel_alt }}
                 {%- else -%}
                   <img src="https://i.ytimg.com/vi/{{ video_id }}/hqdefault.jpg" loading="lazy" width="500" height="375" alt="{{ reel.title.value | default: '' }}">
                 {%- endif -%}

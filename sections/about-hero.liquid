@@ -35,7 +35,8 @@
       </div>
       <div class="about-hero__media">
         {%- if section.settings.image != blank -%}
-          {{ section.settings.image | image_url: width: 1000 | image_tag: loading: 'eager', fetchpriority: 'high', widths: '500, 750, 1000', sizes: '(min-width: 750px) 50vw, 100vw', alt: section.settings.image.alt | default: section.settings.heading }}
+          {%- assign hero_alt = section.settings.image.alt | default: section.settings.heading -%}
+          {{ section.settings.image | image_url: width: 1000 | image_tag: loading: 'eager', fetchpriority: 'high', widths: '500, 750, 1000', sizes: '(min-width: 750px) 50vw, 100vw', alt: hero_alt }}
         {%- else -%}
           <div class="u-flex u-items-center u-justify-center about-hero__placeholder">{% render 'icon', name: 'sparkle' %}</div>
         {%- endif -%}
