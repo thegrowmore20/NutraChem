@@ -14,5 +14,11 @@
     {%- endif -%}
   </span>
   <span class="mega-menu-card__title">{{ product.title }}</span>
-  <div class="ProductPage-StarRating mega-menu-card__rating" style="display: flex; align-items: center; gap: 10px; font-size: 14px;"><div class="AirReviews-Widget AirReviews-Widget--Stars"></div><span>{{ product.metafields.air_reviews_product.review_avg }} ({{ product.metafields.air_reviews_product.review_count }})</span></div>
+  {%- if product.metafields.air_reviews_product.review_count > 0 -%}
+    {%- assign menu_card_rating = product.metafields.air_reviews_product.review_avg | plus: 0 -%}
+    <span class="u-flex u-items-center mega-menu-card__rating">
+      {% render 'star-rating', rating: menu_card_rating %}
+      <span>{{ menu_card_rating }} ({{ product.metafields.air_reviews_product.review_count }})</span>
+    </span>
+  {%- endif -%}
 </a>

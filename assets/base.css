@@ -399,9 +399,6 @@ h2[class] {
   margin-bottom: 10px;
 }
 
-.product-card .AirReviews-Widget--Stars {
-  margin-bottom: 10px;
-}
 
 .product-card__rating span svg {
   fill: var(--color-star);

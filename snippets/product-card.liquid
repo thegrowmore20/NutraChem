@@ -25,9 +25,13 @@
     <h3 class="product-card__title">
       <a href="{{ product.url | default: routes.all_products_collection_url }}">{{ product.title | default: 'Creamy Face Wash - Gluta Cure' }}</a>
     </h3>
-    {%- if product != blank -%}
-      <div class="ProductPage-StarRating" style="display: flex; align-items: center; gap: 10px;"><div class="AirReviews-Widget AirReviews-Widget--Stars"></div><span>{{ product.metafields.air_reviews_product.review_avg }} ({{ product.metafields.air_reviews_product.review_count }})</span></div>
-    {%- else -%}
+    {%- if product != blank and product.metafields.air_reviews_product.review_count > 0 -%}
+      {%- assign real_rating = product.metafields.air_reviews_product.review_avg | plus: 0 -%}
+      <div class="product-card__rating">
+        {% render 'star-rating', rating: real_rating %}
+        <span>{{ real_rating }} ({{ product.metafields.air_reviews_product.review_count }})</span>
+      </div>
+    {%- elsif product == blank -%}
       <div class="product-card__rating">
         {% render 'star-rating', rating: rating %}
         <span>{{ rating }} ({{ review_count }} Reviews)</span>
