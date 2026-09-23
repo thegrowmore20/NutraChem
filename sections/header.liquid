@@ -494,6 +494,15 @@
     width: 18px;
     height: 18px;
   }
+
+  /* The fixed mobile bottom nav (sections/fix-footer-mobile.liquid) has its
+     own wishlist icon when configured with one, so the header's copy would
+     be a redundant second wishlist icon on screen - the !important is
+     needed to beat the Vensa app's own !important visibility override
+     mentioned above. */
+  body:has(.mobile-bottom-nav) .header__icon-btn--wishlist {
+    display: none !important;
+  }
 }
 
 .cart-icon-bubble {
