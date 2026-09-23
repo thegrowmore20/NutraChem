@@ -132,11 +132,7 @@
     {%- comment -%} 4. Real Search & Discovery filters {%- endcomment -%}
     {%- for filter in results.filters -%}
       {%- if filter.type == 'price_range' -%}
-        {%- assign price_is_active = false -%}
-        {%- if filter.min_value.value != blank or filter.max_value.value != blank -%}
-          {%- assign price_is_active = true -%}
-        {%- endif -%}
-        <details class="facets__group" data-filter-param="{{ filter.param_name }}" {% if price_is_active %}open{% endif %}>
+        <details class="facets__group" data-filter-param="{{ filter.param_name }}" open>
           <summary class="facets__summary">
             <span>{{ filter.label | escape }}</span>
             <span class="facets__chevron facets__chevron--down" aria-hidden="true">{% render 'icon', name: 'chevron-down' %}</span>
@@ -146,7 +142,7 @@
           </div>
         </details>
       {%- elsif filter.values.size > 0 -%}
-        <details class="facets__group" data-filter-param="{{ filter.param_name }}" {% if filter.active_values.size > 0 %}open{% endif %}>
+        <details class="facets__group" data-filter-param="{{ filter.param_name }}" open>
           <summary class="facets__summary">
             <span>{{ filter.label | escape }}</span>
             <span class="facets__chevron facets__chevron--down" aria-hidden="true">{% render 'icon', name: 'chevron-down' %}</span>
