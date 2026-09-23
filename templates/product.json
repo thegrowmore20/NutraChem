@@ -77,6 +77,54 @@
             "open_by_default": false
           }
         },
+        "accordion_QwpEjW": {
+          "type": "accordion",
+          "settings": {
+            "heading": "Beauty Gains",
+            "content": "{{ product.metafields.custom.beauty_gains | metafield_tag }}",
+            "open_by_default": false
+          }
+        },
+        "accordion_P6Bgpw": {
+          "type": "accordion",
+          "settings": {
+            "heading": "Ingredients",
+            "content": "{{ product.metafields.custom.ingredients_richtext | metafield_tag }}",
+            "open_by_default": false
+          }
+        },
+        "accordion_N7zm6k": {
+          "type": "accordion",
+          "settings": {
+            "heading": "How It Works",
+            "content": "{{ product.metafields.custom.how_it_works_richtext | metafield_tag }}",
+            "open_by_default": false
+          }
+        },
+        "accordion_9WFKDV": {
+          "type": "accordion",
+          "settings": {
+            "heading": "How to Use",
+            "content": "{{ product.metafields.custom.how_to_use | metafield_tag }}",
+            "open_by_default": false
+          }
+        },
+        "accordion_bnDt9W": {
+          "type": "accordion",
+          "settings": {
+            "heading": "Who Can Use",
+            "content": "{{ product.metafields.custom.who_can_use | metafield_tag }}",
+            "open_by_default": false
+          }
+        },
+        "accordion_LWxRLg": {
+          "type": "accordion",
+          "settings": {
+            "heading": "Caution",
+            "content": "{{ product.metafields.custom.caution | metafield_tag }}",
+            "open_by_default": false
+          }
+        },
         "accordion-shipping": {
           "type": "accordion",
           "settings": {
@@ -108,6 +156,12 @@
         "quantity-buy-buttons",
         "icons-with-text",
         "accordion-description",
+        "accordion_QwpEjW",
+        "accordion_P6Bgpw",
+        "accordion_N7zm6k",
+        "accordion_9WFKDV",
+        "accordion_bnDt9W",
+        "accordion_LWxRLg",
         "accordion-shipping",
         "accordion_cgDkN3",
         "share"
