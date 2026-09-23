@@ -325,7 +325,7 @@ h2[class] {
   position: absolute;
   top: 6px;
   left: 6px;
-  background: var(--color-secondary);
+  background: var(--color-secondary-a11y, var(--color-secondary));
   color: #fff;
   font-size: 10px;
   font-weight: 500;
@@ -533,4 +533,12 @@ summary:focus-visible {
 .AirReviews-Carousel__NavPrev,
 .AirReviews-Carousel__NavNext {
   z-index: 5 !important;
+}
+
+/* Vensa wishlist drawer text ships with low-contrast grays (#888/#999 on
+   white, ~3.5:1 and ~2.8:1) that fail WCAG 1.4.3 - overriding to the theme's
+   accessible muted-text color since the app doesn't expose a contrast setting. */
+.vensa-wl-empty,
+.vensa-wl-foot {
+  color: var(--color-text-muted) !important;
 }
