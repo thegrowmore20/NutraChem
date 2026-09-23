@@ -1303,6 +1303,7 @@ class HeaderMenu {
   #openPanel
   #openTrigger
   #backdrop
+  #closeTimer
 
   constructor() {
     this.#items = Array.from(document.querySelectorAll('.header__nav-item.has-menu'))
@@ -1324,10 +1325,22 @@ class HeaderMenu {
         this.#toggle(trigger, panel)
       })
       item.addEventListener('mouseenter', () => {
-        if (this.#desktopQuery.matches) this.#open(trigger, panel)
+        if (!this.#desktopQuery.matches) return
+        // Cancel any pending close from the item the pointer just left, so
+        // switching between two adjacent triggers crossfades straight into
+        // the new panel instead of both being briefly closed.
+        window.clearTimeout(this.#closeTimer)
+        this.#open(trigger, panel)
       })
       item.addEventListener('mouseleave', () => {
-        if (this.#desktopQuery.matches) this.#close(trigger, panel)
+        if (!this.#desktopQuery.matches) return
+        // The ~4px gap between nav items (.header__nav's gap) means the
+        // pointer crosses a dead zone between triggers - closing instantly
+        // here left a visible flash where neither panel was open while it
+        // travelled that gap. A short delay gives the next item's
+        // mouseenter a chance to cancel this before it fires.
+        window.clearTimeout(this.#closeTimer)
+        this.#closeTimer = window.setTimeout(() => this.#close(trigger, panel), 150)
       })
     }
 
