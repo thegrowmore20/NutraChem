@@ -68,6 +68,33 @@
   gap: var(--space-3);
 }
 
+/* Mobile: horizontal swipe/drag carousel with a ~1.25-card peek instead of
+   the stacked single column, so there's a visible affordance to scroll.
+   Native overflow-x + scroll-snap already supports touch drag - no JS
+   needed since this only applies below the tablet breakpoint. */
+@media screen and (max-width: 749px) {
+  .blogs-section__grid {
+    display: flex;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding-bottom: var(--space-2);
+  }
+
+  .blogs-section__grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .blogs-section__grid > .blog-listing-card {
+    flex: 0 0 80%;
+    min-width: 0;
+    scroll-snap-align: start;
+  }
+}
+
 @media screen and (min-width: 750px) {
   .blogs-section__grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
