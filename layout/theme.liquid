@@ -82,6 +82,22 @@
       }
     </script>
 
+    {%- comment -%}
+      The AirReviews app injects its own stylesheet (air-reviews.min.css)
+      further down in content_for_header as a normal render-blocking <link>,
+      and it consistently takes far longer to arrive than every other
+      stylesheet on the page (~600ms vs ~90ms) - since it's discovered so
+      late in <head>, it ends up holding up first paint of the whole page
+      (title, price, everything) until it's done. Preloading it up here lets
+      the browser start fetching it immediately alongside the other early
+      requests, so by the time content_for_header's <link> actually needs
+      it, it's already in cache. Rewriting content_for_header's own output
+      to change that <link>'s loading strategy was considered and rejected -
+      Shopify's theme-check explicitly flags relying on its exact content as
+      unsafe, since its format isn't a stable contract.
+    {%- endcomment -%}
+    <link rel="preload" as="style" href="https://cdn.shopify.com/extensions/01a0cd11-b913-7e7d-8b62-2b63ab1be515/air-reviews-1-110/assets/air-reviews.min.css">
+
     {{ content_for_header }}
   </head>
   <body class="template-{{ template.name }}">
