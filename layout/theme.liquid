@@ -23,7 +23,9 @@
 
     {{ 'base.css' | asset_url | stylesheet_tag }}
 
-    {%- render 'avada-customize' -%}
+    {%- if template.suffix == 'all-review-page' -%}
+      {%- render 'avada-customize' -%}
+    {%- endif -%}
 
     <style>
       {{ settings.font_heading | font_face: font_display: 'swap' }}

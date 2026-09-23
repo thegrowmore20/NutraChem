@@ -514,6 +514,37 @@ summary:focus-visible {
   outline-offset: 3px;
 }
 
+/* ---------- Rich text content (.rte marks page/article/accordion/FAQ body
+   HTML from page.content, metafield rich-text, etc.) ---------- */
+/* The global `ul { list-style: none }` reset above is meant for UI chrome
+   (nav, cards), not editorial content - re-enable markers here so lists
+   inside rich text actually render as lists. */
+.rte ul {
+  list-style: disc;
+  padding-left: 1.25em;
+  margin: 0 0 1em;
+}
+
+.rte ol {
+  list-style: decimal;
+  padding-left: 1.25em;
+  margin: 0 0 1em;
+}
+
+.rte li {
+  margin-bottom: 0.25em;
+}
+
+.rte p {
+  margin: 0 0 1em;
+}
+
+.rte p:last-child,
+.rte ul:last-child,
+.rte ol:last-child {
+  margin-bottom: 0;
+}
+
 
 
 /* custom app css */
