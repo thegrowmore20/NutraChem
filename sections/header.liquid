@@ -166,6 +166,24 @@
 <div class="mega-menu-backdrop" id="MegaMenuBackdrop" hidden></div>
 
 {% stylesheet %}
+/* HeaderScroll (below) measures the real header height and sets
+   --header-height via JS, but that only runs once its script executes -
+   until then this var is unset, and without a fallback here <main> would
+   render flush at the top (uncovered by the fixed header below) and then
+   visibly jump down once the JS catches up, a real measured layout shift.
+   60px matches this header's actual height with no announcement bar
+   (verified live); the JS value still wins the moment it's available, so
+   this is only ever wrong for the brief window before that, and only
+   differs at all when an announcement bar is configured.
+   Excludes the index template: header--transparent there intentionally
+   overlays the hero with no body offset (JS sets padding-top to just the
+   announcement bar's height, 0px when there isn't one) - reserving 60px
+   here too would add unwanted whitespace above the hero until JS corrects
+   it back down. */
+body:not(.template-index) {
+  padding-top: var(--header-height, 60px);
+}
+
 .header {
   position: fixed;
   /* Sits right below the announcement bar (0px when there isn't one) instead
@@ -1370,14 +1388,21 @@ class HeaderMenu {
   }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  new MobileNav()
-  new HeaderScroll()
-  new CartToggle()
-  new CartIconBubble()
-  new PredictiveSearch()
-  new HeaderMenu()
-})
+// This script is already deferred, so the DOM (including every element
+// these classes query for) is fully parsed by the time it runs - wrapping
+// in DOMContentLoaded was redundant, and worse, pushed init past the entire
+// deferred JS bundle finishing (DOMContentLoaded only fires once every
+// deferred script across every section has run). HeaderScroll sets
+// body's padding-top to compensate for the header's height; that delay
+// left <main> briefly rendering un-padded at the top before jumping down
+// once this finally ran - a real, measured layout shift (CLS), not just a
+// theoretical one.
+new MobileNav()
+new HeaderScroll()
+new CartToggle()
+new CartIconBubble()
+new PredictiveSearch()
+new HeaderMenu()
 {% endjavascript %}
 
 <script type="application/ld+json">
