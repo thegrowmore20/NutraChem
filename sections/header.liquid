@@ -470,6 +470,30 @@
   .header__icon-btn--wishlist {
     display: none;
   }
+
+  /* The Vensa wishlist app forces its header button visible with its own
+     !important styles regardless of the display: none above, so it still
+     shows up on mobile - tighten its footprint to match the other icons
+     instead of leaving it at the larger desktop sizing. */
+  .header__icons a,
+  .header__icons button {
+    padding: 5px;
+    min-width: 30px;
+    min-height: 30px;
+  }
+
+  .header__icons > *:first-child {
+    margin-left: -5px;
+  }
+
+  .header__icons > *:last-child {
+    margin-right: -5px;
+  }
+
+  #WishlistToggle svg {
+    width: 18px;
+    height: 18px;
+  }
 }
 
 .cart-icon-bubble {
@@ -490,6 +514,16 @@
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+@media screen and (max-width: 989px) {
+  .cart-icon-bubble {
+    top: 0;
+    right: 0;
+    min-width: 15px;
+    height: 15px;
+    font-size: 8px;
+  }
 }
 
 .header__icon-btn--cart,
