@@ -285,6 +285,14 @@
     padding: 1rem;
   }
 
+  /* The 700px min-width (set for the desktop 3-column layout) forced a
+     horizontal scrollbar even on tablets like 768px where the container's
+     actual content width is narrower than that - let the reduced
+     padding/gaps above do the work instead of keeping a fixed floor. */
+  .comparison-table {
+    min-width: unset;
+  }
+
 }
 {%- endstylesheet -%}
 {% schema %}

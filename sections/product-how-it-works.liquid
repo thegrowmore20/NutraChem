@@ -29,14 +29,20 @@
       <div class="u-grid product-how-it-works__grid">
         {%- for item in items -%}
           {%- if item.title != blank and item.desc != blank -%}
+            {%- assign item_index = forloop.index | prepend: '0' | slice: -2, 2 -%}
+            {%- assign item_index_prefix = item_index | append: ' ' -%}
+            {%- assign item_title = item.title -%}
+            {%- if item_title contains item_index_prefix -%}
+              {%- assign item_title = item_title | remove_first: item_index_prefix -%}
+            {%- endif -%}
             <div class="product-how-it-works__card">
               <div class="u-flex u-items-center u-justify-between product-how-it-works__card-header">
-                <span class="product-how-it-works__index" aria-hidden="true">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
+                <span class="product-how-it-works__index" aria-hidden="true">{{ item_index }}</span>
                 {%- if item.icon != blank -%}
                   <span class="product-how-it-works__icon" aria-hidden="true">{{ item.icon }}</span>
                 {%- endif -%}
               </div>
-              <h3 class="product-how-it-works__title">{{ item.title | escape }}</h3>
+              <h3 class="product-how-it-works__title">{{ item_title | escape }}</h3>
               <p class="product-how-it-works__description">{{ item.desc | escape }}</p>
               {%- if item.science != blank -%}
                 <p class="product-how-it-works__note">{{ item.science | escape }}</p>

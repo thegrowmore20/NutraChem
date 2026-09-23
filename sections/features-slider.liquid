@@ -115,9 +115,15 @@
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     transition: all 0.2s ease;
   }
-  .features-slider__arrow:hover:not(:disabled) {
-    background: var(--color-primary);
-    color: #ffffff;
+  /* Scoped to real pointer-hover devices only - on touch, tapping an arrow
+     triggers :hover with no matching "leave" event, leaving it permanently
+     dark while the other arrow stays white (an asymmetric look, since one
+     arrow gets tapped more than the other). */
+  @media (hover: hover) and (pointer: fine) {
+    .features-slider__arrow:hover:not(:disabled) {
+      background: var(--color-primary);
+      color: #ffffff;
+    }
   }
   .features-slider__arrow:disabled {
     opacity: 0;
