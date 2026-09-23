@@ -855,12 +855,20 @@ body.search-popup-open {
   background: transparent;
 
   @media screen and (max-width: 992px) {
-    padding-block: 10px;    
+    padding-block: 10px;
   }
 
   @media screen and (max-width: 600px) {
     padding-block: var(--space-2);
   }
+}
+
+/* The popup auto-focuses this input on open (see #open() below), which
+   would otherwise trigger the global input:focus-visible ring even though
+   there's no keyboard navigation happening - the popup opening is already
+   the visible state change. */
+.header__search-input:focus-visible {
+  outline: none;
 }
 
 .header__search-submit {
