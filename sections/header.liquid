@@ -416,6 +416,10 @@ body:not(.template-index) {
     pointer-events: auto;
   }
 
+  .header__menu-panel--switching {
+    transition: none;
+  }
+
   .mega-menu-backdrop {
     position: fixed;
     inset: 0;
@@ -1359,7 +1363,16 @@ class HeaderMenu {
 
   #open(trigger, panel) {
     if (this.#openPanel && this.#openPanel !== panel) {
-      this.#close(this.#openTrigger, this.#openPanel)
+      // Every panel is absolutely positioned in the same spot below the
+      // nav, so animating the outgoing panel's normal fade-out at the same
+      // time the incoming one fades in made two different menus' content
+      // visibly overlap for ~200ms - it read as a glitch, not a crossfade.
+      // Skipping the outgoing panel's transition makes it disappear
+      // instantly instead, so only one panel's content is ever on screen.
+      const oldPanel = this.#openPanel
+      oldPanel.classList.add('header__menu-panel--switching')
+      this.#close(this.#openTrigger, oldPanel)
+      requestAnimationFrame(() => oldPanel.classList.remove('header__menu-panel--switching'))
     }
     panel.classList.add('is-open')
     trigger.setAttribute('aria-expanded', 'true')
