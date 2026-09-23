@@ -203,6 +203,14 @@ h2[class] {
   padding-block: var(--padding-top, 40px) var(--padding-bottom, 40px);
 }
 
+/* Tablet: 0.75x the merchant-set value. */
+@media screen and (min-width: 750px) and (max-width: 989px) {
+  .section-padding {
+    padding-block: calc(var(--padding-top, 40px) * 0.75) calc(var(--padding-bottom, 40px) * 0.75);
+  }
+}
+
+/* Mobile: 0.5x the merchant-set value. */
 @media screen and (max-width: 749px) {
   .section-padding {
     padding-block: calc(var(--padding-top, 40px) / 2) calc(var(--padding-bottom, 40px) / 2);
@@ -377,6 +385,7 @@ h2[class] {
   -webkit-line-clamp: 2; /* number of lines to show */
   line-clamp: 2;
   -webkit-box-orient: vertical;
+  margin-bottom: 0.25rem;
 
   @media screen and (max-width: 600px) {   
    margin-bottom: 5px;
@@ -533,12 +542,4 @@ summary:focus-visible {
 .AirReviews-Carousel__NavPrev,
 .AirReviews-Carousel__NavNext {
   z-index: 5 !important;
-}
-
-/* Vensa wishlist drawer text ships with low-contrast grays (#888/#999 on
-   white, ~3.5:1 and ~2.8:1) that fail WCAG 1.4.3 - overriding to the theme's
-   accessible muted-text color since the app doesn't expose a contrast setting. */
-.vensa-wl-empty,
-.vensa-wl-foot {
-  color: var(--color-text-muted) !important;
 }
