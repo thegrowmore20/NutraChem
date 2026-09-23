@@ -14,5 +14,6 @@
     {%- endif -%}
   </span>
   <span class="mega-menu-card__title">{{ product.title }}</span>
-  <div class="ProductPage-StarRating mega-menu-card__rating" style="display: flex; align-items: center; gap: 10px; font-size: 14px;"><div class="AirReviews-Widget AirReviews-Widget--Stars"></div><span>{{ product.metafields.air_reviews_product.review_avg }} ({{ product.metafields.air_reviews_product.review_count }})</span></div>
+  <div class="ProductPage-StarRating mega-menu-card__rating" style="display: flex; align-items: center; gap: 10px; font-size: 14px;"><div class="AirReviews-Widget AirReviews-Widget--Stars" data-review-avg="{{ product.metafields.air_reviews_product.review_avg }}"
+    data-review-count="{{ product.metafields.air_reviews_product.review_count }}"></div><span>{{ product.metafields.air_reviews_product.review_avg }} ({{ product.metafields.air_reviews_product.review_count }})</span></div>
 </a>

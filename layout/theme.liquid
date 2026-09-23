@@ -23,6 +23,8 @@
 
     {{ 'base.css' | asset_url | stylesheet_tag }}
 
+    {%- render 'avada-customize' -%}
+
     <style>
       {{ settings.font_heading | font_face: font_display: 'swap' }}
       {{ settings.font_body | font_face: font_display: 'swap' }}
