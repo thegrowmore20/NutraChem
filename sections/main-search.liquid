@@ -869,8 +869,8 @@ class PriceRangeSlider extends HTMLElement {
         this.#maxThumb.value = String(maxVal)
       }
     }
-    if (this.#minInput) this.#minInput.value = String(minVal)
-    if (this.#maxInput) this.#maxInput.value = String(maxVal)
+    if (this.#minInput) this.#minInput.value = minVal.toFixed(2)
+    if (this.#maxInput) this.#maxInput.value = maxVal.toFixed(2)
     this.#updateProgress()
   }
 
@@ -883,11 +883,11 @@ class PriceRangeSlider extends HTMLElement {
     if (which === 'min') {
       value = Math.min(value, Number(this.#maxThumb.value))
       this.#minThumb.value = String(value)
-      this.#minInput.value = String(value)
+      this.#minInput.value = value.toFixed(2)
     } else {
       value = Math.max(value, Number(this.#minThumb.value))
       this.#maxThumb.value = String(value)
-      this.#maxInput.value = String(value)
+      this.#maxInput.value = value.toFixed(2)
     }
     this.#updateProgress()
   }

@@ -21,6 +21,24 @@
   if filter.max_value.value != blank
     assign max_value = filter.max_value.value | divided_by: 100.0
   endif
+
+  assign min_cents = filter.min_value.value | default: 0
+  assign min_whole = min_cents | divided_by: 100
+  assign min_remainder = min_cents | modulo: 100
+  assign min_remainder_str = min_remainder | append: ''
+  if min_remainder < 10
+    assign min_remainder_str = '0' | append: min_remainder
+  endif
+  assign min_display = min_whole | append: '.' | append: min_remainder_str
+
+  assign max_cents = filter.max_value.value | default: filter.range_max
+  assign max_whole = max_cents | divided_by: 100
+  assign max_remainder = max_cents | modulo: 100
+  assign max_remainder_str = max_remainder | append: ''
+  if max_remainder < 10
+    assign max_remainder_str = '0' | append: max_remainder
+  endif
+  assign max_display = max_whole | append: '.' | append: max_remainder_str
 -%}
 
 <price-range-slider class="price-range">
@@ -62,7 +80,7 @@
           name="{{ filter.min_value.param_name }}"
           id="PriceMin-{{ section.id }}-{{ filter.param_name }}"
           data-price-input-min
-          value="{{ min_value | default: 0 }}"
+          value="{{ min_display }}"
         >
       </div>
     </div>
@@ -78,7 +96,7 @@
           name="{{ filter.max_value.param_name }}"
           id="PriceMax-{{ section.id }}-{{ filter.param_name }}"
           data-price-input-max
-          value="{{ max_value }}"
+          value="{{ max_display }}"
         >
       </div>
     </div>
