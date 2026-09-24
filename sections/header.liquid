@@ -1,4 +1,4 @@
-<header class="header{% if template.name == 'index' %} header--transparent{% endif %}">
+<header class="header">
   <div class="container header__inner">
     <button class="u-inline-flex u-items-center u-justify-center header__menu-toggle" aria-label="Menu" aria-expanded="false" aria-controls="HeaderNav" type="button">
       {% render 'icon', name: 'menu' %}
@@ -175,12 +175,12 @@
    (verified live); the JS value still wins the moment it's available, so
    this is only ever wrong for the brief window before that, and only
    differs at all when an announcement bar is configured.
-   Excludes the index template: header--transparent there intentionally
-   overlays the hero with no body offset (JS sets padding-top to just the
-   announcement bar's height, 0px when there isn't one) - reserving 60px
-   here too would add unwanted whitespace above the hero until JS corrects
-   it back down. */
-body:not(.template-index) {
+   Excludes pages whose hero banner turns on "Transparent header": the header
+   intentionally overlays the hero with no body offset (JS sets padding-top
+   to just the announcement bar's height, 0px when there isn't one) -
+   reserving 60px here too would add unwanted whitespace above the hero until
+   JS corrects it back down. */
+body:not(:has(.hero--transparent-header)) {
   padding-top: var(--header-height, 60px);
 }
 
@@ -209,11 +209,11 @@ body:not(.template-index) {
   z-index: 10011;
 }
 
-.header--transparent {
+.header:where(body:has(.hero--transparent-header) *) {
   background: transparent;
 }
 
-.header--transparent::before {
+.header:where(body:has(.hero--transparent-header) *)::before {
   content: '';
   position: absolute;
   inset: 0;
@@ -230,22 +230,22 @@ body:not(.template-index) {
    (negative z-index still outranks the parent's own background layer in
    paint order), so without this it stayed visibly dark on top of the
    solid background instead of actually going away. */
-.header--transparent.header--scrolled::before,
-.header--transparent.header--drawer-open::before,
-.header--transparent.header--menu-open::before {
+.header:where(body:has(.hero--transparent-header) *).header--scrolled::before,
+.header:where(body:has(.hero--transparent-header) *).header--drawer-open::before,
+.header:where(body:has(.hero--transparent-header) *).header--menu-open::before {
   opacity: 0;
 }
 
-.header--transparent .header__nav-link,
-.header--transparent .header__logo-text strong,
-.header--transparent .header__logo-text span,
-.header--transparent .header__icons,
-.header--transparent .header__menu-toggle {
+.header:where(body:has(.hero--transparent-header) *) .header__nav-link,
+.header:where(body:has(.hero--transparent-header) *) .header__logo-text strong,
+.header:where(body:has(.hero--transparent-header) *) .header__logo-text span,
+.header:where(body:has(.hero--transparent-header) *) .header__icons,
+.header:where(body:has(.hero--transparent-header) *) .header__menu-toggle {
   color: #fff;
 }
 
   @media screen and (max-width: 990px) {
-    .header--transparent .header__nav-link{
+    .header:where(body:has(.hero--transparent-header) *) .header__nav-link{
       color: var(--color-primary);  
     }
   }
@@ -262,25 +262,25 @@ body:not(.template-index) {
    open. The panel drops down solid white, so a header still transparent
    (dark scrim, white text) over the hero looked disconnected from it - it
    takes on the same solid look as the scrolled state instead. */
-.header--transparent.header--scrolled,
-.header--transparent.header--menu-open {
+.header:where(body:has(.hero--transparent-header) *).header--scrolled,
+.header:where(body:has(.hero--transparent-header) *).header--menu-open {
   background: var(--color-background);
 }
 
-.header--transparent.header--drawer-open {
+.header:where(body:has(.hero--transparent-header) *).header--drawer-open {
   background: var(--color-background);
 }
 
-.header--transparent.header--scrolled .header__nav-link,
-.header--transparent.header--scrolled .header__logo-text strong,
-.header--transparent.header--scrolled .header__logo-text span,
-.header--transparent.header--scrolled .header__icons,
-.header--transparent.header--scrolled .header__menu-toggle,
-.header--transparent.header--menu-open .header__nav-link,
-.header--transparent.header--menu-open .header__logo-text strong,
-.header--transparent.header--menu-open .header__logo-text span,
-.header--transparent.header--menu-open .header__icons,
-.header--transparent.header--menu-open .header__menu-toggle {
+.header:where(body:has(.hero--transparent-header) *).header--scrolled .header__nav-link,
+.header:where(body:has(.hero--transparent-header) *).header--scrolled .header__logo-text strong,
+.header:where(body:has(.hero--transparent-header) *).header--scrolled .header__logo-text span,
+.header:where(body:has(.hero--transparent-header) *).header--scrolled .header__icons,
+.header:where(body:has(.hero--transparent-header) *).header--scrolled .header__menu-toggle,
+.header:where(body:has(.hero--transparent-header) *).header--menu-open .header__nav-link,
+.header:where(body:has(.hero--transparent-header) *).header--menu-open .header__logo-text strong,
+.header:where(body:has(.hero--transparent-header) *).header--menu-open .header__logo-text span,
+.header:where(body:has(.hero--transparent-header) *).header--menu-open .header__icons,
+.header:where(body:has(.hero--transparent-header) *).header--menu-open .header__menu-toggle {
   color: var(--color-primary);
 }
 
@@ -335,11 +335,11 @@ body:not(.template-index) {
   display: none;
 }
 
-.header--transparent:not(.header--scrolled):not(.header--menu-open) .header__logo--has-inverse .header__logo-img--default {
+.header:where(body:has(.hero--transparent-header) *):not(.header--scrolled):not(.header--menu-open) .header__logo--has-inverse .header__logo-img--default {
   display: none;
 }
 
-.header--transparent:not(.header--scrolled):not(.header--menu-open) .header__logo--has-inverse .header__logo-img--inverse {
+.header:where(body:has(.hero--transparent-header) *):not(.header--scrolled):not(.header--menu-open) .header__logo--has-inverse .header__logo-img--inverse {
   display: block;
 }
 
@@ -1200,7 +1200,7 @@ class HeaderScroll {
     // A transparent header intentionally overlays hero content, but the
     // announcement bar always has a solid background and isn't meant to - its
     // own height still needs reserving even when the header's doesn't.
-    const isTransparent = this.#header.classList.contains('header--transparent')
+    const isTransparent = document.querySelector('.hero--transparent-header') !== null
     document.body.style.paddingTop = `${isTransparent ? announcementHeight : totalHeight}px`
   }
 

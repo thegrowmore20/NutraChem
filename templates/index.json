@@ -18,6 +18,7 @@
         "custom_height": 640,
         "mobile_height": "custom",
         "custom_height_mobile": 600,
+        "transparent_header": true,
         "show_overlay": false,
         "overlay_color": "rgba(0, 0, 0, 0.2)",
         "content_position_x": "left",
