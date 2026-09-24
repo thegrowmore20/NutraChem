@@ -1,5 +1,5 @@
 <section
-  class="u-flex hero hero--height-{{ section.settings.height }} hero--height-mobile-{{ section.settings.mobile_height | default: section.settings.height }}"
+  class="u-flex hero hero-banner hero--height-{{ section.settings.height }} hero--height-mobile-{{ section.settings.mobile_height | default: section.settings.height }}"
   style="
     {%- if section.settings.height == 'custom' %}--hero-height: {{ section.settings.custom_height }}px;{% endif -%}
     {%- if section.settings.mobile_height == 'custom' %}--hero-height-mobile: {{ section.settings.custom_height_mobile }}px;{% endif -%}
@@ -158,10 +158,15 @@
 }
 
 .hero__text {
-  font-size: 15px;
+  font-size: 14px;
   line-height: 1.7;
   color: var(--color-text);
-  margin: 0 0 var(--space-6);
+  margin: 0 0 var(--space-4);
+
+  @media screen and (min-width: 750px) {
+    font-size: 16px;
+    margin: 0 0 var(--space-6);
+  }
 }
 
 .hero__button {
@@ -223,6 +228,21 @@
     align-items: flex-end;
     padding-bottom: 48px;
     padding-top: 0;
+  }
+
+  /* Phone spacing for THIS hero only. sections/main-collection-banner.liquid
+     defines the same .hero__text / .hero__content-wrap classes, and Shopify
+     merges every section's CSS into one file, so its later rules win over the
+     ones above at equal specificity (which is why the values above aren't
+     the ones actually rendering on the homepage). The extra .hero-banner
+     class raises specificity so these apply regardless of bundle order,
+     without touching the collection banner. */
+  .hero-banner .hero__content-wrap--y-mobile-bottom {
+    padding-bottom: 0;
+  }
+
+  .hero-banner .hero__text {
+    margin-bottom: var(--space-4);
   }
 }
 {% endstylesheet %}
