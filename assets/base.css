@@ -154,6 +154,16 @@ h2[class] {
   text-wrap: balance;
 }
 
+/* Phones: the clamp above bottoms out at 44px, which is too big for the
+   narrowest screens. This tier scales from 32px at ~390px wide up to 53.5px
+   at 749px - exactly what the formula above gives at 750px, so there's no
+   size jump at the breakpoint and tablet/desktop are unchanged. */
+@media screen and (max-width: 749px) {
+  .h0 {
+    font-size: clamp(32px, 8.62px + 5.99vw, 53.5px);
+  }
+}
+
 .h1 {
   font-weight: 500;
   font-family: var(--font-heading);
