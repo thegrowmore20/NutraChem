@@ -9,26 +9,27 @@
  */
 {
   "sections": {
-    "hero": {
+    "hero_banner_QGALPh": {
       "type": "hero-banner",
       "settings": {
-        "image": "shopify://shop_images/nutra_chem_banner.webp",
+        "image": "shopify://shop_images/About_Us_Banner.webp",
+        "mobile_image": "shopify://shop_images/About_us_Mobile.webp",
         "height": "custom",
         "custom_height": 360,
+        "mobile_height": "custom",
+        "custom_height_mobile": 380,
+        "show_overlay": false,
+        "overlay_color": "rgba(0, 0, 0, 0.4)",
         "content_position_x": "left",
         "content_position_y": "center",
         "content_position_x_mobile": "center",
         "content_position_y_mobile": "top",
-        "heading": "Contact Us",
-        "heading_color": "#008FA3",
+        "heading": "{{ page.title }}",
+        "heading_color": "#008fa3",
         "heading_size": "h0",
-        "text": "",
+        "text": "<p>We combine natural extracts with clinical research to give you skin results you can actually see.</p>",
         "button_label": "",
-        "button_link": "",
-        "mobile_height": "custom",
-        "custom_height_mobile": 380,
-        "show_overlay": false,
-        "overlay_color": "rgba(0, 0, 0, 0.4)"
+        "button_link": ""
       }
     },
     "contact": {
@@ -99,6 +100,10 @@
       "type": "custom-section",
       "settings": {
         "heading": "",
+        "link_text": "",
+        "link_url": "",
+        "link_new_tab": false,
+        "link_svg": "",
         "full_width": false,
         "embed_code": "<iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3301.5932184375492!2d-118.48755332595366!3d34.15674781220776!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80c29789ecb089d7%3A0x2a751daf9daf3265!2s16133%20Ventura%20Blvd%20Fl%207%2C%20Encino%2C%20CA%2091436%2C%20USA!5e0!3m2!1sen!2s!4v1788341396524!5m2!1sen!2s\" width=\"100%\" height=\"450\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"strict-origin-when-cross-origin\"></iframe>",
         "padding_top": 40,
@@ -107,7 +112,7 @@
     }
   },
   "order": [
-    "hero",
+    "hero_banner_QGALPh",
     "contact",
     "map"
   ]

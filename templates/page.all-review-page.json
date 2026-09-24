@@ -11,9 +11,33 @@
   "sections": {
     "main": {
       "type": "main-page",
+      "disabled": true,
       "settings": {
         "padding_top": 80,
         "padding_bottom": 40
+      }
+    },
+    "hero_banner_RPd4UB": {
+      "type": "hero-banner",
+      "settings": {
+        "image": "shopify://shop_images/About_Us_Banner.webp",
+        "mobile_image": "shopify://shop_images/About_us_Mobile.webp",
+        "height": "custom",
+        "custom_height": 360,
+        "mobile_height": "custom",
+        "custom_height_mobile": 380,
+        "show_overlay": false,
+        "overlay_color": "rgba(0, 0, 0, 0.4)",
+        "content_position_x": "left",
+        "content_position_y": "center",
+        "content_position_x_mobile": "center",
+        "content_position_y_mobile": "top",
+        "heading": "{{ page.title }}",
+        "heading_color": "#008fa3",
+        "heading_size": "h0",
+        "text": "<p>We combine natural extracts with clinical research to give you skin results you can actually see.</p>",
+        "button_label": "",
+        "button_link": ""
       }
     },
     "1790154364d536c960": {
@@ -43,6 +67,7 @@
   },
   "order": [
     "main",
+    "hero_banner_RPd4UB",
     "1790154364d536c960"
   ]
 }

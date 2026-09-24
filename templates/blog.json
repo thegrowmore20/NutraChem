@@ -9,6 +9,29 @@
  */
 {
   "sections": {
+    "hero_banner_DAtWjn": {
+      "type": "hero-banner",
+      "settings": {
+        "image": "shopify://shop_images/About_Us_Banner.webp",
+        "mobile_image": "shopify://shop_images/About_us_Mobile.webp",
+        "height": "custom",
+        "custom_height": 360,
+        "mobile_height": "custom",
+        "custom_height_mobile": 380,
+        "show_overlay": false,
+        "overlay_color": "rgba(0, 0, 0, 0.4)",
+        "content_position_x": "left",
+        "content_position_y": "center",
+        "content_position_x_mobile": "center",
+        "content_position_y_mobile": "top",
+        "heading": "{{ blog.title }}",
+        "heading_color": "#008fa3",
+        "heading_size": "h0",
+        "text": "",
+        "button_label": "",
+        "button_link": ""
+      }
+    },
     "main": {
       "type": "main-blog",
       "settings": {
@@ -25,6 +48,7 @@
     }
   },
   "order": [
+    "hero_banner_DAtWjn",
     "main"
   ]
 }
