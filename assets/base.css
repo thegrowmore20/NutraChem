@@ -574,3 +574,13 @@ summary:focus-visible {
 .AirReviews-Carousel__NavNext {
   z-index: 5 !important;
 }
+
+/* The Vensa wishlist drawer parks itself just off the right edge with
+   transform: translateX(100%), but keeps its box-shadow (-6px 0 24px) and a
+   z-index of 2147483001 - so the shadow bleeds ~18px into the viewport above
+   everything else, including the cart drawer (a gray gradient down its right
+   edge). Only drop it while closed; its .open state keeps the app's own look.
+   Two classes beat the app's one, so no !important is needed. */
+.vensa-wl-drawer:not(.open) {
+  box-shadow: none;
+}
