@@ -147,6 +147,63 @@
         "padding_bottom": 40
       }
     },
+    "comparison_table_QYKVLT": {
+      "type": "comparison-table",
+      "blocks": {
+        "feature_wkCLNE": {
+          "type": "feature",
+          "settings": {
+            "text": "Dermatologically Tested",
+            "icon_svg": ""
+          }
+        },
+        "feature_NVpk3y": {
+          "type": "feature",
+          "settings": {
+            "text": "No Harsh Chemicals",
+            "icon_svg": ""
+          }
+        },
+        "feature_Qag7iJ": {
+          "type": "feature",
+          "settings": {
+            "text": "Suitable for All Skin Types",
+            "icon_svg": ""
+          }
+        },
+        "feature_9wUkih": {
+          "type": "feature",
+          "settings": {
+            "text": "Visible Glow Results",
+            "icon_svg": ""
+          }
+        },
+        "feature_iYMwzB": {
+          "type": "feature",
+          "settings": {
+            "text": "Skin-Friendly Ingredients",
+            "icon_svg": ""
+          }
+        }
+      },
+      "block_order": [
+        "feature_wkCLNE",
+        "feature_NVpk3y",
+        "feature_Qag7iJ",
+        "feature_9wUkih",
+        "feature_iYMwzB"
+      ],
+      "settings": {
+        "heading": "Why Choose Nutrachem?",
+        "subheading": "<p>Our advanced skincare solutions are carefully formulated to deliver visible results while keeping your skin healthy, hydrated, and naturally radiant.</p>",
+        "content_max_width": 1000,
+        "padding_top": 40,
+        "padding_bottom": 40,
+        "header_1": "Features",
+        "header_2": "Nutrachem Products",
+        "header_3": "Regular Products"
+      }
+    },
     "image_gallery_RGGFDx": {
       "type": "image-gallery",
       "blocks": {
@@ -263,6 +320,19 @@
         "padding_bottom": 40
       }
     },
+    "before-after": {
+      "type": "image-comparison",
+      "settings": {
+        "eyebrow": "See The Difference",
+        "heading": "Real Skin. Real Change.",
+        "text": "<p>Drag the handle to compare before and after.</p>",
+        "text_position": "center",
+        "width": "medium",
+        "initial_position": 50,
+        "padding_top": 40,
+        "padding_bottom": 40
+      }
+    },
     "curated-for-you": {
       "type": "featured-collection",
       "settings": {
@@ -270,11 +340,12 @@
         "collection": "face-wash",
         "products_to_show": 4,
         "padding_top": 40,
-        "padding_bottom": 40
+        "padding_bottom": 80
       }
     },
     "blogs": {
       "type": "blog-posts",
+      "disabled": true,
       "settings": {
         "heading": "Blogs",
         "blog": "news",
@@ -295,10 +366,12 @@
     "best-sellers",
     "shop-by-concern",
     "ingredients",
+    "comparison_table_QYKVLT",
     "image_gallery_RGGFDx",
     "custom_section_dHGKA6",
     "custom_section_LCMcUH",
     "real-results",
+    "before-after",
     "curated-for-you",
     "blogs"
   ]

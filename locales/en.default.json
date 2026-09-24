@@ -101,6 +101,9 @@
     }
   },
   "sections": {
+    "image_comparison": {
+      "slider_label": "Before and after image comparison. Use the left and right arrow keys to move the divider."
+    },
     "contact": {
       "form": {
         "first_name": "First name",

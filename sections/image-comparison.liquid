@@ -1,0 +1,334 @@
+{%- comment -%}
+  Before/after image comparison: two stacked images with a draggable divider
+  (pointer + keyboard). The section header is the shared snippet, and the
+  text can sit above the slider or beside it (left/right).
+{%- endcomment -%}
+{%- liquid
+  assign before_image = section.settings.before_image
+  assign after_image = section.settings.after_image
+  assign before_alt = before_image.alt | default: section.settings.before_label | default: section.settings.heading
+  assign after_alt = after_image.alt | default: section.settings.after_label | default: section.settings.heading
+  assign comparison_ratio = before_image.aspect_ratio | default: 1.5
+  assign text_position = section.settings.text_position
+  assign header_alignment = 'center'
+  if text_position != 'center'
+    assign header_alignment = 'left'
+  endif
+  assign has_header = false
+  if section.settings.eyebrow != blank or section.settings.heading != blank or section.settings.text != blank
+    assign has_header = true
+  endif
+-%}
+
+<section
+  class="image-comparison-section section-padding"
+  style="--padding-top: {{ section.settings.padding_top }}px; --padding-bottom: {{ section.settings.padding_bottom }}px;"
+>
+  <div class="container">
+    <div class="image-comparison-section__inner image-comparison-section__inner--{{ text_position }} image-comparison-section__inner--{{ section.settings.width }}">
+      {%- if has_header -%}
+        <div class="image-comparison-section__header">
+          {% render 'section-header',
+            eyebrow: section.settings.eyebrow,
+            heading: section.settings.heading,
+            text: section.settings.text,
+            alignment: header_alignment
+          %}
+        </div>
+      {%- endif -%}
+
+      <image-comparison
+        class="image-comparison"
+        style="--comparison-ratio: {{ comparison_ratio }}; --comparison-position: {{ section.settings.initial_position }}%;"
+        tabindex="0"
+        role="slider"
+        aria-orientation="horizontal"
+        aria-label="{{ 'sections.image_comparison.slider_label' | t }}"
+        aria-valuemin="0"
+        aria-valuemax="100"
+        aria-valuenow="{{ section.settings.initial_position }}"
+        data-initial-position="{{ section.settings.initial_position }}"
+      >
+        {%- if before_image != blank -%}
+          {{ before_image | image_url: width: 1600 | image_tag: loading: 'lazy', widths: '600, 900, 1200, 1600', sizes: '(min-width: 1000px) 1000px, 100vw', class: 'image-comparison__image', alt: before_alt, draggable: 'false' }}
+        {%- else -%}
+          {{ 'lifestyle-1' | placeholder_svg_tag: 'image-comparison__image' }}
+        {%- endif -%}
+
+        {%- if after_image != blank -%}
+          {{ after_image | image_url: width: 1600 | image_tag: loading: 'lazy', widths: '600, 900, 1200, 1600', sizes: '(min-width: 1000px) 1000px, 100vw', class: 'image-comparison__image image-comparison__image--after', alt: after_alt, draggable: 'false' }}
+        {%- else -%}
+          {{ 'lifestyle-2' | placeholder_svg_tag: 'image-comparison__image image-comparison__image--after' }}
+        {%- endif -%}
+
+        {%- if section.settings.before_label != blank -%}
+          <span class="image-comparison__tag image-comparison__tag--before">{{ section.settings.before_label | escape }}</span>
+        {%- endif -%}
+        {%- if section.settings.after_label != blank -%}
+          <span class="image-comparison__tag image-comparison__tag--after">{{ section.settings.after_label | escape }}</span>
+        {%- endif -%}
+
+        <span class="image-comparison__divider" aria-hidden="true">
+          <span class="image-comparison__handle">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 3 12 9 18"></polyline><polyline points="15 6 21 12 15 18"></polyline></svg>
+          </span>
+        </span>
+      </image-comparison>
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+.image-comparison-section__inner {
+  display: grid;
+  gap: var(--space-6);
+  align-items: center;
+  margin-inline: auto;
+}
+
+.image-comparison-section__inner--narrow {
+  max-width: 760px;
+}
+
+.image-comparison-section__inner--medium {
+  max-width: 1000px;
+}
+
+/* The shared section-header brings its own bottom margin/centering for
+   stacked layouts; here the grid gap owns the spacing, and beside the slider
+   it should sit flush left rather than centre itself in its column. */
+.image-comparison-section__header .section-header {
+  margin-bottom: 0;
+}
+
+.image-comparison-section__inner--left .section-header,
+.image-comparison-section__inner--right .section-header {
+  margin-inline: 0;
+}
+
+@media screen and (min-width: 990px) {
+  .image-comparison-section__inner {
+    gap: var(--space-8);
+  }
+
+  .image-comparison-section__inner--left {
+    grid-template-columns: 1fr 2fr;
+  }
+
+  .image-comparison-section__inner--right {
+    grid-template-columns: 2fr 1fr;
+  }
+
+  .image-comparison-section__inner--right .image-comparison-section__header {
+    order: 2;
+  }
+}
+
+.image-comparison {
+  --comparison-position: 50%;
+  position: relative;
+  display: block;
+  overflow: hidden;
+  /* Reserves the slider's height from the before image's own ratio, so it
+     doesn't jump when the lazy-loaded images arrive. */
+  aspect-ratio: var(--comparison-ratio, 1.5);
+  border-radius: var(--radius-m);
+  background: var(--color-surface);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  cursor: ew-resize;
+  /* pan-y (not none): a vertical swipe that starts on the image still
+     scrolls the page on touch devices; only horizontal drags move the
+     divider. */
+  touch-action: pan-y;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.image-comparison:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 4px;
+}
+
+.image-comparison__image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+  -webkit-user-drag: none;
+}
+
+.image-comparison__image--after {
+  clip-path: inset(0 0 0 var(--comparison-position));
+}
+
+.image-comparison__tag {
+  position: absolute;
+  bottom: var(--space-3);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-s);
+  background: color-mix(in srgb, var(--color-primary) 70%, transparent);
+  font-size: 11px;
+  font-weight: 600;
+  font-family: var(--font-accent);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #fff;
+  pointer-events: none;
+}
+
+.image-comparison__tag--before {
+  left: var(--space-3);
+}
+
+.image-comparison__tag--after {
+  right: var(--space-3);
+}
+
+.image-comparison__divider {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--comparison-position);
+  width: 2px;
+  transform: translateX(-50%);
+  background: #fff;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+  pointer-events: none;
+}
+
+.image-comparison__handle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #fff;
+  color: var(--color-primary);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+{% endstylesheet %}
+
+{% javascript %}
+class ImageComparison extends HTMLElement {
+  #position = 50
+
+  connectedCallback() {
+    const initial = Number.parseFloat(this.dataset.initialPosition)
+    this.#setPosition(Number.isNaN(initial) ? 50 : initial)
+
+    this.addEventListener('pointerdown', this.#onPointerDown)
+    this.addEventListener('pointermove', this.#onPointerMove)
+    this.addEventListener('pointerup', this.#onPointerEnd)
+    this.addEventListener('pointercancel', this.#onPointerEnd)
+    this.addEventListener('keydown', this.#onKeydown)
+  }
+
+  disconnectedCallback() {
+    this.removeEventListener('pointerdown', this.#onPointerDown)
+    this.removeEventListener('pointermove', this.#onPointerMove)
+    this.removeEventListener('pointerup', this.#onPointerEnd)
+    this.removeEventListener('pointercancel', this.#onPointerEnd)
+    this.removeEventListener('keydown', this.#onKeydown)
+  }
+
+  #onPointerDown = (event) => {
+    if (event.pointerType === 'mouse' && event.button !== 0) return
+    this.setPointerCapture(event.pointerId)
+    // A touch that starts on the image may be the start of a vertical page
+    // scroll, so only mouse/pen jump the divider immediately - touch waits
+    // for an actual horizontal move.
+    if (event.pointerType !== 'touch') {
+      this.#setPositionFromEvent(event)
+      event.preventDefault()
+    }
+  }
+
+  #onPointerMove = (event) => {
+    if (!this.hasPointerCapture(event.pointerId)) return
+    this.#setPositionFromEvent(event)
+  }
+
+  #onPointerEnd = (event) => {
+    if (this.hasPointerCapture(event.pointerId)) this.releasePointerCapture(event.pointerId)
+  }
+
+  #onKeydown = (event) => {
+    const step = event.shiftKey ? 10 : 2
+    const targets = {
+      ArrowLeft: this.#position - step,
+      ArrowRight: this.#position + step,
+      Home: 0,
+      End: 100,
+    }
+    if (!(event.key in targets)) return
+    this.#setPosition(targets[event.key])
+    event.preventDefault()
+  }
+
+  #setPositionFromEvent(event) {
+    const rect = this.getBoundingClientRect()
+    this.#setPosition(((event.clientX - rect.left) / rect.width) * 100)
+  }
+
+  #setPosition(percent) {
+    this.#position = Math.min(100, Math.max(0, percent))
+    this.style.setProperty('--comparison-position', `${this.#position}%`)
+    this.setAttribute('aria-valuenow', String(Math.round(this.#position)))
+  }
+}
+
+if (!customElements.get('image-comparison')) {
+  customElements.define('image-comparison', ImageComparison)
+}
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Image before/after",
+  "settings": [
+    { "type": "header", "content": "Images" },
+    { "type": "image_picker", "id": "before_image", "label": "Before image", "info": "Sets the slider's shape - the after image is cropped to match it." },
+    { "type": "image_picker", "id": "after_image", "label": "After image" },
+    { "type": "text", "id": "before_label", "label": "Before label", "default": "Before" },
+    { "type": "text", "id": "after_label", "label": "After label", "default": "After" },
+    { "type": "header", "content": "Heading and text" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "See The Difference" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Real Skin. Real Change." },
+    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Drag the handle to compare before and after.</p>" },
+    {
+      "type": "select",
+      "id": "text_position",
+      "label": "Text position",
+      "options": [
+        { "value": "center", "label": "Above image, centered" },
+        { "value": "left", "label": "Left of image" },
+        { "value": "right", "label": "Right of image" }
+      ],
+      "default": "center"
+    },
+    { "type": "header", "content": "Slider" },
+    {
+      "type": "select",
+      "id": "width",
+      "label": "Slider width",
+      "options": [
+        { "value": "narrow", "label": "Narrow (760px)" },
+        { "value": "medium", "label": "Medium (1000px)" },
+        { "value": "full", "label": "Full container width" }
+      ],
+      "default": "medium"
+    },
+    { "type": "range", "id": "initial_position", "label": "Starting position", "min": 0, "max": 100, "step": 5, "unit": "%", "default": 50 },
+    { "type": "header", "content": "Section padding" },
+    { "type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 40 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 40 }
+  ],
+  "presets": [{ "name": "Image before/after" }]
+}
+{% endschema %}
