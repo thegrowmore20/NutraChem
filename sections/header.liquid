@@ -631,6 +631,17 @@ body:not(.template-index) {
   min-height: 44px;
 }
 
+/* The slotted icon span is display: block holding an inline svg, so its box
+   is a line box (~23px for a 20px icon, with the svg sitting at the top of
+   it). Before Shopify's account script defines the element that box is
+   centred as-is; afterwards its shadow-DOM button lays the same span out
+   differently - so the icon visibly dropped ~2px on every page load. A
+   flex span is exactly the icon's size, which removes the line-box slack
+   that the two layouts disagreed about. */
+.header__account [slot='signed-out-avatar']:not(.visually-hidden) {
+  display: flex;
+}
+
 .mega-menu__inner {
   padding-block: var(--space-7);
 }
