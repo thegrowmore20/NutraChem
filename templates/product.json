@@ -213,6 +213,7 @@
         "feature_fi9PmB": {
           "type": "feature",
           "settings": {
+            "icon": "shopify://shop_images/dermatologist_tested.svg",
             "heading": "Dermatologist Tested",
             "text": "Carefully formulated and evaluated by skincare professionals to ensure safety, effectiveness, and compatibility with everyday skincare routines."
           }
@@ -220,6 +221,7 @@
         "feature_FUwzAK": {
           "type": "feature",
           "settings": {
+            "icon": "shopify://shop_images/vegan.svg",
             "heading": "Vegan & Cruelty-Free",
             "text": "Made without animal-derived ingredients and never tested on animals at any stage of development."
           }
@@ -227,6 +229,7 @@
         "feature_JVjUeM": {
           "type": "feature",
           "settings": {
+            "icon": "shopify://shop_images/clinical_approve.svg",
             "heading": "Clinically Proven",
             "text": "Formulated with research-backed active ingredients known to support brighter, clearer, and healthier-looking skin."
           }
@@ -234,6 +237,7 @@
         "feature_Pc94in": {
           "type": "feature",
           "settings": {
+            "icon": "shopify://shop_images/sustainable_packaging.svg",
             "heading": "Sustainable Packaging",
             "text": "Eco-conscious glass packaging designed to reduce environmental impact while preserving product quality."
           }
