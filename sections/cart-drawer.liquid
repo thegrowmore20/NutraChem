@@ -408,8 +408,15 @@
   margin: 0 0 var(--space-5);
 }
 
-body.cart-drawer-open {
+/* Lock scroll on <html>, not <body>: base.css sets html { overflow-x: clip },
+   so a body { overflow: hidden } doesn't propagate to the viewport - it turns
+   body into its own scroll container, which breaks position: sticky for every
+   descendant (the product page's sticky gallery/info dropped out of place
+   whenever the drawer opened). scrollbar-gutter keeps the page from
+   widening by a scrollbar's width while the lock hides it. */
+html:has(body.cart-drawer-open) {
   overflow: hidden;
+  scrollbar-gutter: stable;
 }
 {% endstylesheet %}
 

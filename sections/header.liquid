@@ -705,9 +705,12 @@ body:not(.template-index) {
   opacity: 1;
 }
 
-body.menu-drawer-open,
-body.search-popup-open {
+/* Lock scroll on <html>, not <body> - see the same rule in cart-drawer.liquid
+   (a body overflow lock breaks position: sticky under html's overflow-x: clip). */
+html:has(body.menu-drawer-open),
+html:has(body.search-popup-open) {
   overflow: hidden;
+  scrollbar-gutter: stable;
 }
 
 @media screen and (max-width: 989px) {
