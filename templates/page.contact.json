@@ -14,17 +14,21 @@
       "settings": {
         "image": "shopify://shop_images/nutra_chem_banner.webp",
         "height": "custom",
-        "custom_height": 300,
+        "custom_height": 360,
         "content_position_x": "left",
         "content_position_y": "center",
         "content_position_x_mobile": "center",
-        "content_position_y_mobile": "center",
+        "content_position_y_mobile": "top",
         "heading": "Contact Us",
-        "heading_color": "#18252b",
-        "heading_size": "h2",
+        "heading_color": "#008FA3",
+        "heading_size": "h0",
         "text": "",
         "button_label": "",
-        "button_link": ""
+        "button_link": "",
+        "mobile_height": "custom",
+        "custom_height_mobile": 380,
+        "show_overlay": false,
+        "overlay_color": "rgba(0, 0, 0, 0.4)"
       }
     },
     "contact": {
