@@ -344,6 +344,15 @@
     transform: scaleX(-1);
   }
 
+  /* The shared arrow nudge (base.css) moves it right; this one's flipped to
+     point left, so it nudges the way it points. Extra class = higher
+     specificity than the shared rule regardless of stylesheet order. */
+  @media (hover: hover) and (pointer: fine) {
+    .article-template__back-link:hover .icon--arrow-right {
+      translate: -3px 0;
+    }
+  }
+
   .article-template__back-link:hover {
     color: var(--color-secondary);
   }

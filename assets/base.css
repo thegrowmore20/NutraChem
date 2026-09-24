@@ -514,6 +514,31 @@ summary:focus-visible {
   outline-offset: 3px;
 }
 
+/* ---------- Links with an arrow icon ----------
+   Any link or button containing the theme's arrow icon ({% render 'icon',
+   name: 'arrow-right' %}, which carries .icon--arrow-right) nudges it
+   forward on hover - so every current and future "View all ->" style link
+   behaves the same without per-link CSS. Uses the individual `translate`
+   property rather than `transform` so it composes with a transform the link
+   already applies to the arrow (the article page's back link flips it with
+   scaleX(-1)). Hover-capable pointers only, so a tap on touch devices
+   doesn't leave the arrow stuck mid-nudge. */
+.icon--arrow-right {
+  transition: translate 0.2s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  :is(a, button):hover .icon--arrow-right {
+    translate: 3px 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .icon--arrow-right {
+    transition: none;
+  }
+}
+
 /* ---------- Rich text content (.rte marks page/article/accordion/FAQ body
    HTML from page.content, metafield rich-text, etc.) ---------- */
 /* The global `ul { list-style: none }` reset above is meant for UI chrome

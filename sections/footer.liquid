@@ -80,7 +80,7 @@
   </div>
 
   <div class="footer__bottom">
-    &copy; {{ 'now' | date: '%Y' }} <a href="{{ routes.root_url }}">{{ shop.name }}</a> All Rights Reserved | Developed by
+    &copy; {{ 'now' | date: '%Y' }} <a href="{{ routes.root_url }}" class="footer__brand-link">{{ shop.name }}</a> All Rights Reserved | Developed by
     <a href="http://thegrowmore.com/" target="_blank" rel="noopener noreferrer" class="u-inline-flex u-items-center footer__credit">
       GrowMore {% render 'icon', name: 'open-link' %}
     </a>
@@ -227,6 +227,32 @@
   gap: var(--space-1);
   text-decoration: underline;
   text-underline-offset: 3px;
+}
+
+/* The shop name and the GrowMore credit (text + its icon together) grow a
+   little on hover. transform doesn't apply to a plain inline link, so the
+   shop-name link becomes inline-block (the credit is already inline-flex). */
+.footer__brand-link {
+  display: inline-block;
+}
+
+.footer__brand-link,
+.footer__credit {
+  transition: transform 0.2s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .footer .footer__bottom .footer__brand-link:hover,
+  .footer .footer__bottom .footer__credit:hover {
+    transform: scale(1.06);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .footer__brand-link,
+  .footer__credit {
+    transition: none;
+  }
 }
 {% endstylesheet %}
 

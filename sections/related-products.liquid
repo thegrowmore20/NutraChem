@@ -94,20 +94,10 @@
   display: flex;
 }
 
+/* The arrow's hover nudge comes from base.css (.icon--arrow-right). */
 .related-products__action-icon svg {
   width: 16px;
   height: 16px;
-  transition: transform 0.2s ease;
-}
-
-.related-products__action:hover .related-products__action-icon svg {
-  transform: translateX(3px);
-}
-
-@media screen and (prefers-reduced-motion: reduce) {
-  .related-products__action-icon svg {
-    transition: none;
-  }
 }
 
 @media screen and (min-width: 750px) {

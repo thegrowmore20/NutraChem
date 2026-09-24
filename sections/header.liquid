@@ -498,6 +498,29 @@ body:not(.template-index) {
   margin-right: -11px;
 }
 
+/* Hovering an icon (search, wishlist, account, cart) tints it the brand teal
+   and grows it slightly. The colour goes on the <svg> itself rather than the
+   button: the Vensa wishlist app forces its own button colour with
+   !important, but the svg draws with currentColor, so setting it there works
+   for every icon uniformly. Hover-capable pointers only, so a tap doesn't
+   leave an icon stuck enlarged on touch devices. */
+.header__icons svg {
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .header__icons :is(a, button, shopify-account):hover svg {
+    color: var(--color-secondary);
+    transform: scale(1.12);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .header__icons svg {
+    transition: none;
+  }
+}
+
 .header__menu-toggle {
   min-width: 44px;
   min-height: 44px;
