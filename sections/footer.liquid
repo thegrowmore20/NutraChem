@@ -1,5 +1,9 @@
 <footer class="footer">
-  <div class="footer__top"{% if section.settings.background_image %} style="background-image: url({{ section.settings.background_image | image_url: width: 1920 }});"{% endif %}>
+  <div
+    class="footer__top"
+    {% if section.settings.background_image %}
+    style="background-image: url({{ section.settings.background_image | image_url: width: 1920 }});"
+    {% endif %}>
     <div class="u-grid container footer__inner">
       <div class="footer__brand">
         <a href="{{ routes.root_url }}" class="footer__logo">
@@ -19,11 +23,22 @@
           existed, since Shopify bundles all section CSS theme-wide. Passing
           an explicit class avoids the collision.
         {%- endcomment -%}
-        {%- form 'customer', id: 'FooterNewsletterForm', class: 'footer__newsletter' -%}
-          <input type="hidden" name="contact[tags]" value="newsletter">
+        {%- form 'customer'
+          , id: 'FooterNewsletterForm'
+          , class: 'footer__newsletter' -%}
+          <input
+            type="hidden"
+            name="contact[tags]"
+            value="newsletter">
           <div class="u-flex footer__newsletter-form">
             <label class="visually-hidden" for="FooterNewsletterEmail">Email address</label>
-            <input type="email" id="FooterNewsletterEmail" name="contact[email]" placeholder="Type your email" autocomplete="email" required>
+            <input
+              type="email"
+              id="FooterNewsletterEmail"
+              name="contact[email]"
+              placeholder="Type your email"
+              autocomplete="email"
+              required>
             <button type="submit">Subscribe</button>
           </div>
           {%- if form.posted_successfully? -%}
@@ -42,37 +57,95 @@
       </div>
 
       <div class="footer__col footer__col--social">
-        {% if section.settings.social_heading != blank %}<h2 class="footer__col-title">{{ section.settings.social_heading | escape }}</h2>{% endif %}
+        {% if section.settings.social_heading != blank %}
+          <h2 class="footer__col-title">{{ section.settings.social_heading | escape }}</h2>
+        {% endif %}
         <ul class="footer__links">
-          {%- if section.settings.facebook != blank -%}<li><a href="{{ section.settings.facebook }}" target="_blank" rel="noopener noreferrer">Facebook<span class="visually-hidden"> (opens in a new tab)</span></a></li>{%- endif -%}
-          {%- if section.settings.instagram != blank -%}<li><a href="{{ section.settings.instagram }}" target="_blank" rel="noopener noreferrer">Instagram<span class="visually-hidden"> (opens in a new tab)</span></a></li>{%- endif -%}
-          {%- if section.settings.tiktok != blank -%}<li><a href="{{ section.settings.tiktok }}" target="_blank" rel="noopener noreferrer">Tiktok<span class="visually-hidden"> (opens in a new tab)</span></a></li>{%- endif -%}
-          {%- if section.settings.youtube != blank -%}<li><a href="{{ section.settings.youtube }}" target="_blank" rel="noopener noreferrer">YouTube<span class="visually-hidden"> (opens in a new tab)</span></a></li>{%- endif -%}
+          {%- if section.settings.facebook != blank -%}
+            <li>
+              <a
+                href="{{ section.settings.facebook }}"
+                target="_blank"
+                rel="noopener noreferrer">Facebook<span class="visually-hidden">
+                  (opens in a new tab)</span>
+              </a>
+            </li>
+          {%- endif -%}
+          {%- if section.settings.instagram != blank -%}
+            <li>
+              <a
+                href="{{ section.settings.instagram }}"
+                target="_blank"
+                rel="noopener noreferrer">Instagram<span class="visually-hidden">
+                  (opens in a new tab)</span>
+              </a>
+            </li>
+          {%- endif -%}
+          {%- if section.settings.tiktok != blank -%}
+            <li>
+              <a
+                href="{{ section.settings.tiktok }}"
+                target="_blank"
+                rel="noopener noreferrer">Tiktok<span class="visually-hidden">
+                  (opens in a new tab)</span>
+              </a>
+            </li>
+          {%- endif -%}
+          {%- if section.settings.youtube != blank -%}
+            <li>
+              <a
+                href="{{ section.settings.youtube }}"
+                target="_blank"
+                rel="noopener noreferrer">YouTube<span class="visually-hidden">
+                  (opens in a new tab)</span>
+              </a>
+            </li>
+          {%- endif -%}
         </ul>
       </div>
 
       <div class="footer__col footer__col--pages">
-        {% if section.settings.pages_heading != blank %}<h2 class="footer__col-title">{{ section.settings.pages_heading | escape }}</h2>{% endif %}
+        {% if section.settings.pages_heading != blank %}
+          <h2 class="footer__col-title">{{ section.settings.pages_heading | escape }}</h2>
+        {% endif %}
         <ul class="footer__links">
           {%- for link in section.settings.pages_menu.links -%}
-            <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+            <li>
+              <a href="{{ link.url }}">{{ link.title }}</a>
+            </li>
           {%- else -%}
-            <li><a href="{{ routes.root_url }}">Home</a></li>
-            <li><a href="{{ routes.all_products_collection_url }}">Shop</a></li>
-            <li><a href="{{ routes.root_url }}">Shop Bundles</a></li>
+            <li>
+              <a href="{{ routes.root_url }}">Home</a>
+            </li>
+            <li>
+              <a href="{{ routes.all_products_collection_url }}">Shop</a>
+            </li>
+            <li>
+              <a href="{{ routes.root_url }}">Shop Bundles</a>
+            </li>
           {%- endfor -%}
         </ul>
       </div>
 
       <div class="footer__col footer__col--policies">
-        {% if section.settings.policies_heading != blank %}<h2 class="footer__col-title">{{ section.settings.policies_heading | escape }}</h2>{% endif %}
+        {% if section.settings.policies_heading != blank %}
+          <h2 class="footer__col-title">{{ section.settings.policies_heading | escape }}</h2>
+        {% endif %}
         <ul class="footer__links">
           {%- for link in section.settings.help_menu.links -%}
-            <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+            <li>
+              <a href="{{ link.url }}">{{ link.title }}</a>
+            </li>
           {%- else -%}
-            <li><a href="{{ routes.root_url }}policies/privacy-policy">Privacy Policy</a></li>
-            <li><a href="{{ routes.root_url }}policies/refund-policy">Return policy</a></li>
-            <li><a href="{{ routes.root_url }}policies/shipping-policy">Shipping Policy</a></li>
+            <li>
+              <a href="{{ routes.root_url }}policies/privacy-policy">Privacy Policy</a>
+            </li>
+            <li>
+              <a href="{{ routes.root_url }}policies/refund-policy">Return policy</a>
+            </li>
+            <li>
+              <a href="{{ routes.root_url }}policies/shipping-policy">Shipping Policy</a>
+            </li>
           {%- endfor -%}
         </ul>
       </div>
@@ -80,154 +153,168 @@
   </div>
 
   <div class="footer__bottom">
-    &copy; {{ 'now' | date: '%Y' }} <a href="{{ routes.root_url }}" class="footer__brand-link footer__underline">{{ shop.name }}</a> All Rights Reserved | Developed by
-    <a href="http://thegrowmore.com/" target="_blank" rel="noopener noreferrer" class="u-inline-flex u-items-center footer__credit">
-      <span class="footer__underline">GrowMore</span> {% render 'icon', name: 'open-link' %}
+    &copy; {{ 'now' | date: '%Y' }}
+    <a href="{{ routes.root_url }}" class="footer__brand-link footer__underline">{{ shop.name }}</a>
+    All Rights Reserved | Developed by
+    <a
+      href="http://thegrowmore.com/"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="u-inline-flex u-items-center footer__credit">
+      <span class="footer__underline">GrowMore</span>
+      {% render 'icon'
+        , name: 'open-link' %}
     </a>
   </div>
 </footer>
 
 {% stylesheet %}
-.footer__top {
-  padding-block: 48px;
-  background-color: var(--color-surface);
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-}
-
-.footer__inner {
-  grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
-}
-
-.footer__brand,
-.footer__col--policies {
-  grid-column: 1 / -1;
-}
-
-@media screen and (min-width: 601px) {
-  .footer__inner {
-    grid-template-columns: 1fr 1fr 1fr;
+  .footer__top {
+    padding-block: 48px;
+    background-color: var(--color-surface);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
   }
 
+  .footer__inner {
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+
+  .footer__brand,
   .footer__col--policies {
-    grid-column: auto;
-  }
-}
-
-@media screen and (min-width: 992px) {
-  .footer__inner {
-    grid-template-columns: 2fr 1fr 1fr 1fr;
-    gap: 40px;
+    grid-column: 1 / -1;
   }
 
-  .footer__brand {
-    grid-column: auto;
+  @media screen and (min-width: 601px) {
+    .footer__inner {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+
+    .footer__col--policies {
+      grid-column: auto;
+    }
   }
-}
 
-.footer__logo img {
-  margin-bottom: var(--space-4);
-}
+  @media screen and (min-width: 992px) {
+    .footer__inner {
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 40px;
+    }
 
-.footer__logo-text {
-  display: inline-block;
-  font-size: 22px;
-  font-weight: 600;
-  font-family: var(--font-accent);
-  color: var(--color-primary);
-  margin-bottom: var(--space-4);
-}
+    .footer__brand {
+      grid-column: auto;
+    }
+  }
 
-.footer__newsletter-title {
-  font-size: 18px;
-  margin: 0 0 14px;
-  font-weight: 500;
-  font-family: var(--font-heading);
-}
+  .footer__logo img {
+    margin-bottom: var(--space-4);
+  }
 
-.footer__newsletter-form {
-  max-width: 340px;
-  border-radius: var(--radius-m);
-  overflow: hidden;
-}
+  .footer__logo-text {
+    display: inline-block;
+    font-size: 22px;
+    font-weight: 600;
+    font-family: var(--font-accent);
+    color: var(--color-primary);
+    margin-bottom: var(--space-4);
+  }
 
-.footer__newsletter-form input {
-  flex: 1;
-  min-width: 0;
-  border: 1px solid var(--color-secondary);
-  background: #fff;
-  padding: var(--space-3) 14px;
-  font-size: 14px;
-  font-family: var(--font-body);
-  border-top-left-radius: var(--radius-m);
-  border-bottom-left-radius: var(--radius-m);
-}
+  .footer__newsletter-title {
+    font-size: 18px;
+    margin: 0 0 14px;
+    font-weight: 500;
+    font-family: var(--font-heading);
+  }
 
-.footer__newsletter-form button {
-  background: var(--color-secondary-a11y, var(--color-secondary));
-  color: #fff;
-  border: none;
-  padding: var(--space-3) var(--space-5);
-  font-size: 14px;
-  cursor: pointer;
-}
+  .footer__newsletter-form {
+    max-width: 340px;
+    border-radius: var(--radius-m);
+    overflow: hidden;
+  }
 
-.footer__newsletter-message {
-  margin: 10px 0 0;
-  font-size: 13px;
-}
+  .footer__newsletter-form input {
+    flex: 1;
+    min-width: 0;
+    border: 1px solid var(--color-secondary);
+    background: #fff;
+    padding: var(--space-3) 14px;
+    font-size: 14px;
+    font-family: var(--font-body);
+    border-top-left-radius: var(--radius-m);
+    border-bottom-left-radius: var(--radius-m);
+  }
 
-.footer__newsletter-message--success {
-  color: #1a7a3c;
-}
+  .footer__newsletter-form button {
+    background: var(--color-secondary-a11y, var(--color-secondary));
+    color: #fff;
+    border: none;
+    padding: var(--space-3) var(--space-5);
+    font-size: 14px;
+    cursor: pointer;
+  }
 
-.footer__newsletter-message--error {
-  color: #c0392b;
-}
+  .footer__newsletter-message {
+    margin: 10px 0 0;
+    font-size: 13px;
+  }
 
-.footer__col-title {
-  font-family: var(--font-heading);
-  font-style: italic;
-  font-size: 17px;
-  margin: 0 0 var(--space-4);
-}
+  .footer__newsletter-message--success {
+    color: #1a7a3c;
+  }
 
-.footer__links li {
-  margin-bottom: 10px;
-  font-size: 14px;
-}
+  .footer__newsletter-message--error {
+    color: #c0392b;
+  }
 
-.footer__links a {
-  text-decoration: none;
-}
+  .footer__col-title {
+    font-family: var(--font-heading);
+    font-style: italic;
+    font-size: 17px;
+    margin: 0 0 var(--space-4);
+  }
 
-.footer__bottom {
-  background: var(--color-secondary-a11y, var(--color-secondary));
-  color: #fff;
-  text-align: center;
-  font-size: 13px;
-  padding: 14px var(--space-5);
-}
+  .footer__links li {
+    margin-bottom: 10px;
+    font-size: 14px;
+  }
 
-.footer__bottom a {
-  color: inherit;
-}
+  .footer__links a {
+    text-decoration: none;
+  }
 
-.footer .footer__bottom a:hover {
-  /* Higher specificity than the global a:hover teal, which is invisible
-     against this section's own teal background. Hover feedback is the
-     animated underline below instead (.footer__underline), so no native
-     underline here - it would draw over the animation. */
-  color: inherit;
-}
+  .footer__bottom {
+    background: var(--color-secondary-a11y, var(--color-secondary));
+    color: #fff;
+    text-align: center;
+    font-size: 13px;
+    padding: 14px var(--space-5);
+  }
 
-.footer__credit {
-  gap: var(--space-1);
-}
+  .footer__bottom a {
+    color: inherit;
+  }
 
-/* Hover underline that draws in from the start of the text to the end.
+  .footer .footer__bottom a:hover {
+
+
+    /*
+   Higher specificity than the global a:hover teal, which is invisible
+   against this section's own teal background. Hover feedback is the
+   animated underline below instead (.footer__underline), so no native
+   underline here - it would draw over the animation.
+*/
+    color: inherit;
+  }
+
+  .footer__credit {
+    gap: var(--space-1);
+  }
+
+
+  /*
+   Hover underline that draws in from the start of the text to the end.
    A 1px currentColor gradient is grown from 0% to 100% width (only
    background-size is transitioned): at rest it is parked on the right edge,
    and on hover it snaps to the left edge - while still 0 wide, so
@@ -235,55 +322,112 @@
    edge while full width and shrinks away, so it wipes out in the same
    direction it was drawn. inline-block so the box (and so the underline)
    hugs the text; used on the shop name and on the GrowMore text only, not
-   the icon beside it. */
-.footer__underline {
-  display: inline-block;
-  background-image: linear-gradient(currentColor, currentColor);
-  background-repeat: no-repeat;
-  background-size: 0% 1px;
-  background-position: 100% 100%;
-  transition: background-size 0.3s cubic-bezier(0.22, 0.61, 0.36, 1);
-}
-
-.footer__credit svg {
-  transition: transform 0.25s cubic-bezier(0.22, 0.61, 0.36, 1);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .footer__brand-link:hover,
-  .footer__credit:hover .footer__underline {
-    background-size: 100% 1px;
-    background-position: 0 100%;
+   the icon beside it.
+*/
+  .footer__underline {
+    display: inline-block;
+    background-image: linear-gradient(currentColor, currentColor);
+    background-repeat: no-repeat;
+    background-size: 0 1px;
+    background-position: 100% 100%;
+    transition: background-size 0.3s cubic-bezier(0.22, 0.61, 0.36, 1);
   }
 
-  .footer__credit:hover svg {
-    transform: scale(1.2);
+  /* GrowMore is underlined at rest. The resting line is a softer one
+     (currentColor at 55%) so the hover sweep has something to visibly draw
+     over: the first gradient layer is the same animated full-strength line
+     as above, the second is the static resting line, both on the bottom edge. */
+  .footer__credit .footer__underline {
+    background-image:
+      linear-gradient(currentColor, currentColor),
+      linear-gradient(color-mix(in srgb, currentColor 55%, transparent), color-mix(in srgb, currentColor 55%, transparent));
+    background-size: 0 1px, 100% 1px;
+    background-position: 100% 100%, 0 100%;
   }
-}
 
-@media (prefers-reduced-motion: reduce) {
-  .footer__underline,
   .footer__credit svg {
-    transition: none;
+    transition: transform 0.25s cubic-bezier(0.22, 0.61, 0.36, 1);
   }
-}
+
+  @media (hover: hover) and (pointer: fine) {
+    .footer__brand-link:hover {
+      background-size: 100% 1px;
+      background-position: 0 100%;
+    }
+
+    .footer__credit:hover .footer__underline {
+      background-size: 100% 1px, 100% 1px;
+      background-position: 0 100%, 0 100%;
+    }
+
+    .footer__credit:hover svg {
+      transform: scale(1.02);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .footer__underline,
+    .footer__credit svg {
+      transition: none;
+    }
+  }
 {% endstylesheet %}
 
 {% schema %}
-{
-  "name": "Footer",
-  "settings": [
-    { "type": "text", "id": "social_heading", "label": "Social links heading", "default": "Social Media" },
-    { "type": "text", "id": "pages_heading", "label": "Pages menu heading", "default": "Pages" },
-    { "type": "text", "id": "policies_heading", "label": "Policies menu heading", "default": "Policies" },
-    { "type": "image_picker", "id": "logo", "label": "Logo" },
-    { "type": "image_picker", "id": "background_image", "label": "Top background image (optional)" },
-    { "type": "url", "id": "facebook", "label": "Facebook URL" },
-    { "type": "url", "id": "instagram", "label": "Instagram URL" },
-    { "type": "url", "id": "tiktok", "label": "TikTok URL" },
-    { "type": "url", "id": "youtube", "label": "YouTube URL" },
-    { "type": "link_list", "id": "pages_menu", "label": "Pages menu" },
-    { "type": "link_list", "id": "help_menu", "label": "Policies menu" }
-  ]
-}
+  {
+    "name": "Footer",
+    "settings": [
+      {
+        "type": "text",
+        "id": "social_heading",
+        "label": "Social links heading",
+        "default": "Social Media"
+      },
+      {
+        "type": "text",
+        "id": "pages_heading",
+        "label": "Pages menu heading",
+        "default": "Pages"
+      },
+      {
+        "type": "text",
+        "id": "policies_heading",
+        "label": "Policies menu heading",
+        "default": "Policies"
+      },
+      {
+        "type": "image_picker",
+        "id": "logo",
+        "label": "Logo"
+      }, {
+        "type": "image_picker",
+        "id": "background_image",
+        "label": "Top background image (optional)"
+      }, {
+        "type": "url",
+        "id": "facebook",
+        "label": "Facebook URL"
+      }, {
+        "type": "url",
+        "id": "instagram",
+        "label": "Instagram URL"
+      }, {
+        "type": "url",
+        "id": "tiktok",
+        "label": "TikTok URL"
+      }, {
+        "type": "url",
+        "id": "youtube",
+        "label": "YouTube URL"
+      }, {
+        "type": "link_list",
+        "id": "pages_menu",
+        "label": "Pages menu"
+      }, {
+        "type": "link_list",
+        "id": "help_menu",
+        "label": "Policies menu"
+      }
+    ]
+  }
 {% endschema %}
