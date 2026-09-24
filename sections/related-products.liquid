@@ -16,9 +16,16 @@
 >
   {%- if recommendations.performed and recommendations.products_count > 0 -%}
     <div class="container">
-      {% render 'section-header', 
-        heading: section.settings.heading 
-      %}
+      <div class="related-products__head">
+        {% render 'section-header',
+          heading: section.settings.heading
+        %}
+        {%- if section.settings.button_label != blank -%}
+          <a href="{{ section.settings.button_link | default: routes.all_products_collection_url }}" class="button button--dark related-products__action">
+            {{ section.settings.button_label | escape }}
+          </a>
+        {%- endif -%}
+      </div>
       <div class="u-grid related-products__grid">
         {%- for recommended_product in recommendations.products -%}
           {% render 'product-card', product: recommended_product %}
@@ -42,6 +49,44 @@
   .related-products__grid {
     grid-template-columns: repeat(var(--related-columns-desktop, 4), minmax(0, 1fr));
     gap: var(--space-4);
+  }
+}
+
+/* Heading row: the heading stays centred (middle column) while the View all
+   button sits on the right of the same row. The shared section-header brings
+   its own bottom margin, which would throw off the button's vertical
+   centring against the heading, so the row owns that spacing instead. Below
+   750px there isn't room for both side by side, so the button drops to a
+   right-aligned line under the heading. */
+.related-products__head {
+  display: grid;
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+}
+
+.related-products__head .section-header {
+  margin-bottom: 0;
+}
+
+.related-products__action {
+  justify-self: end;
+}
+
+@media screen and (min-width: 750px) {
+  .related-products__head {
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    margin-bottom: var(--space-8);
+  }
+
+  .related-products__head .section-header {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .related-products__action {
+    grid-column: 3;
+    grid-row: 1;
   }
 }
 {% endstylesheet %}
@@ -117,7 +162,7 @@ if (!customElements.get('product-recs')) {
       "type": "text",
       "id": "heading",
       "label": "Heading",
-      "default": "You may also like"
+      "default": "Signature Products"
     },
     {
       "type": "range",
@@ -138,6 +183,23 @@ if (!customElements.get('product-recs')) {
         { "value": "4", "label": "4" }        
       ],
       "default": "4"
+    },
+    {
+      "type": "header",
+      "content": "View all button"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "info": "Leave empty to hide the button.",
+      "default": "View all"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link",
+      "info": "Leave empty to link to the all-products collection."
     },
     {
       "type": "header",
