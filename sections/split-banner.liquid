@@ -80,6 +80,42 @@
   min-height: 320px;
 }
 
+/* Stacked layout (phones, and the 3-up variant below 1200px): only the outer
+   corners of the stack are rounded - top of the first image, bottom of the
+   last - so it reads as one rounded card. Container width only; a full-bleed
+   banner touches the screen edges, where rounding would look like a gap. */
+@media screen and (max-width: 749px) {
+  .split-banner.container .split-banner__media {
+    overflow: hidden;
+  }
+
+  .split-banner.container .split-banner__media:first-child {
+    border-top-left-radius: var(--radius-m);
+    border-top-right-radius: var(--radius-m);
+  }
+
+  .split-banner.container .split-banner__media:last-child {
+    border-bottom-left-radius: var(--radius-m);
+    border-bottom-right-radius: var(--radius-m);
+  }
+}
+
+@media screen and (min-width: 750px) and (max-width: 1199px) {
+  .split-banner--triptych.container .split-banner__media {
+    overflow: hidden;
+  }
+
+  .split-banner--triptych.container .split-banner__media:first-child {
+    border-top-left-radius: var(--radius-m);
+    border-top-right-radius: var(--radius-m);
+  }
+
+  .split-banner--triptych.container .split-banner__media:last-child {
+    border-bottom-left-radius: var(--radius-m);
+    border-bottom-right-radius: var(--radius-m);
+  }
+}
+
 .split-banner__content {
   background: var(--color-secondary-a11y, var(--color-secondary));
   color: #fff;

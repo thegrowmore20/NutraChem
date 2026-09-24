@@ -2,7 +2,7 @@
   <div class="container">
     {% render 'section-header', heading: section.settings.heading %}
 
-    <div class="u-grid product-grid">
+    <div class="product-grid">
       {%- assign collection = collections[section.settings.collection] -%}
       {%- if collection != blank and collection.products.size > 0 -%}
         {%- for product in collection.products limit: section.settings.products_to_show -%}
@@ -18,15 +18,28 @@
 </section>
 
 {% stylesheet %}
+/* Flex, not grid: a fixed-column grid leaves the unused columns empty on the
+   right when the collection has fewer products than columns, so a short last
+   row sat left-aligned. Wrapping flex + justify-content: center centres any
+   row, full or not, without a width option. */
 .product-grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--space-3);
+  --product-grid-columns: 2;
+  --product-grid-gap: var(--space-3);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--product-grid-gap);
+}
+
+.product-grid > * {
+  flex: 0 0 calc((100% - (var(--product-grid-columns) - 1) * var(--product-grid-gap)) / var(--product-grid-columns));
+  min-width: 0;
 }
 
 @media screen and (min-width: 993px) {
   .product-grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: var(--space-4);
+    --product-grid-columns: 4;
+    --product-grid-gap: var(--space-4);
   }
 }
 {% endstylesheet %}
