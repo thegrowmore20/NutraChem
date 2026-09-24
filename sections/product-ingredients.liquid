@@ -50,7 +50,13 @@
                   data-formula="{{ item.formula | escape }}"
                   data-percent="{{ item.percent | escape }}"
                 >
-                  <span class="product-ingredients__trigger-icon" aria-hidden="true">{{ item.icon | default: '✦' }}</span>
+                  <span class="product-ingredients__trigger-icon" aria-hidden="true">
+                    {%- if item.image != blank -%}
+                      <img class="product-ingredients__trigger-img" src="{{ item.image | escape }}" alt="" width="20" height="20" loading="lazy">
+                    {%- else -%}
+                      {{ item.icon | default: '✦' }}
+                    {%- endif -%}
+                  </span>
                   <span class="product-ingredients__trigger-info">
                     <span class="product-ingredients__trigger-name">{{ item.short_name | default: item.name | escape }}</span>
                     {%- if item.claim != blank -%}
@@ -210,6 +216,12 @@ product-ingredients {
   border-radius: 50%;
   background: color-mix(in srgb, var(--color-secondary) 12%, white);
   font-size: 16px;
+}
+
+.product-ingredients__trigger-img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
 }
 
 .product-ingredients__trigger-info {
@@ -549,7 +561,7 @@ if (!customElements.get('product-ingredients')) {
   "settings": [
     {
       "type": "paragraph",
-      "content": "Reads custom.ingredients_list JSON metafield: array of {icon, name, short_name, claim, percent, desc, study, formula, does, see, who}. icon is a single emoji character (e.g. ✨). does/see/who are optional benefit rows. Hidden entirely if empty or no item has both name and desc."
+      "content": "Reads custom.ingredients_list JSON metafield: array of {image, icon, name, short_name, claim, percent, desc, study, formula, does, see, who}. image is a file URL (e.g. an SVG from Files) shown in the icon circle; icon is a single emoji character (e.g. ✨) used only when image is empty. does/see/who are optional benefit rows. Hidden entirely if empty or no item has both name and desc."
     },
     { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Active Ingredients" },
     { "type": "text", "id": "heading", "label": "Heading", "default": "What's Inside" },
