@@ -478,6 +478,23 @@
   font-size: 15px;
 }
 
+/* Alignment of the sale price / compare-at price / savings badge row.
+   base.css's .price-item has overflow: hidden (for the product card's
+   single-line ellipsis), which stops a flex item exposing its text baseline -
+   the browser then aligns by box edge instead, so the 18px and 15px prices
+   sat slightly off each other. This row wraps instead of truncating, so the
+   clip isn't needed here and the two prices can share a true text baseline.
+   The badge is a small pill, so it's centred on the row instead of hanging
+   off the prices' baseline (which left it visibly low). */
+.product-info-section .price .price-item {
+  overflow: visible;
+  text-overflow: clip;
+}
+
+.product-info-section .price .price__badge {
+  align-self: center;
+}
+
 .price__badge {
   display: inline-flex;
   width: fit-content;
