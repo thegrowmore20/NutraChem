@@ -67,38 +67,33 @@
 
     {%- comment -%} 2. Quick links — fake accordion rows, chevron right, plain navigation {%- endcomment -%}
     {%- if has_quick_links -%}
-      {%- if section.settings.quick_link_1_text != blank and section.settings.quick_link_1_url != blank -%}
-        <a href="{{ section.settings.quick_link_1_url }}" class="facets__group facets__group--link">
-          <span class="facets__summary">
-            <span>{{ section.settings.quick_link_1_text }}</span>
-            <span class="facets__chevron facets__chevron--right" aria-hidden="true">{% render 'icon', name: 'chevron-right' %}</span>
-          </span>
-        </a>
-      {%- endif -%}
-      {%- if section.settings.quick_link_2_text != blank and section.settings.quick_link_2_url != blank -%}
-        <a href="{{ section.settings.quick_link_2_url }}" class="facets__group facets__group--link">
-          <span class="facets__summary">
-            <span>{{ section.settings.quick_link_2_text }}</span>
-            <span class="facets__chevron facets__chevron--right" aria-hidden="true">{% render 'icon', name: 'chevron-right' %}</span>
-          </span>
-        </a>
-      {%- endif -%}
-      {%- if section.settings.quick_link_3_text != blank and section.settings.quick_link_3_url != blank -%}
-        <a href="{{ section.settings.quick_link_3_url }}" class="facets__group facets__group--link">
-          <span class="facets__summary">
-            <span>{{ section.settings.quick_link_3_text }}</span>
-            <span class="facets__chevron facets__chevron--right" aria-hidden="true">{% render 'icon', name: 'chevron-right' %}</span>
-          </span>
-        </a>
-      {%- endif -%}
-      {%- if section.settings.quick_link_4_text != blank and section.settings.quick_link_4_url != blank -%}
-        <a href="{{ section.settings.quick_link_4_url }}" class="facets__group facets__group--link">
-          <span class="facets__summary">
-            <span>{{ section.settings.quick_link_4_text }}</span>
-            <span class="facets__chevron facets__chevron--right" aria-hidden="true">{% render 'icon', name: 'chevron-right' %}</span>
-          </span>
-        </a>
-      {%- endif -%}
+      {%- for link_index in (1..4) -%}
+        {%- assign link_text_key = 'quick_link_' | append: link_index | append: '_text' -%}
+        {%- assign link_url_key = 'quick_link_' | append: link_index | append: '_url' -%}
+        {%- assign link_text = section.settings[link_text_key] -%}
+        {%- assign link_url = section.settings[link_url_key] -%}
+        {%- if link_text != blank and link_url != blank -%}
+          {%- comment -%}
+            Product count for links that point at a collection, so they read like the
+            "(n)" beside each filter value. Anything else (pages, external URLs) just
+            renders without one.
+          {%- endcomment -%}
+          {%- assign link_count = nil -%}
+          {%- if link_url contains '/collections/' -%}
+            {%- assign link_handle = link_url | split: '/collections/' | last | split: '?' | first | split: '/' | first -%}
+            {%- assign link_collection = collections[link_handle] -%}
+            {%- if link_collection != blank -%}
+              {%- assign link_count = link_collection.products_count -%}
+            {%- endif -%}
+          {%- endif -%}
+          <a href="{{ link_url }}" class="facets__group facets__group--link">
+            <span class="facets__summary">
+              <span>{{ link_text }}{% if link_count != nil %} <span class="facets__count text-muted">({{ link_count }})</span>{% endif %}</span>
+              <span class="facets__chevron facets__chevron--right" aria-hidden="true">{% render 'icon', name: 'chevron-right' %}</span>
+            </span>
+          </a>
+        {%- endif -%}
+      {%- endfor -%}
     {%- endif -%}
 
     {%- comment -%} 3. Navigation-as-filter — real accordion, checkboxes that redirect {%- endcomment -%}
