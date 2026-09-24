@@ -231,7 +231,8 @@ body:not(.template-index) {
    paint order), so without this it stayed visibly dark on top of the
    solid background instead of actually going away. */
 .header--transparent.header--scrolled::before,
-.header--transparent.header--drawer-open::before {
+.header--transparent.header--drawer-open::before,
+.header--transparent.header--menu-open::before {
   opacity: 0;
 }
 
@@ -257,7 +258,12 @@ body:not(.template-index) {
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
 }
 
-.header--transparent.header--scrolled {
+/* header--menu-open is set by HeaderMenu while a desktop mega-menu panel is
+   open. The panel drops down solid white, so a header still transparent
+   (dark scrim, white text) over the hero looked disconnected from it - it
+   takes on the same solid look as the scrolled state instead. */
+.header--transparent.header--scrolled,
+.header--transparent.header--menu-open {
   background: var(--color-background);
 }
 
@@ -269,7 +275,12 @@ body:not(.template-index) {
 .header--transparent.header--scrolled .header__logo-text strong,
 .header--transparent.header--scrolled .header__logo-text span,
 .header--transparent.header--scrolled .header__icons,
-.header--transparent.header--scrolled .header__menu-toggle {
+.header--transparent.header--scrolled .header__menu-toggle,
+.header--transparent.header--menu-open .header__nav-link,
+.header--transparent.header--menu-open .header__logo-text strong,
+.header--transparent.header--menu-open .header__logo-text span,
+.header--transparent.header--menu-open .header__icons,
+.header--transparent.header--menu-open .header__menu-toggle {
   color: var(--color-primary);
 }
 
@@ -324,11 +335,11 @@ body:not(.template-index) {
   display: none;
 }
 
-.header--transparent:not(.header--scrolled) .header__logo--has-inverse .header__logo-img--default {
+.header--transparent:not(.header--scrolled):not(.header--menu-open) .header__logo--has-inverse .header__logo-img--default {
   display: none;
 }
 
-.header--transparent:not(.header--scrolled) .header__logo--has-inverse .header__logo-img--inverse {
+.header--transparent:not(.header--scrolled):not(.header--menu-open) .header__logo--has-inverse .header__logo-img--inverse {
   display: block;
 }
 
@@ -1330,12 +1341,14 @@ class HeaderMenu {
   #openTrigger
   #backdrop
   #closeTimer
+  #header
 
   constructor() {
     this.#items = Array.from(document.querySelectorAll('.header__nav-item.has-menu'))
     if (this.#items.length === 0) return
     this.#desktopQuery = window.matchMedia('(min-width: 990px)')
     this.#backdrop = document.getElementById('MegaMenuBackdrop')
+    this.#header = document.querySelector('.header')
     this.#backdrop?.addEventListener('click', () => {
       if (this.#openPanel) this.#close(this.#openTrigger, this.#openPanel)
     })
@@ -1400,6 +1413,7 @@ class HeaderMenu {
     trigger.setAttribute('aria-expanded', 'true')
     this.#openPanel = panel
     this.#openTrigger = trigger
+    if (this.#desktopQuery.matches) this.#header?.classList.add('header--menu-open')
     if (this.#desktopQuery.matches && this.#backdrop) {
       this.#backdrop.hidden = false
       requestAnimationFrame(() => this.#backdrop.classList.add('is-open'))
@@ -1413,6 +1427,7 @@ class HeaderMenu {
     if (this.#openPanel === panel) {
       this.#openPanel = null
       this.#openTrigger = null
+      this.#header?.classList.remove('header--menu-open')
       if (this.#backdrop) {
         this.#backdrop.classList.remove('is-open')
         window.setTimeout(() => {
