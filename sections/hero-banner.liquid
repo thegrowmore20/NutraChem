@@ -1,10 +1,10 @@
 {%- comment -%}
-  hero--transparent-header is a page-level flag, not a style: sections/header.liquid
-  looks for it with body:has(.hero--transparent-header) to make the header
+  banner--transparent-header is a page-level flag, not a style: sections/header.liquid
+  looks for it with body:has(.banner--transparent-header) to make the header
   transparent and overlay this banner.
 {%- endcomment -%}
 <section
-  class="u-flex hero hero--height-{{ section.settings.height }} hero--height-mobile-{{ section.settings.mobile_height | default: section.settings.height }}{% if section.settings.transparent_header %} hero--transparent-header{% endif %}"
+  class="u-flex hero hero--height-{{ section.settings.height }} hero--height-mobile-{{ section.settings.mobile_height | default: section.settings.height }}{% if section.settings.transparent_header %} banner--transparent-header{% endif %}"
   style="
     {%- if section.settings.height == 'custom' %}--hero-height: {{ section.settings.custom_height }}px;{% endif -%}
     {%- if section.settings.mobile_height == 'custom' %}--hero-height-mobile: {{ section.settings.custom_height_mobile }}px;{% endif -%}

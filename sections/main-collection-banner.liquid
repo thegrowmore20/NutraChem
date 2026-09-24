@@ -20,8 +20,13 @@
   sections/hero-banner.liquid, kept in sync by hand.
 {%- endcomment -%}
 
+{%- comment -%}
+  banner--transparent-header is a page-level flag, not a style: sections/header.liquid
+  looks for it with body:has(.banner--transparent-header) to make the header
+  transparent and overlay this banner.
+{%- endcomment -%}
 <section
-  class="collection-banner collection-banner--height-{{ section.settings.height }} collection-banner--height-mobile-{{ mobile_height }}"
+  class="collection-banner collection-banner--height-{{ section.settings.height }} collection-banner--height-mobile-{{ mobile_height }}{% if section.settings.transparent_header %} banner--transparent-header{% endif %}"
   style="
     {%- if section.settings.height == 'custom' %}--banner-height: {{ section.settings.custom_height }}px;{% endif -%}
     {%- if mobile_height == 'custom' %}--banner-height-mobile: {{ section.settings.custom_height_mobile }}px;{% endif -%}
@@ -298,6 +303,13 @@
       "unit": "px",
       "default": 400,
       "visible_if": "{{ section.settings.mobile_height == 'custom' }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "transparent_header",
+      "label": "Transparent header",
+      "info": "The header overlays this banner until the page is scrolled. Otherwise the header is solid.",
+      "default": false
     },
     {
       "type": "checkbox",
