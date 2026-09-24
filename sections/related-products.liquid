@@ -21,8 +21,9 @@
           heading: section.settings.heading
         %}
         {%- if section.settings.button_label != blank -%}
-          <a href="{{ section.settings.button_link | default: routes.all_products_collection_url }}" class="button button--dark related-products__action">
+          <a href="{{ section.settings.button_link | default: routes.all_products_collection_url }}" class="related-products__action">
             {{ section.settings.button_label | escape }}
+            <span class="related-products__action-icon" aria-hidden="true">{% render 'icon', name: 'arrow-right' %}</span>
           </a>
         {%- endif -%}
       </div>
@@ -68,8 +69,41 @@
   margin-bottom: 0;
 }
 
+/* A text link, not a button - same treatment as the theme's other
+   "Read more"-style links. The min-height keeps a 44px tap area around the
+   single line of text. */
 .related-products__action {
+  display: inline-flex;
+  align-items: center;
   justify-self: end;
+  gap: var(--space-2);
+  min-height: 44px;
+  font-size: 15px;
+  font-weight: 600;
+  font-family: var(--font-accent);
+  color: var(--color-secondary-a11y, var(--color-secondary));
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.related-products__action-icon {
+  display: flex;
+}
+
+.related-products__action-icon svg {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.2s ease;
+}
+
+.related-products__action:hover .related-products__action-icon svg {
+  transform: translateX(3px);
+}
+
+@media screen and (prefers-reduced-motion: reduce) {
+  .related-products__action-icon svg {
+    transition: none;
+  }
 }
 
 @media screen and (min-width: 750px) {
