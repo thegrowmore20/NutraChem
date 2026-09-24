@@ -80,9 +80,9 @@
   </div>
 
   <div class="footer__bottom">
-    &copy; {{ 'now' | date: '%Y' }} <a href="{{ routes.root_url }}" class="footer__brand-link">{{ shop.name }}</a> All Rights Reserved | Developed by
+    &copy; {{ 'now' | date: '%Y' }} <a href="{{ routes.root_url }}" class="footer__brand-link footer__underline">{{ shop.name }}</a> All Rights Reserved | Developed by
     <a href="http://thegrowmore.com/" target="_blank" rel="noopener noreferrer" class="u-inline-flex u-items-center footer__credit">
-      GrowMore {% render 'icon', name: 'open-link' %}
+      <span class="footer__underline">GrowMore</span> {% render 'icon', name: 'open-link' %}
     </a>
   </div>
 </footer>
@@ -217,40 +217,53 @@
 
 .footer .footer__bottom a:hover {
   /* Higher specificity than the global a:hover teal, which is invisible
-     against this section's own teal background. Underline gives hover
-     feedback instead, regardless of stylesheet load order. */
+     against this section's own teal background. Hover feedback is the
+     animated underline below instead (.footer__underline), so no native
+     underline here - it would draw over the animation. */
   color: inherit;
-  text-decoration: underline;
 }
 
 .footer__credit {
   gap: var(--space-1);
-  text-decoration: underline;
-  text-underline-offset: 3px;
 }
 
-/* The shop name and the GrowMore credit (text + its icon together) grow a
-   little on hover. transform doesn't apply to a plain inline link, so the
-   shop-name link becomes inline-block (the credit is already inline-flex). */
-.footer__brand-link {
+/* Hover underline that draws in from the start of the text to the end.
+   A 1px currentColor gradient is grown from 0% to 100% width (only
+   background-size is transitioned): at rest it is parked on the right edge,
+   and on hover it snaps to the left edge - while still 0 wide, so
+   invisible - and then grows rightwards; on leave it snaps back to the right
+   edge while full width and shrinks away, so it wipes out in the same
+   direction it was drawn. inline-block so the box (and so the underline)
+   hugs the text; used on the shop name and on the GrowMore text only, not
+   the icon beside it. */
+.footer__underline {
   display: inline-block;
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-size: 0% 1px;
+  background-position: 100% 100%;
+  transition: background-size 0.3s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
-.footer__brand-link,
-.footer__credit {
-  transition: transform 0.2s ease;
+.footer__credit svg {
+  transition: transform 0.25s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .footer .footer__bottom .footer__brand-link:hover,
-  .footer .footer__bottom .footer__credit:hover {
-    transform: scale(1.06);
+  .footer__brand-link:hover,
+  .footer__credit:hover .footer__underline {
+    background-size: 100% 1px;
+    background-position: 0 100%;
+  }
+
+  .footer__credit:hover svg {
+    transform: scale(1.2);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .footer__brand-link,
-  .footer__credit {
+  .footer__underline,
+  .footer__credit svg {
     transition: none;
   }
 }
