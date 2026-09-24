@@ -85,17 +85,6 @@
       GrowMore {% render 'icon', name: 'open-link' %}
     </a>
   </div>
-
-  <div class="footer__watermark">
-    <div class="u-flex u-items-center u-justify-center container footer__watermark-inner">
-      {%- if section.settings.logo -%}
-        {%- assign watermark_h = 1600 | divided_by: section.settings.logo.aspect_ratio | round -%}
-        {{ section.settings.logo | image_url: width: 1600 | image_tag: loading: 'lazy', widths: '800, 1200, 1600, 2400', sizes: '100vw', width: 1600, height: watermark_h, class: 'footer__watermark-logo', alt: '' }}
-      {%- else -%}
-        <span class="footer__watermark-text">{{ shop.name }}</span>
-      {%- endif -%}
-    </div>
-  </div>
 </footer>
 
 {% stylesheet %}
@@ -238,30 +227,6 @@
   gap: var(--space-1);
   text-decoration: underline;
   text-underline-offset: 3px;
-}
-
-.footer__watermark {
-  background: var(--color-secondary);
-  padding-block: var(--space-8);
-  text-align: center;
-}
-
-.footer__watermark-inner {
-}
-
-.footer__watermark-logo {
-  display: block;
-  width: 100%;
-  height: auto;
-  filter: brightness(0) invert(1);
-}
-
-.footer__watermark-text {
-  display: block;
-  width: 100%;
-  font-family: var(--font-heading);
-  font-size: clamp(48px, 12vw, 160px);
-  color: #fff;
 }
 {% endstylesheet %}
 
