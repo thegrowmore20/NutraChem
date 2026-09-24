@@ -264,6 +264,7 @@
           "type": "trust_badge",
           "settings": {
             "icon": "flask",
+            "icon_image": "shopify://shop_images/Concentration_clinically_proven.svg",
             "title": "Clinically-Studied Actives",
             "description": "Proven brightening ingredients"
           }
@@ -272,6 +273,7 @@
           "type": "trust_badge",
           "settings": {
             "icon": "shield",
+            "icon_image": "shopify://shop_images/Concentration_dermatologist_tested.svg",
             "title": "Dermatologically Tested",
             "description": "Gentle for daily use"
           }
@@ -280,6 +282,7 @@
           "type": "trust_badge",
           "settings": {
             "icon": "ban",
+            "icon_image": "shopify://shop_images/Concentration_No_fillers.svg",
             "title": "No Fillers",
             "description": "Every ingredient has a job"
           }
@@ -288,6 +291,7 @@
           "type": "trust_badge",
           "settings": {
             "icon": "leaf",
+            "icon_image": "shopify://shop_images/Concentration_vegan_farmula.svg",
             "title": "Vegan Formula",
             "description": "No animal-derived ingredients"
           }
