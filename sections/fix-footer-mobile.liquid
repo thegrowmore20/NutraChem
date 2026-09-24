@@ -1,4 +1,5 @@
 {%- if section.blocks.size > 0 and request.page_type != 'product' -%}
+  <mobile-bottom-nav-reveal>
   <nav class="mobile-bottom-nav" data-section-id="{{ section.id }}" aria-label="{{ section.settings.aria_label | escape }}">
     <ul class="mobile-bottom-nav__list" role="list">
       {%- for block in section.blocks -%}
@@ -79,6 +80,23 @@
       {%- endfor -%}
     </ul>
   </nav>
+  </mobile-bottom-nav-reveal>
+
+  {%- comment -%}
+    The bar is hidden until the visitor starts scrolling (see the javascript
+    block below). That gate is CSS-driven so it's already hidden on first
+    paint rather than flashing in before the script runs - which is why
+    visitors with JavaScript disabled need this override, or they'd never
+    see it.
+  {%- endcomment -%}
+  <noscript>
+    <style>
+      [data-section-id="{{ section.id }}"] {
+        transform: none !important;
+        visibility: visible !important;
+      }
+    </style>
+  </noscript>
 
   <style>
     :root {
@@ -179,6 +197,31 @@
       cursor: pointer;
     }
 
+    /* Hidden (slid below the screen and out of the tab order / a11y tree)
+       until the visitor scrolls; the reveal element toggles .is-visible. */
+    mobile-bottom-nav-reveal {
+      display: contents;
+    }
+
+    [data-section-id="{{ section.id }}"] {
+      transform: translateY(100%);
+      visibility: hidden;
+      transition: transform 0.3s ease, visibility 0s linear 0.3s;
+    }
+
+    [data-section-id="{{ section.id }}"].is-visible {
+      transform: translateY(0);
+      visibility: visible;
+      transition: transform 0.3s ease, visibility 0s linear 0s;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      [data-section-id="{{ section.id }}"],
+      [data-section-id="{{ section.id }}"].is-visible {
+        transition: none;
+      }
+    }
+
     @media (min-width: 990px) {
       [data-section-id="{{ section.id }}"] {
         display: none;
@@ -202,6 +245,49 @@
     }
   </style>
 {%- endif -%}
+
+{% javascript %}
+class MobileBottomNavReveal extends HTMLElement {
+  #nav
+  #ticking = false
+
+  connectedCallback() {
+    this.#nav = this.querySelector('.mobile-bottom-nav')
+    if (!this.#nav) return
+
+    window.addEventListener('scroll', this.#requestUpdate, { passive: true })
+    window.addEventListener('resize', this.#requestUpdate, { passive: true })
+    // Sync once now: after a reload the browser can restore a scrolled position
+    // before any scroll event fires, and a page too short to scroll at all
+    // would otherwise never reveal the bar.
+    this.#update()
+  }
+
+  disconnectedCallback() {
+    window.removeEventListener('scroll', this.#requestUpdate)
+    window.removeEventListener('resize', this.#requestUpdate)
+  }
+
+  #requestUpdate = () => {
+    if (this.#ticking) return
+    this.#ticking = true
+    requestAnimationFrame(() => {
+      this.#update()
+      this.#ticking = false
+    })
+  }
+
+  #update() {
+    // A page that can't scroll can't trigger the reveal, so it stays visible.
+    const canScroll = document.documentElement.scrollHeight - window.innerHeight > 40
+    this.#nav.classList.toggle('is-visible', !canScroll || window.scrollY > 10)
+  }
+}
+
+if (!customElements.get('mobile-bottom-nav-reveal')) {
+  customElements.define('mobile-bottom-nav-reveal', MobileBottomNavReveal)
+}
+{% endjavascript %}
 
 {% schema %}
 {
