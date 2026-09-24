@@ -229,10 +229,10 @@
     }
 
     @media (max-width: 989px) {
-      body {
-        padding-bottom: calc(var(--mobile-bottom-nav-height) + env(safe-area-inset-bottom, 0px));
-      }
-
+      /* No body padding-bottom reserving room for the bar any more: it hides
+         itself whenever the footer is on screen (see the javascript block),
+         so it never covers the end of the page, and the reserved strip would
+         just show as a blank band under the copyright bar. */
       .sticky-add-to-cart-wrapper {
         bottom: calc(var(--mobile-bottom-nav-height) + env(safe-area-inset-bottom, 0px));
       }
@@ -249,6 +249,9 @@
 {% javascript %}
 class MobileBottomNavReveal extends HTMLElement {
   #nav
+  #footer
+  #footerObserver
+  #footerVisible = false
   #ticking = false
 
   connectedCallback() {
@@ -257,6 +260,25 @@ class MobileBottomNavReveal extends HTMLElement {
 
     window.addEventListener('scroll', this.#requestUpdate, { passive: true })
     window.addEventListener('resize', this.#requestUpdate, { passive: true })
+
+    // Same idea as the product page's sticky add-to-cart bar: get out of the
+    // way once the footer scrolls into view, so the bar never sits on top of
+    // it (or of its links).
+    this.#footer = document.querySelector('.shopify-section-group-footer-group')
+    if (this.#footer && 'IntersectionObserver' in window) {
+      // Seeded synchronously so a load that's already at/near the footer
+      // doesn't flash the bar in for a frame before the observer reports.
+      this.#footerVisible = this.#footer.getBoundingClientRect().top < window.innerHeight
+      this.#footerObserver = new IntersectionObserver(
+        ([entry]) => {
+          this.#footerVisible = entry.isIntersecting
+          this.#update()
+        },
+        { threshold: 0 }
+      )
+      this.#footerObserver.observe(this.#footer)
+    }
+
     // Sync once now: after a reload the browser can restore a scrolled position
     // before any scroll event fires, and a page too short to scroll at all
     // would otherwise never reveal the bar.
@@ -266,6 +288,7 @@ class MobileBottomNavReveal extends HTMLElement {
   disconnectedCallback() {
     window.removeEventListener('scroll', this.#requestUpdate)
     window.removeEventListener('resize', this.#requestUpdate)
+    this.#footerObserver?.disconnect()
   }
 
   #requestUpdate = () => {
@@ -278,9 +301,11 @@ class MobileBottomNavReveal extends HTMLElement {
   }
 
   #update() {
-    // A page that can't scroll can't trigger the reveal, so it stays visible.
+    // Shown once the visitor has scrolled (or the page is too short to ever
+    // trigger that), but never while the footer is on screen.
     const canScroll = document.documentElement.scrollHeight - window.innerHeight > 40
-    this.#nav.classList.toggle('is-visible', !canScroll || window.scrollY > 10)
+    const revealed = !canScroll || window.scrollY > 10
+    this.#nav.classList.toggle('is-visible', revealed && !this.#footerVisible)
   }
 }
 
