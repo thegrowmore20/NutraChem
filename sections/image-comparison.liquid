@@ -132,6 +132,13 @@
   /* Reserves the slider's height from the before image's own ratio, so it
      doesn't jump when the lazy-loaded images arrive. */
   aspect-ratio: var(--comparison-ratio, 1.5);
+  /* Caps the height on wide layouts (the images crop via object-fit: cover
+     instead of stretching); narrower screens are already shorter than this
+     so the ratio still decides there. The explicit width matters: with an
+     auto width, max-height is transferred through the aspect ratio and caps
+     the width too, leaving a narrow slider stuck to the left of its column. */
+  width: 100%;
+  max-height: 560px;
   border-radius: var(--radius-m);
   background: var(--color-surface);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
