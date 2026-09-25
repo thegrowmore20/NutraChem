@@ -36,6 +36,7 @@
     "faqs": {
       "type": "main-faqs",
       "settings": {
+        "category_order": "Orders & Delivery\nPayment\nReturns & Refunds\nAbout Our Products\nUsing Your Products\nHair Care\nBuying & Stockists\nStill Have Questions?",
         "show_numbers": true,
         "show_structured_data": true,
         "content_width": 1000,

@@ -36,7 +36,39 @@
   -%}
 {%- endfor -%}
 
-{%- assign category_list = seen_categories | split: '~~' -%}
+{%- comment -%}
+  Order categories by the "Category order" setting (one per line); categories that
+  exist but aren't listed follow in the order they first appear in the metaobject.
+{%- endcomment -%}
+{%- liquid
+  assign ordered_categories = ''
+  assign ordered_lookup = '~~'
+  assign preferred_categories = section.settings.category_order | newline_to_br | split: '<br />'
+
+  for preferred_name in preferred_categories
+    assign preferred_name = preferred_name | strip
+    assign preferred_token = '~~' | append: preferred_name | append: '~~'
+    if preferred_name != blank and seen_lookup contains preferred_token
+      unless ordered_lookup contains preferred_token
+        assign ordered_categories = ordered_categories | append: preferred_name | append: '~~'
+        assign ordered_lookup = ordered_lookup | append: preferred_name | append: '~~'
+      endunless
+    endif
+  endfor
+
+  assign remaining_categories = seen_categories | split: '~~'
+  for remaining_name in remaining_categories
+    assign remaining_token = '~~' | append: remaining_name | append: '~~'
+    if remaining_name != blank
+      unless ordered_lookup contains remaining_token
+        assign ordered_categories = ordered_categories | append: remaining_name | append: '~~'
+        assign ordered_lookup = ordered_lookup | append: remaining_name | append: '~~'
+      endunless
+    endif
+  endfor
+
+  assign category_list = ordered_categories | split: '~~'
+-%}
 
 {%- if category_list.size > 0 -%}
   <section class="faqs section-padding" style="--padding-top: {{ section.settings.padding_top }}px; --padding-bottom: {{ section.settings.padding_bottom }}px; --faq-width: {{ section.settings.content_width }}px;">
@@ -245,6 +277,13 @@ if (!customElements.get('faq-accordion')) {
     {
       "type": "paragraph",
       "content": "Displays every entry of the General FAQs metaobject, grouped by FAQ Category. Each category gets its own heading, and questions in the same category open one at a time."
+    },
+    {
+      "type": "textarea",
+      "id": "category_order",
+      "label": "Category order",
+      "info": "One FAQ Category per line, spelled exactly as in the metaobject. Categories not listed appear afterwards.",
+      "default": "Orders & Delivery\nPayment\nReturns & Refunds\nAbout Our Products\nUsing Your Products\nHair Care\nBuying & Stockists\nStill Have Questions?"
     },
     { "type": "checkbox", "id": "show_numbers", "label": "Show question numbers", "default": true },
     { "type": "checkbox", "id": "show_structured_data", "label": "Add FAQ structured data (SEO)", "info": "Adds FAQPage JSON-LD built from the entries shown here.", "default": true },
