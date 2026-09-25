@@ -28,7 +28,7 @@
         "heading": "{{ page.title }}",
         "heading_color": "#008fa3",
         "heading_size": "h0",
-        "text": "<p>We combine natural extracts with clinical research to give you skin results you can actually see.</p>",
+        "text": "",
         "button_label": "",
         "button_link": ""
       }
