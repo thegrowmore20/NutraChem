@@ -32,7 +32,7 @@
             <span class="u-inline-flex u-items-center about-cta__badge" {{ block.shopify_attributes }}>
               {%- if block.settings.icon_image != blank -%}
                 <span class="about-cta__badge-icon" aria-hidden="true">
-                  {{ block.settings.icon_image | image_url: width: 32 | image_tag: loading: 'lazy', widths: '16, 32', sizes: '16px', width: 16, height: 16, alt: '' }}
+                  {{ block.settings.icon_image | image_url: width: 48 | image_tag: loading: 'lazy', widths: '24, 48', sizes: '24px', width: 24, height: 24, alt: '' }}
                 </span>
               {%- elsif block.settings.icon != blank -%}
                 <span aria-hidden="true">{{ block.settings.icon }}</span>
@@ -84,8 +84,8 @@
 
 .about-cta__badge-icon img {
   display: block;
-  width: 16px;
-  height: 16px;
+  width: 24px;
+  height: 24px;
   object-fit: contain;
 }
 {% endstylesheet %}

@@ -23,7 +23,7 @@
           <div class="about-certifications__badge" {{ block.shopify_attributes }}>
             {%- if block.settings.icon_image != blank -%}
               <span class="u-inline-flex u-items-center u-justify-center about-certifications__icon" aria-hidden="true">
-                {{ block.settings.icon_image | image_url: width: 96 | image_tag: loading: 'lazy', widths: '48, 96', sizes: '48px', width: 48, height: 48, alt: '' }}
+                {{ block.settings.icon_image | image_url: width: 64 | image_tag: loading: 'lazy', widths: '32, 64', sizes: '32px', width: 32, height: 32, alt: '' }}
               </span>
             {%- elsif block.settings.icon != blank -%}
               <span class="u-inline-flex u-items-center u-justify-center about-certifications__icon" aria-hidden="true">{{ block.settings.icon }}</span>
@@ -91,13 +91,17 @@
   background: var(--color-background);
   margin-bottom: var(--space-3);
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .about-certifications__icon img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
 }
 
 .about-certifications__badge-heading {

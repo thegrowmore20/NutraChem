@@ -22,7 +22,7 @@
               <span class="about-process__number" aria-hidden="true">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
               {%- if block.settings.icon_image != blank -%}
                 <span class="about-process__icon" aria-hidden="true">
-                  {{ block.settings.icon_image | image_url: width: 48 | image_tag: loading: 'lazy', widths: '24, 48', sizes: '24px', width: 24, height: 24, alt: '' }}
+                  {{ block.settings.icon_image | image_url: width: 84 | image_tag: loading: 'lazy', widths: '32, 42, 64, 84', sizes: '(min-width: 990px) 42px, 32px', width: 42, height: 42, alt: '' }}
                 </span>
               {%- elsif block.settings.icon != blank -%}
                 <span class="about-process__icon" aria-hidden="true">{{ block.settings.icon }}</span>
@@ -94,9 +94,16 @@
 
 .about-process__icon img {
   display: block;
-  width: 24px;
-  height: 24px;
+  width: 32px;
+  height: 32px;
   object-fit: contain;
+}
+
+@media screen and (min-width: 990px) {
+  .about-process__icon img {
+    width: 42px;
+    height: 42px;
+  }
 }
 
 .about-process__card-heading {

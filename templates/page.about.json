@@ -39,6 +39,7 @@
         "eyebrow": "Our Story",
         "heading": "Science is Our Foundation",
         "description": "<p>NutraChem was born from a simple belief: skincare should work. Not just feel good, work. We combine cutting-edge dermatological research with the most potent bioactive ingredients on earth.</p>",
+        "image": "shopify://shop_images/About_Us_Main_Image.webp",
         "button_1_label": "Explore Our Products",
         "button_1_link": "shopify://collections/products",
         "button_2_label": "Our Science",
@@ -54,6 +55,7 @@
           "type": "stat",
           "settings": {
             "icon": "🔬",
+            "icon_image": "shopify://shop_images/clinical_efficacy.svg",
             "number": "95%",
             "label": "Clinical Efficacy",
             "description": "Average results across all product lines in independent trials."
@@ -63,6 +65,7 @@
           "type": "stat",
           "settings": {
             "icon": "🌍",
+            "icon_image": "shopify://shop_images/Countries_Served.svg",
             "number": "5+",
             "label": "Countries Served",
             "description": "Trusted by customers on every continent."
@@ -72,6 +75,7 @@
           "type": "stat",
           "settings": {
             "icon": "💬",
+            "icon_image": "shopify://shop_images/Happy_Customers.svg",
             "number": "1500+",
             "label": "Happy Customers",
             "description": "With a 4.9-star average across 1500+ reviews."
@@ -81,6 +85,7 @@
           "type": "stat",
           "settings": {
             "icon": "📋",
+            "icon_image": "shopify://shop_images/Clinical_Studies.svg",
             "number": "12+",
             "label": "Clinical Studies",
             "description": "Published in peer-reviewed dermatology journals worldwide."
@@ -107,6 +112,7 @@
           "type": "feature",
           "settings": {
             "icon": "🔬",
+            "icon_image": "shopify://shop_images/Lab_Tested.svg",
             "heading": "Lab Tested",
             "text": "Every product is checked for safety."
           }
@@ -115,6 +121,7 @@
           "type": "feature",
           "settings": {
             "icon": "💧",
+            "icon_image": "shopify://shop_images/High_Potency.svg",
             "heading": "High Potency",
             "text": "We use strong, active ingredients that actually work."
           }
@@ -123,6 +130,7 @@
           "type": "feature",
           "settings": {
             "icon": "🌿",
+            "icon_image": "shopify://shop_images/hyaluronic_acid_616c7e65-a182-4e23-9aec-20a20fc62c49.svg",
             "heading": "Cruelty Free",
             "text": "100% natural extracts. No animal testing."
           }
@@ -209,6 +217,7 @@
           "type": "value",
           "settings": {
             "icon": "🔬",
+            "icon_image": "shopify://shop_images/Science_First.svg",
             "heading": "Science First",
             "text": "Every formula starts in the lab, not the marketing suite. If it cannot be clinically proven, it does not get made."
           }
@@ -217,6 +226,7 @@
           "type": "value",
           "settings": {
             "icon": "💎",
+            "icon_image": "shopify://shop_images/Uncompromised_Purity.svg",
             "heading": "Uncompromised Purity",
             "text": "No fillers, no artificial fragrances, no greenwashing. Every ingredient earns its place at clinical-grade concentrations."
           }
@@ -225,6 +235,7 @@
           "type": "value",
           "settings": {
             "icon": "🌿",
+            "icon_image": "shopify://shop_images/Planet_Positive.svg",
             "heading": "Planet Positive",
             "text": "Cruelty-free, vegan, and sustainably packaged. We believe premium and responsibility are not mutually exclusive."
           }
@@ -233,6 +244,7 @@
           "type": "value",
           "settings": {
             "icon": "🤝",
+            "icon_image": "shopify://shop_images/Radical_Transparency.svg",
             "heading": "Radical Transparency",
             "text": "Full ingredient lists, clinical data, and honest photography. We hide nothing because we have nothing to hide."
           }
@@ -241,6 +253,7 @@
           "type": "value",
           "settings": {
             "icon": "♾️",
+            "icon_image": "shopify://shop_images/Continuous_Research.svg",
             "heading": "Continuous Research",
             "text": "Our lab never stops. We reinvest into dermatological research every year to ensure our formulas stay at the scientific frontier."
           }
@@ -249,6 +262,7 @@
           "type": "value",
           "settings": {
             "icon": "❤️",
+            "icon_image": "shopify://shop_images/Community_Trust.svg",
             "heading": "Community Trust",
             "text": "We earn trust through results, not promises. Our Glow Guarantee exists because we believe every customer should see a real difference."
           }
@@ -277,6 +291,7 @@
           "type": "step",
           "settings": {
             "icon": "📚",
+            "icon_image": "shopify://shop_images/Literature_Review.svg",
             "heading": "Literature Review",
             "text": "Our scientists review thousands of peer-reviewed papers to identify the most clinically supported actives.",
             "caption": "200+ studies reviewed per formula"
@@ -286,6 +301,7 @@
           "type": "step",
           "settings": {
             "icon": "⚗️",
+            "icon_image": "shopify://shop_images/Compound_Selection.svg",
             "heading": "Compound Selection",
             "text": "We select only the most bioavailable form of each active, proven to penetrate the skin barrier.",
             "caption": "FDA GRAS & EU approved ingredients only"
@@ -295,6 +311,7 @@
           "type": "step",
           "settings": {
             "icon": "🧪",
+            "icon_image": "shopify://shop_images/Lab_Formulation.svg",
             "heading": "Lab Formulation",
             "text": "Compounds are combined at peer-reviewed concentrations. pH and delivery system are optimised for absorption.",
             "caption": "100+ iterations before finalised"
@@ -304,6 +321,7 @@
           "type": "step",
           "settings": {
             "icon": "🔬",
+            "icon_image": "shopify://shop_images/Lab_Formulation.svg",
             "heading": "Clinical Validation",
             "text": "Double-blind clinical testing with 100+ participants. No passing data means back to the lab.",
             "caption": "Independent CRO testing, no internal bias"
@@ -313,6 +331,7 @@
           "type": "step",
           "settings": {
             "icon": "✅",
+            "icon_image": "shopify://shop_images/Safety_Stability.svg",
             "heading": "Safety & Stability",
             "text": "Patch testing, dermatologist review, and 12-month accelerated stability testing before any product ships.",
             "caption": "Dermatologist-tested, hypoallergenic"
@@ -322,6 +341,7 @@
           "type": "step",
           "settings": {
             "icon": "📦",
+            "icon_image": "shopify://shop_images/Sustainable_Launch.svg",
             "heading": "Sustainable Launch",
             "text": "Recyclable packaging, fulfilled with care from our warehouse.",
             "caption": "Carbon-neutral shipping on all orders"
@@ -351,6 +371,7 @@
           "type": "badge",
           "settings": {
             "icon": "🐰",
+            "icon_image": "shopify://shop_images/cruelty_free_Standard.svg",
             "heading": "Cruelty-Free",
             "text": "Certified by Leaping Bunny. No animal testing at any stage."
           }
@@ -359,6 +380,7 @@
           "type": "badge",
           "settings": {
             "icon": "🌿",
+            "icon_image": "shopify://shop_images/Vegan_Cruelty-Free.svg",
             "heading": "Vegan",
             "text": "Certified by The Vegan Society. Zero animal-derived ingredients."
           }
@@ -367,6 +389,7 @@
           "type": "badge",
           "settings": {
             "icon": "🔬",
+            "icon_image": "shopify://shop_images/Clinically_Proven_real.svg",
             "heading": "Clinically Proven",
             "text": "Clinically tested formula. Proven results for visible skin improvement."
           }
@@ -375,6 +398,7 @@
           "type": "badge",
           "settings": {
             "icon": "🏥",
+            "icon_image": "shopify://shop_images/dermatologist_tested_154c3fca-1e49-41e2-9a2d-49e946b1db08.svg",
             "heading": "Dermatologist Tested",
             "text": "Signed off by board-certified dermatologists before every release."
           }
@@ -437,6 +461,7 @@
           "type": "badge",
           "settings": {
             "icon": "🚚",
+            "icon_image": "shopify://shop_images/Free_Shipping.svg",
             "label": "Free Shipping"
           }
         },
@@ -444,6 +469,7 @@
           "type": "badge",
           "settings": {
             "icon": "↩️",
+            "icon_image": "shopify://shop_images/Glow_Guarantee.svg",
             "label": "Glow Guarantee"
           }
         },
@@ -451,6 +477,7 @@
           "type": "badge",
           "settings": {
             "icon": "🔬",
+            "icon_image": "shopify://shop_images/Clinically_Proven_real.svg",
             "label": "Clinically Proven"
           }
         },
@@ -458,6 +485,7 @@
           "type": "badge",
           "settings": {
             "icon": "🌿",
+            "icon_image": "shopify://shop_images/Vegan_Cruelty-Free.svg",
             "label": "Vegan & Cruelty-Free"
           }
         }
