@@ -232,7 +232,7 @@ body:not(:has(.banner--transparent-header)) {
    solid background instead of actually going away. */
 .header:where(body:has(.banner--transparent-header) *).header--scrolled::before,
 .header:where(body:has(.banner--transparent-header) *).header--drawer-open::before,
-.header:where(body:has(.banner--transparent-header) *).header--menu-open::before {
+.header:where(body:has(.banner--transparent-header) *):is(.header--menu-open, .header--hovered)::before {
   opacity: 0;
 }
 
@@ -258,12 +258,15 @@ body:not(:has(.banner--transparent-header)) {
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
 }
 
-/* header--menu-open is set by HeaderMenu while a desktop mega-menu panel is
+/* header--hovered is set by HeaderHover while a mouse pointer is anywhere over
+   the header (logo, icons, links), so a transparent header turns solid the
+   same way it does for header--menu-open, without opening a mega-menu panel.
+   header--menu-open is set by HeaderMenu while a desktop mega-menu panel is
    open. The panel drops down solid white, so a header still transparent
    (dark scrim, white text) over the hero looked disconnected from it - it
    takes on the same solid look as the scrolled state instead. */
 .header:where(body:has(.banner--transparent-header) *).header--scrolled,
-.header:where(body:has(.banner--transparent-header) *).header--menu-open {
+.header:where(body:has(.banner--transparent-header) *):is(.header--menu-open, .header--hovered) {
   background: var(--color-background);
 }
 
@@ -276,11 +279,11 @@ body:not(:has(.banner--transparent-header)) {
 .header:where(body:has(.banner--transparent-header) *).header--scrolled .header__logo-text span,
 .header:where(body:has(.banner--transparent-header) *).header--scrolled .header__icons,
 .header:where(body:has(.banner--transparent-header) *).header--scrolled .header__menu-toggle,
-.header:where(body:has(.banner--transparent-header) *).header--menu-open .header__nav-link,
-.header:where(body:has(.banner--transparent-header) *).header--menu-open .header__logo-text strong,
-.header:where(body:has(.banner--transparent-header) *).header--menu-open .header__logo-text span,
-.header:where(body:has(.banner--transparent-header) *).header--menu-open .header__icons,
-.header:where(body:has(.banner--transparent-header) *).header--menu-open .header__menu-toggle {
+.header:where(body:has(.banner--transparent-header) *):is(.header--menu-open, .header--hovered) .header__nav-link,
+.header:where(body:has(.banner--transparent-header) *):is(.header--menu-open, .header--hovered) .header__logo-text strong,
+.header:where(body:has(.banner--transparent-header) *):is(.header--menu-open, .header--hovered) .header__logo-text span,
+.header:where(body:has(.banner--transparent-header) *):is(.header--menu-open, .header--hovered) .header__icons,
+.header:where(body:has(.banner--transparent-header) *):is(.header--menu-open, .header--hovered) .header__menu-toggle {
   color: var(--color-primary);
 }
 
@@ -335,11 +338,11 @@ body:not(:has(.banner--transparent-header)) {
   display: none;
 }
 
-.header:where(body:has(.banner--transparent-header) *):not(.header--scrolled):not(.header--menu-open) .header__logo--has-inverse .header__logo-img--default {
+.header:where(body:has(.banner--transparent-header) *):not(.header--scrolled):not(.header--menu-open):not(.header--hovered) .header__logo--has-inverse .header__logo-img--default {
   display: none;
 }
 
-.header:where(body:has(.banner--transparent-header) *):not(.header--scrolled):not(.header--menu-open) .header__logo--has-inverse .header__logo-img--inverse {
+.header:where(body:has(.banner--transparent-header) *):not(.header--scrolled):not(.header--menu-open):not(.header--hovered) .header__logo--has-inverse .header__logo-img--inverse {
   display: block;
 }
 
@@ -1368,6 +1371,21 @@ class PredictiveSearch {
   }
 }
 
+// Transparent header only: solid background while a real mouse hovers the
+// header. Touch is excluded on purpose - :hover sticks after a tap, which
+// would leave the header solid over the hero until the next tap elsewhere.
+class HeaderHover {
+  constructor() {
+    const header = document.querySelector('.header')
+    if (!header) return
+    const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)')
+    header.addEventListener('mouseenter', () => {
+      if (finePointer.matches) header.classList.add('header--hovered')
+    })
+    header.addEventListener('mouseleave', () => header.classList.remove('header--hovered'))
+  }
+}
+
 class HeaderMenu {
   #items
   #desktopQuery
@@ -1500,6 +1518,7 @@ new CartToggle()
 new CartIconBubble()
 new PredictiveSearch()
 new HeaderMenu()
+new HeaderHover()
 {% endjavascript %}
 
 <script type="application/ld+json">

@@ -272,6 +272,7 @@
     },
     "before-after": {
       "type": "image-comparison",
+      "disabled": true,
       "settings": {
         "before_image": "shopify://shop_images/facewash-befor.jpg",
         "after_image": "shopify://shop_images/facewash-afte.jpg",
