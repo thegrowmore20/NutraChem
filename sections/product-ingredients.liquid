@@ -466,10 +466,14 @@ product-ingredients {
 
 .product-ingredients__badge-title {
   margin: 0;
-  font-size: 14.5px;
+  font-size: 14px;
   font-weight: 600;
   font-family: var(--font-accent);
   color: var(--color-primary);
+
+  @media screen and (min-width: 768px) {
+    font-size: 16px;
+  }
 }
 
 .product-ingredients__badge-desc {
@@ -478,6 +482,10 @@ product-ingredients {
   line-height: 1.45;
   font-family: var(--font-body);
   color: var(--color-text-muted);
+
+   @media screen and (min-width: 768px) {
+    font-size: 14px;
+  }
 }
 
 @media screen and (min-width: 768px) {
