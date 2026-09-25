@@ -3,15 +3,26 @@
   just the page's own title and rich-text content, no special layout.
 {%- endcomment -%}
 
+{%- liquid
+  assign show_title = section.settings.show_title
+  assign show_content = section.settings.show_content
+-%}
+
+{%- if show_title or show_content and page.content != blank -%}
 <section
   class="page-content section-padding"
   style="--padding-top: {{ section.settings.padding_top }}px; --padding-bottom: {{ section.settings.padding_bottom }}px;"
 >
   <div class="container page-content__inner">
-    <h1 class="page-content__title h2">{{ page.title }}</h1>
-    <div class="page-content__body rte">{{ page.content }}</div>
+    {%- if show_title -%}
+      <h1 class="page-content__title h2">{{ page.title }}</h1>
+    {%- endif -%}
+    {%- if show_content -%}
+      <div class="page-content__body rte">{{ page.content }}</div>
+    {%- endif -%}
   </div>
 </section>
+{%- endif -%}
 
 {% stylesheet %}
 .page-content__inner {
@@ -48,6 +59,19 @@
     "templates": ["page"]
   },
   "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_title",
+      "label": "Show page title",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_content",
+      "label": "Show page description",
+      "info": "The content written in the page editor.",
+      "default": true
+    },
     {
       "type": "header",
       "content": "Padding"

@@ -33,10 +33,20 @@
         "padding_top": 60,
         "padding_bottom": 80
       }
+    },
+    "page": {
+      "type": "main-page",
+      "settings": {
+        "show_title": false,
+        "show_content": true,
+        "padding_top": 0,
+        "padding_bottom": 60
+      }
     }
   },
   "order": [
     "hero_banner_Fq7x2Kp",
-    "faqs"
+    "faqs",
+    "page"
   ]
 }
