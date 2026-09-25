@@ -59,9 +59,9 @@
           "settings": {
             "card_1_bg": "#18252b",
             "card_1_color": "#ffffff",
-            "card_1_heading": "Location",
-            "card_1_body": "<p>Apollo Design &amp; Tech Inc. 16133 Ventura Blvd., Floor 7, Encino CA 91436</p>",
-            "card_1_link": "https://maps.app.goo.gl/t6hB2zv2AivNDs9i9",
+            "card_1_heading": "WhatsApp / Call",
+            "card_1_body": "<p>+92 304 8425555</p>",
+            "card_1_link": "tel:+923048425555",
             "card_2_bg": "#18252b",
             "card_2_color": "#ffffff",
             "card_2_heading": "Email",

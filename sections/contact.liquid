@@ -45,7 +45,7 @@
                         assign card_bg = block.settings.card_1_bg
                         assign card_color = block.settings.card_1_color
                         assign card_image = block.settings.card_1_image
-                        assign card_icon = 'marker-pin'
+                        assign card_icon = 'phone'
                         assign card_head = block.settings.card_1_heading
                         assign card_body = block.settings.card_1_body
                         assign card_link = block.settings.card_1_link
@@ -532,24 +532,24 @@ a.contact-card:focus-visible {
       "settings": [
         {
           "type": "paragraph",
-          "content": "Each card falls back to a location/mail icon automatically when no icon image is set."
+          "content": "Each card falls back to a phone/mail icon automatically when no icon image is set."
         },
         { "type": "header", "content": "Card 1" },
         { "type": "color", "id": "card_1_bg", "label": "Background", "default": "#18252B" },
         { "type": "color", "id": "card_1_color", "label": "Text color", "default": "#FFFFFF" },
         { "type": "image_picker", "id": "card_1_image", "label": "Icon (optional)" },
-        { "type": "text", "id": "card_1_heading", "label": "Heading", "default": "Location" },
+        { "type": "text", "id": "card_1_heading", "label": "Heading", "default": "WhatsApp / Call" },
         {
           "type": "richtext",
           "id": "card_1_body",
           "label": "Content",
-          "default": "<p>123 Example Street, Suite 1, City, State 00000</p>"
+          "default": "<p>+92 304 8425555</p>"
         },
         {
           "type": "url",
           "id": "card_1_link",
           "label": "Link",
-          "info": "Optional - makes the whole card clickable (e.g. a Google Maps link)."
+          "info": "Optional - makes the whole card clickable (e.g. tel:+923048425555)."
         },
         { "type": "header", "content": "Card 2" },
         { "type": "color", "id": "card_2_bg", "label": "Background", "default": "#18252B" },
