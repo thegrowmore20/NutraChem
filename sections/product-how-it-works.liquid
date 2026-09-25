@@ -1,6 +1,7 @@
 {%- comment -%}
   "How It Works" - numbered science/benefit cards, driven entirely by the
-  current product's custom.how_it_works JSON metafield. Renders nothing when
+  current product's custom.how_it_works JSON metafield (title, desc, optional
+  science, and an icon: an "image" URL, or an "icon" emoji as fallback). Renders nothing when
   the metafield is empty or has no valid entries.
 {%- endcomment -%}
 {%- liquid
@@ -38,7 +39,11 @@
             <div class="product-how-it-works__card">
               <div class="u-flex u-items-center u-justify-between product-how-it-works__card-header">
                 <span class="product-how-it-works__index" aria-hidden="true">{{ item_index }}</span>
-                {%- if item.icon != blank -%}
+                {%- if item.image != blank -%}
+                  <span class="product-how-it-works__icon" aria-hidden="true">
+                    <img class="product-how-it-works__icon-img" src="{{ item.image | escape }}" alt="" width="42" height="42" loading="lazy">
+                  </span>
+                {%- elsif item.icon != blank -%}
                   <span class="product-how-it-works__icon" aria-hidden="true">{{ item.icon }}</span>
                 {%- endif -%}
               </div>
@@ -104,6 +109,20 @@
 
 .product-how-it-works__icon {
   font-size: 24px;
+}
+
+.product-how-it-works__icon-img {
+  display: block;
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+@media screen and (min-width: 990px) {
+  .product-how-it-works__icon-img {
+    width: 42px;
+    height: 42px;
+  }
 }
 
 .product-how-it-works__title {
