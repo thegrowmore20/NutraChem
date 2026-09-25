@@ -147,15 +147,14 @@
     display: flex;
     justify-content: center;
   }
-  /* The button is a 24x24 touch target (WCAG 2.5.8); the visible 10px dot is
-     its ::before. The -3px side margins keep the dots 18px apart, the same as
-     the old 10px dot + 8px gap. */
+  /* The button is a 24x24 touch target (WCAG 2.5.8) and the visible 10px dot
+     is its ::before. Targets sit edge to edge (no overlap), so the dots are
+     24px apart. */
   .features-slider__dot {
     display: grid;
     place-items: center;
     width: 24px;
     height: 24px;
-    margin-inline: -3px;
     background: none;
     border: none;
     padding: 0;
