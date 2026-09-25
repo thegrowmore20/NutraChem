@@ -1,13 +1,12 @@
 {%- comment -%}
   FAQs page accordion, driven by the `general_faqs` metaobject definition
-  (fields: faq_category, question, answer). Entries are grouped by faq_category in the
-  order each category first appears; every category gets its own heading and its own
-  accordion, so opening a question only closes the other questions in the same category.
+  (fields: faq_category, question, answer, order). Entries are grouped by faq_category
+  and the categories are sorted by `order`; every category gets its own heading and its
+  own accordion, so opening a question only closes the other questions in the same category.
 {%- endcomment -%}
 {%- liquid
   assign faq_entries = shop.metaobjects.general_faqs.values
-  assign seen_categories = ''
-  assign seen_lookup = '~~'
+  assign sort_keys = ''
   assign schema_questions = ''
   assign schema_count = 0
 -%}
@@ -15,13 +14,14 @@
 {%- for faq in faq_entries -%}
   {%- liquid
     assign category = faq.faq_category.value | strip
-    assign category_token = '~~' | append: category | append: '~~'
     if category != blank and faq.question.value != blank and faq.answer.value != blank
-      unless seen_lookup contains category_token
-        assign seen_categories = seen_categories | append: category | append: '~~'
-        assign seen_lookup = seen_lookup | append: category | append: '~~'
-      endunless
-
+      assign order_number = 9999
+      if faq.order.value != blank
+        assign order_number = faq.order.value | plus: 0
+      endif
+      assign order_padded = '0000' | append: order_number | slice: -4, 4
+      assign index_padded = '0000' | append: forloop.index | slice: -4, 4
+      assign sort_keys = sort_keys | append: order_padded | append: index_padded | append: category | append: '~~'
       assign schema_count = schema_count | plus: 1
       assign question_json = faq.question.value | json
       assign answer_json = faq.answer | metafield_text | json
@@ -37,38 +37,30 @@
 {%- endfor -%}
 
 {%- comment -%}
-  Order categories by the "Category order" setting (one per line); categories that
-  exist but aren't listed follow in the order they first appear in the metaobject.
+  Sort the categories by the metaobject's `order` field (e.g. 01-08). Every valid entry
+  gets a sortable key: order (4 digits) + entry position (4 digits) + category name.
+  After sorting, the first key seen for a category decides its place, so the lowest
+  order in a category wins; entries without an order go last, in metaobject order.
 {%- endcomment -%}
 {%- liquid
+  assign sorted_keys = sort_keys | split: '~~' | sort
   assign ordered_categories = ''
   assign ordered_lookup = '~~'
-  assign preferred_categories = section.settings.category_order | newline_to_br | split: '<br />'
 
-  for preferred_line in preferred_categories
-    assign preferred_name = preferred_line | strip
-    assign preferred_token = '~~' | append: preferred_name | append: '~~'
-    if preferred_name != blank and seen_lookup contains preferred_token
-      unless ordered_lookup contains preferred_token
-        assign ordered_categories = ordered_categories | append: preferred_name | append: '~~'
-        assign ordered_lookup = ordered_lookup | append: preferred_name | append: '~~'
-      endunless
-    endif
-  endfor
-
-  assign remaining_categories = seen_categories | split: '~~'
-  for remaining_name in remaining_categories
-    assign remaining_token = '~~' | append: remaining_name | append: '~~'
-    if remaining_name != blank
-      unless ordered_lookup contains remaining_token
-        assign ordered_categories = ordered_categories | append: remaining_name | append: '~~'
-        assign ordered_lookup = ordered_lookup | append: remaining_name | append: '~~'
+  for sorted_key in sorted_keys
+    assign sorted_category = sorted_key | slice: 8, 500
+    assign sorted_token = '~~' | append: sorted_category | append: '~~'
+    if sorted_category != blank
+      unless ordered_lookup contains sorted_token
+        assign ordered_categories = ordered_categories | append: sorted_category | append: '~~'
+        assign ordered_lookup = ordered_lookup | append: sorted_category | append: '~~'
       endunless
     endif
   endfor
 
   assign category_list = ordered_categories | split: '~~'
 -%}
+
 
 {%- if category_list.size > 0 -%}
   <section class="faqs section-padding" style="--padding-top: {{ section.settings.padding_top }}px; --padding-bottom: {{ section.settings.padding_bottom }}px; --faq-width: {{ section.settings.content_width }}px;">
@@ -295,13 +287,6 @@ if (!customElements.get('faq-accordion')) {
     {
       "type": "paragraph",
       "content": "Displays every entry of the General FAQs metaobject, grouped by FAQ Category. Each category gets its own heading, and questions in the same category open one at a time."
-    },
-    {
-      "type": "textarea",
-      "id": "category_order",
-      "label": "Category order",
-      "info": "One FAQ Category per line, spelled exactly as in the metaobject. Categories not listed appear afterwards.",
-      "default": "Orders & Delivery\nPayment\nReturns & Refunds\nAbout Our Products\nUsing Your Products\nHair Care\nBuying & Stockists\nStill Have Questions?"
     },
     { "type": "checkbox", "id": "show_numbers", "label": "Show question numbers", "default": true },
     { "type": "checkbox", "id": "show_structured_data", "label": "Add FAQ structured data (SEO)", "info": "Adds FAQPage JSON-LD built from the entries shown here.", "default": true },
