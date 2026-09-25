@@ -92,7 +92,7 @@
       ],
       "settings": {
         "show_left_content": true,
-        "form_heading": "Contact Us",
+        "form_heading": "",
         "padding_top": 80,
         "padding_bottom": 40
       }
