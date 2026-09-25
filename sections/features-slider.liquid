@@ -146,19 +146,30 @@
   .features-slider__dots {
     display: flex;
     justify-content: center;
-    gap: var(--space-2);
   }
+  /* The button is a 24x24 touch target (WCAG 2.5.8); the visible 10px dot is
+     its ::before. The -3px side margins keep the dots 18px apart, the same as
+     the old 10px dot + 8px gap. */
   .features-slider__dot {
+    display: grid;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    margin-inline: -3px;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+  }
+  .features-slider__dot::before {
+    content: "";
     width: 10px;
     height: 10px;
     border-radius: 50%;
     background: color-mix(in srgb, var(--button-primary) 20%, transparent);
-    border: none;
-    padding: 0;
-    cursor: pointer;
     transition: background 0.2s ease;
   }
-  .features-slider__dot.is-active {
+  .features-slider__dot.is-active::before {
     background: var(--button-primary);
   }
 

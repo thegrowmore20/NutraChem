@@ -1,5 +1,5 @@
 <div class="cart-drawer-backdrop" id="CartDrawerBackdrop" hidden></div>
-<div class="u-flex u-flex-col cart-drawer" id="CartDrawer" role="dialog" aria-modal="true" aria-labelledby="CartDrawerHeading" aria-hidden="true" hidden>
+<div class="u-flex u-flex-col cart-drawer" id="CartDrawer" role="dialog" aria-modal="true" aria-labelledby="CartDrawerHeading" aria-hidden="true" hidden inert>
   <div class="u-flex u-items-center u-justify-between cart-drawer__header">
     <h2 class="cart-drawer__heading" id="CartDrawerHeading">{{ 'general.cart.title' | t }}</h2>
     <button type="button" class="u-inline-flex u-items-center u-justify-center cart-drawer__close" id="CartDrawerClose" aria-label="{{ 'general.accessibility.close' | t }}">
@@ -446,6 +446,7 @@ class CartDrawer {
   open() {
     this.#lastFocused = document.activeElement
     this.#root.hidden = false
+    this.#root.inert = false
     this.#backdrop.hidden = false
     requestAnimationFrame(() => {
       this.#root.classList.add('is-open')
@@ -460,6 +461,7 @@ class CartDrawer {
     this.#root.classList.remove('is-open')
     this.#backdrop.classList.remove('is-open')
     this.#root.setAttribute('aria-hidden', 'true')
+    this.#root.inert = true
     document.body.classList.remove('cart-drawer-open')
     window.setTimeout(() => {
       if (!this.#root.classList.contains('is-open')) {
