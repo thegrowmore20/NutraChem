@@ -119,6 +119,9 @@
     "youtube_reels": {
       "play": "Play video",
       "video_player": "Video player"
+    },
+    "faqs": {
+      "empty": "No FAQs found. Add entries to the General FAQs metaobject."
     }
   },
   "blogs": {

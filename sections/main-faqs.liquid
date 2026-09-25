@@ -1,0 +1,258 @@
+{%- comment -%}
+  FAQs page accordion, driven by the `general_faqs` metaobject definition
+  (fields: faq_category, question, answer). Entries are grouped by faq_category in the
+  order each category first appears; every category gets its own heading and its own
+  accordion, so opening a question only closes the other questions in the same category.
+{%- endcomment -%}
+{%- liquid
+  assign faq_entries = shop.metaobjects.general_faqs.values
+  assign seen_categories = ''
+  assign seen_lookup = '~~'
+  assign schema_questions = ''
+  assign schema_count = 0
+-%}
+
+{%- for faq in faq_entries -%}
+  {%- liquid
+    assign category = faq.faq_category.value | strip
+    assign category_token = '~~' | append: category | append: '~~'
+    if category != blank and faq.question.value != blank and faq.answer.value != blank
+      unless seen_lookup contains category_token
+        assign seen_categories = seen_categories | append: category | append: '~~'
+        assign seen_lookup = seen_lookup | append: category | append: '~~'
+      endunless
+
+      assign schema_count = schema_count | plus: 1
+      assign question_json = faq.question.value | json
+      assign answer_json = faq.answer | metafield_text | json
+      capture schema_question
+        if schema_count > 1
+          echo ','
+        endif
+        echo '{"@type":"Question","name":' | append: question_json | append: ',"acceptedAnswer":{"@type":"Answer","text":' | append: answer_json | append: '}}'
+      endcapture
+      assign schema_questions = schema_questions | append: schema_question
+    endif
+  -%}
+{%- endfor -%}
+
+{%- assign category_list = seen_categories | split: '~~' -%}
+
+{%- if category_list.size > 0 -%}
+  <section class="faqs section-padding" style="--padding-top: {{ section.settings.padding_top }}px; --padding-bottom: {{ section.settings.padding_bottom }}px; --faq-width: {{ section.settings.content_width }}px;">
+    <div class="container">
+      {%- for category in category_list -%}
+        {%- if category != blank -%}
+          {%- assign category_index = forloop.index -%}
+          {%- assign item_count = 0 -%}
+          <div class="faqs__category">
+            {% render 'section-header', heading: category %}
+            <faq-accordion class="faqs__accordion">
+              {%- for faq in faq_entries -%}
+                {%- assign faq_category = faq.faq_category.value | strip -%}
+                {%- if faq_category == category and faq.question.value != blank and faq.answer.value != blank -%}
+                  {%- assign item_count = item_count | plus: 1 -%}
+                  {%- assign panel_id = 'Faq' | append: section.id | append: '-' | append: category_index | append: '-' | append: item_count -%}
+                  <div class="faqs__item" data-faq-item>
+                    <button type="button" class="faqs__question" aria-expanded="false" aria-controls="{{ panel_id }}" data-faq-trigger>
+                      <h3 class="faqs__question-text">
+                        {% if section.settings.show_numbers %}<span>{{ item_count }}.</span> {% endif %}{{ faq.question.value | escape }}
+                      </h3>
+                      <span class="faqs__icon" aria-hidden="true">{% render 'icon', name: 'chevron-down' %}</span>
+                    </button>
+                    <div class="faqs__panel" id="{{ panel_id }}">
+                      <div class="faqs__panel-inner">
+                        <div class="faqs__answer rte">{{ faq.answer | metafield_tag }}</div>
+                      </div>
+                    </div>
+                  </div>
+                {%- endif -%}
+              {%- endfor -%}
+            </faq-accordion>
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </section>
+
+  {%- if section.settings.show_structured_data and schema_count > 0 -%}
+    <script type="application/ld+json">
+      {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{{ schema_questions }}]}
+    </script>
+  {%- endif -%}
+{%- elsif request.design_mode -%}
+  <section class="faqs section-padding" style="--padding-top: {{ section.settings.padding_top }}px; --padding-bottom: {{ section.settings.padding_bottom }}px;">
+    <div class="container">
+      <p class="faqs__empty">{{ 'sections.faqs.empty' | t }}</p>
+    </div>
+  </section>
+{%- endif -%}
+
+{% stylesheet %}
+  .faqs__category {
+    max-width: var(--faq-width, 1000px);
+    margin-inline: auto;
+  }
+
+  .faqs__category + .faqs__category {
+    margin-top: calc(var(--space-8) * 2);
+  }
+
+  .faqs__accordion {
+    display: block;
+  }
+
+  .faqs__empty {
+    margin: 0;
+    text-align: center;
+    color: var(--color-text);
+  }
+
+  .faqs__item {
+    border-bottom: 1px solid color-mix(in srgb, var(--color-primary) 18%, transparent);
+  }
+
+  .faqs__item:last-child {
+    border-bottom: 0;
+  }
+
+  .faqs__question {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-5);
+    width: 100%;
+    min-height: 52px;
+    padding: var(--space-3) 0;
+    cursor: pointer;
+    color: var(--color-primary);
+    text-align: left;
+    background: transparent;
+    border: none;
+    font: inherit;
+  }
+
+  .faqs__question:focus-visible {
+    outline: 2px solid var(--color-secondary);
+    outline-offset: 4px;
+  }
+
+  .faqs__question-text {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: var(--font-subheading);
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+  }
+
+  .faqs__icon {
+    display: grid;
+    place-items: center;
+    flex: 0 0 30px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--button-primary, var(--color-secondary));
+    color: #fff;
+    transition: transform 200ms ease;
+  }
+
+  .faqs__item[data-faq-open] .faqs__icon {
+    transform: rotate(180deg);
+  }
+
+  .faqs__panel {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.25s ease;
+  }
+
+  .faqs__item[data-faq-open] > .faqs__panel {
+    grid-template-rows: 1fr;
+  }
+
+  .faqs__panel-inner {
+    overflow: hidden;
+    visibility: hidden;
+    transition: visibility 0s linear 0.25s;
+  }
+
+  .faqs__item[data-faq-open] .faqs__panel-inner {
+    visibility: visible;
+    transition-delay: 0s;
+  }
+
+  .faqs__answer {
+    padding: 0 0.5rem var(--space-5) 0.5rem;
+    color: var(--color-text);
+    line-height: 1.7;
+    overflow-wrap: anywhere;
+  }
+
+  @media screen and (min-width: 750px) {
+    .faqs__question-text {
+      font-size: 18px;
+    }
+  }
+
+  @media screen and (prefers-reduced-motion: reduce) {
+    .faqs__icon,
+    .faqs__panel,
+    .faqs__panel-inner {
+      transition: none;
+    }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+class FaqAccordion extends HTMLElement {
+  constructor() {
+    super();
+    this.addEventListener('click', this.#onClick.bind(this));
+  }
+
+  #onClick(event) {
+    const trigger = event.target.closest('[data-faq-trigger]');
+    if (!trigger) return;
+
+    const item = trigger.closest('[data-faq-item]');
+    if (!item) return;
+
+    const willOpen = !item.hasAttribute('data-faq-open');
+
+    // Each category renders its own <faq-accordion>, so only siblings in the same category close.
+    for (const other of this.querySelectorAll('[data-faq-item]')) {
+      if (other === item) continue;
+      other.removeAttribute('data-faq-open');
+      other.querySelector('[data-faq-trigger]')?.setAttribute('aria-expanded', 'false');
+    }
+
+    item.toggleAttribute('data-faq-open', willOpen);
+    trigger.setAttribute('aria-expanded', String(willOpen));
+  }
+}
+
+if (!customElements.get('faq-accordion')) {
+  customElements.define('faq-accordion', FaqAccordion);
+}
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "FAQs",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Displays every entry of the General FAQs metaobject, grouped by FAQ Category. Each category gets its own heading, and questions in the same category open one at a time."
+    },
+    { "type": "checkbox", "id": "show_numbers", "label": "Show question numbers", "default": true },
+    { "type": "checkbox", "id": "show_structured_data", "label": "Add FAQ structured data (SEO)", "info": "Adds FAQPage JSON-LD built from the entries shown here.", "default": true },
+    { "type": "range", "id": "content_width", "label": "Content width", "min": 600, "max": 1320, "step": 40, "unit": "px", "default": 1000 },
+    { "type": "header", "content": "Section padding" },
+    { "type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 60 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 80 }
+  ],
+  "presets": [{ "name": "FAQs" }]
+}
+{% endschema %}

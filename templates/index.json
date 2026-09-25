@@ -156,6 +156,7 @@
           "type": "feature",
           "settings": {
             "text": "Dermatologically Tested",
+            "icon_image": "shopify://shop_images/Dermatologically_Tested.svg",
             "icon_svg": ""
           }
         },
@@ -163,6 +164,7 @@
           "type": "feature",
           "settings": {
             "text": "No Harsh Chemicals",
+            "icon_image": "shopify://shop_images/No_Harsh_Chemicals.svg",
             "icon_svg": ""
           }
         },
@@ -170,6 +172,7 @@
           "type": "feature",
           "settings": {
             "text": "Suitable for All Skin Types",
+            "icon_image": "shopify://shop_images/Suitable_for_All_Skin_Types.svg",
             "icon_svg": ""
           }
         },
@@ -177,6 +180,7 @@
           "type": "feature",
           "settings": {
             "text": "Visible Glow Results",
+            "icon_image": "shopify://shop_images/Visible_Glow_Results.svg",
             "icon_svg": ""
           }
         },
@@ -184,6 +188,7 @@
           "type": "feature",
           "settings": {
             "text": "Skin-Friendly Ingredients",
+            "icon_image": "shopify://shop_images/Skin-Friendly_Ingredients.svg",
             "icon_svg": ""
           }
         }

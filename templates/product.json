@@ -338,58 +338,63 @@
         "padding_bottom": 40
       }
     },
-    "comparison-table": {
+    "comparison_table_Uy4LQn": {
       "type": "comparison-table",
       "blocks": {
-        "block_1": {
+        "feature_PTXBHN": {
           "type": "feature",
           "settings": {
             "text": "Dermatologically Tested",
+            "icon_image": "shopify://shop_images/Dermatologically_Tested.svg",
             "icon_svg": ""
           }
         },
-        "block_2": {
+        "feature_kQP8zR": {
           "type": "feature",
           "settings": {
             "text": "No Harsh Chemicals",
+            "icon_image": "shopify://shop_images/No_Harsh_Chemicals.svg",
             "icon_svg": ""
           }
         },
-        "block_3": {
+        "feature_7ErxHY": {
           "type": "feature",
           "settings": {
             "text": "Suitable for All Skin Types",
+            "icon_image": "shopify://shop_images/Suitable_for_All_Skin_Types.svg",
             "icon_svg": ""
           }
         },
-        "block_4": {
+        "feature_afdcAx": {
           "type": "feature",
           "settings": {
             "text": "Visible Glow Results",
+            "icon_image": "shopify://shop_images/Visible_Glow_Results.svg",
             "icon_svg": ""
           }
         },
-        "block_5": {
+        "feature_67yK3f": {
           "type": "feature",
           "settings": {
             "text": "Skin-Friendly Ingredients",
+            "icon_image": "shopify://shop_images/Skin-Friendly_Ingredients.svg",
             "icon_svg": ""
           }
         }
       },
       "block_order": [
-        "block_1",
-        "block_2",
-        "block_3",
-        "block_4",
-        "block_5"
+        "feature_PTXBHN",
+        "feature_kQP8zR",
+        "feature_7ErxHY",
+        "feature_afdcAx",
+        "feature_67yK3f"
       ],
       "settings": {
         "heading": "Why Choose Nutrachem?",
         "subheading": "<p>Our advanced skincare solutions are carefully formulated to deliver visible results while keeping your skin healthy, hydrated, and naturally radiant.</p>",
         "content_max_width": 1000,
         "padding_top": 40,
-        "padding_bottom": 80,
+        "padding_bottom": 40,
         "header_1": "Features",
         "header_2": "Nutrachem Products",
         "header_3": "Regular Products"
@@ -437,7 +442,7 @@
     "product-ingredients",
     "product-how-it-works",
     "product-how-to-apply",
-    "comparison-table",
+    "comparison_table_Uy4LQn",
     "product-results",
     "product-faq",
     "related-products"
