@@ -126,8 +126,25 @@
     margin-inline: auto;
   }
 
+  .faqs {
+    --faqs-category-gap: 80px;
+  }
+
   .faqs__category + .faqs__category {
-    margin-top: calc(var(--space-8) * 2);
+    margin-top: var(--faqs-category-gap);
+  }
+
+  /* Same scaling as .section-padding: 0.75x on tablet, 0.5x on mobile. */
+  @media screen and (min-width: 750px) and (max-width: 989px) {
+    .faqs {
+      --faqs-category-gap: 60px;
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .faqs {
+      --faqs-category-gap: 40px;
+    }
   }
 
   .faqs__accordion {
@@ -289,7 +306,7 @@ if (!customElements.get('faq-accordion')) {
     { "type": "checkbox", "id": "show_structured_data", "label": "Add FAQ structured data (SEO)", "info": "Adds FAQPage JSON-LD built from the entries shown here.", "default": true },
     { "type": "range", "id": "content_width", "label": "Content width", "min": 600, "max": 1320, "step": 40, "unit": "px", "default": 1000 },
     { "type": "header", "content": "Section padding" },
-    { "type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 60 },
+    { "type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 80 },
     { "type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 80 }
   ],
   "presets": [{ "name": "FAQs" }]
