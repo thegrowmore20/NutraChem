@@ -45,8 +45,8 @@
   assign ordered_lookup = '~~'
   assign preferred_categories = section.settings.category_order | newline_to_br | split: '<br />'
 
-  for preferred_name in preferred_categories
-    assign preferred_name = preferred_name | strip
+  for preferred_line in preferred_categories
+    assign preferred_name = preferred_line | strip
     assign preferred_token = '~~' | append: preferred_name | append: '~~'
     if preferred_name != blank and seen_lookup contains preferred_token
       unless ordered_lookup contains preferred_token
