@@ -34,8 +34,6 @@
                 <span class="about-cta__badge-icon" aria-hidden="true">
                   {{ block.settings.icon_image | image_url: width: 48 | image_tag: loading: 'lazy', widths: '24, 48', sizes: '24px', width: 24, height: 24, alt: '' }}
                 </span>
-              {%- elsif block.settings.icon != blank -%}
-                <span aria-hidden="true">{{ block.settings.icon }}</span>
               {%- endif -%}
               {{ block.settings.label }}
             </span>
@@ -117,8 +115,7 @@
       "type": "badge",
       "name": "Badge",
       "settings": [
-        { "type": "text", "id": "icon", "label": "Icon (emoji)", "default": "🚚" },
-        { "type": "image_picker", "id": "icon_image", "label": "Icon image", "info": "Overrides the emoji icon above when set." },
+        { "type": "image_picker", "id": "icon_image", "label": "Icon image" },
         { "type": "text", "id": "label", "label": "Label", "default": "Free Shipping" }
       ]
     }
@@ -127,10 +124,10 @@
     {
       "name": "About CTA",
       "blocks": [
-        { "type": "badge", "settings": { "icon": "🚚", "label": "Free Shipping" } },
-        { "type": "badge", "settings": { "icon": "↩️", "label": "Glow Guarantee" } },
-        { "type": "badge", "settings": { "icon": "🔬", "label": "Clinically Proven" } },
-        { "type": "badge", "settings": { "icon": "🌿", "label": "Vegan & Cruelty-Free" } }
+        { "type": "badge", "settings": { "label": "Free Shipping" } },
+        { "type": "badge", "settings": { "label": "Glow Guarantee" } },
+        { "type": "badge", "settings": { "label": "Clinically Proven" } },
+        { "type": "badge", "settings": { "label": "Vegan & Cruelty-Free" } }
       ]
     }
   ]

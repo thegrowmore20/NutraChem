@@ -25,8 +25,6 @@
               <span class="u-inline-flex u-items-center u-justify-center about-certifications__icon" aria-hidden="true">
                 {{ block.settings.icon_image | image_url: width: 64 | image_tag: loading: 'lazy', widths: '32, 64', sizes: '32px', width: 32, height: 32, alt: '' }}
               </span>
-            {%- elsif block.settings.icon != blank -%}
-              <span class="u-inline-flex u-items-center u-justify-center about-certifications__icon" aria-hidden="true">{{ block.settings.icon }}</span>
             {%- endif -%}
             {%- if block.settings.heading != blank -%}
               <h3 class="about-certifications__badge-heading">{{ block.settings.heading }}</h3>
@@ -167,8 +165,7 @@
       "type": "badge",
       "name": "Badge",
       "settings": [
-        { "type": "text", "id": "icon", "label": "Icon (emoji)", "default": "🐰" },
-        { "type": "image_picker", "id": "icon_image", "label": "Icon image", "info": "Overrides the emoji icon above when set." },
+        { "type": "image_picker", "id": "icon_image", "label": "Icon image" },
         { "type": "text", "id": "heading", "label": "Heading", "default": "Cruelty-Free" },
         { "type": "text", "id": "text", "label": "Text", "default": "No animal testing at any stage." }
       ]
@@ -185,10 +182,10 @@
     {
       "name": "About certifications",
       "blocks": [
-        { "type": "badge", "settings": { "icon": "🐰", "heading": "Cruelty-Free", "text": "Certified by Leaping Bunny. No animal testing at any stage." } },
-        { "type": "badge", "settings": { "icon": "🌿", "heading": "Vegan", "text": "Certified by The Vegan Society. Zero animal-derived ingredients." } },
-        { "type": "badge", "settings": { "icon": "🔬", "heading": "Clinically Proven", "text": "Clinically tested formula. Proven results for visible skin improvement." } },
-        { "type": "badge", "settings": { "icon": "🏥", "heading": "Dermatologist Tested", "text": "Signed off by board-certified dermatologists before every release." } },
+        { "type": "badge", "settings": { "heading": "Cruelty-Free", "text": "Certified by Leaping Bunny. No animal testing at any stage." } },
+        { "type": "badge", "settings": { "heading": "Vegan", "text": "Certified by The Vegan Society. Zero animal-derived ingredients." } },
+        { "type": "badge", "settings": { "heading": "Clinically Proven", "text": "Clinically tested formula. Proven results for visible skin improvement." } },
+        { "type": "badge", "settings": { "heading": "Dermatologist Tested", "text": "Signed off by board-certified dermatologists before every release." } },
         { "type": "compliance_item", "settings": { "text": "EU Cosmetics Regulation 1223/2009" } },
         { "type": "compliance_item", "settings": { "text": "FDA 21 CFR Cosmetics" } },
         { "type": "compliance_item", "settings": { "text": "ISO 22716 GMP" } },

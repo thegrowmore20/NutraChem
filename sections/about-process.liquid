@@ -24,8 +24,6 @@
                 <span class="about-process__icon" aria-hidden="true">
                   {{ block.settings.icon_image | image_url: width: 84 | image_tag: loading: 'lazy', widths: '32, 42, 64, 84', sizes: '(min-width: 990px) 42px, 32px', width: 42, height: 42, alt: '' }}
                 </span>
-              {%- elsif block.settings.icon != blank -%}
-                <span class="about-process__icon" aria-hidden="true">{{ block.settings.icon }}</span>
               {%- endif -%}
             </div>
             {%- if block.settings.heading != blank -%}
@@ -152,8 +150,7 @@
       "type": "step",
       "name": "Step",
       "settings": [
-        { "type": "text", "id": "icon", "label": "Icon (emoji)", "default": "📚" },
-        { "type": "image_picker", "id": "icon_image", "label": "Icon image", "info": "Overrides the emoji icon above when set." },
+        { "type": "image_picker", "id": "icon_image", "label": "Icon image" },
         { "type": "text", "id": "heading", "label": "Heading", "default": "Literature Review" },
         { "type": "textarea", "id": "text", "label": "Text" },
         { "type": "text", "id": "caption", "label": "Caption" }
@@ -164,12 +161,12 @@
     {
       "name": "About process",
       "blocks": [
-        { "type": "step", "settings": { "icon": "📚", "heading": "Literature Review", "text": "Our scientists review thousands of peer-reviewed papers to identify the most clinically supported actives.", "caption": "200+ studies reviewed per formula" } },
-        { "type": "step", "settings": { "icon": "⚗️", "heading": "Compound Selection", "text": "We select only the most bioavailable form of each active, proven to penetrate the skin barrier.", "caption": "FDA GRAS & EU approved ingredients only" } },
-        { "type": "step", "settings": { "icon": "🧪", "heading": "Lab Formulation", "text": "Compounds are combined at peer-reviewed concentrations. pH and delivery system are optimised for absorption.", "caption": "100+ iterations before finalised" } },
-        { "type": "step", "settings": { "icon": "🔬", "heading": "Clinical Validation", "text": "Double-blind clinical testing with 100+ participants. No passing data means back to the lab.", "caption": "Independent CRO testing, no internal bias" } },
-        { "type": "step", "settings": { "icon": "✅", "heading": "Safety & Stability", "text": "Patch testing, dermatologist review, and 12-month accelerated stability testing before any product ships.", "caption": "Dermatologist-tested, hypoallergenic" } },
-        { "type": "step", "settings": { "icon": "📦", "heading": "Sustainable Launch", "text": "Recyclable packaging, fulfilled with care from our warehouse.", "caption": "Carbon-neutral shipping on all orders" } }
+        { "type": "step", "settings": { "heading": "Literature Review", "text": "Our scientists review thousands of peer-reviewed papers to identify the most clinically supported actives.", "caption": "200+ studies reviewed per formula" } },
+        { "type": "step", "settings": { "heading": "Compound Selection", "text": "We select only the most bioavailable form of each active, proven to penetrate the skin barrier.", "caption": "FDA GRAS & EU approved ingredients only" } },
+        { "type": "step", "settings": { "heading": "Lab Formulation", "text": "Compounds are combined at peer-reviewed concentrations. pH and delivery system are optimised for absorption.", "caption": "100+ iterations before finalised" } },
+        { "type": "step", "settings": { "heading": "Clinical Validation", "text": "Double-blind clinical testing with 100+ participants. No passing data means back to the lab.", "caption": "Independent CRO testing, no internal bias" } },
+        { "type": "step", "settings": { "heading": "Safety & Stability", "text": "Patch testing, dermatologist review, and 12-month accelerated stability testing before any product ships.", "caption": "Dermatologist-tested, hypoallergenic" } },
+        { "type": "step", "settings": { "heading": "Sustainable Launch", "text": "Recyclable packaging, fulfilled with care from our warehouse.", "caption": "Carbon-neutral shipping on all orders" } }
       ]
     }
   ]

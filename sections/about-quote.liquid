@@ -22,8 +22,6 @@
               <span class="u-inline-flex u-items-center u-justify-center about-quote__stat-icon" aria-hidden="true">
                 {{ block.settings.icon_image | image_url: width: 64 | image_tag: loading: 'lazy', widths: '32, 64', sizes: '32px', width: 32, height: 32, alt: '' }}
               </span>
-            {%- elsif block.settings.icon != blank -%}
-              <span class="u-inline-flex u-items-center u-justify-center about-quote__stat-icon" aria-hidden="true">{{ block.settings.icon }}</span>
             {%- endif -%}
             {%- if block.settings.number != blank -%}
               <p class="about-quote__stat-number">{{ block.settings.number }}</p>
@@ -155,8 +153,7 @@
       "type": "stat",
       "name": "Stat",
       "settings": [
-        { "type": "text", "id": "icon", "label": "Icon (emoji)", "default": "🔬" },
-        { "type": "image_picker", "id": "icon_image", "label": "Icon image", "info": "Overrides the emoji icon above when set." },
+        { "type": "image_picker", "id": "icon_image", "label": "Icon image" },
         { "type": "text", "id": "number", "label": "Number", "default": "95%" },
         { "type": "text", "id": "label", "label": "Label", "default": "Clinical Efficacy" },
         { "type": "text", "id": "description", "label": "Description", "default": "Average results across all product lines in independent trials." }
@@ -167,10 +164,10 @@
     {
       "name": "About quote & stats",
       "blocks": [
-        { "type": "stat", "settings": { "icon": "🔬", "number": "95%", "label": "Clinical Efficacy", "description": "Average results across all product lines in independent trials." } },
-        { "type": "stat", "settings": { "icon": "🌍", "number": "5+", "label": "Countries Served", "description": "Trusted by customers on every continent." } },
-        { "type": "stat", "settings": { "icon": "💬", "number": "1500+", "label": "Happy Customers", "description": "With a 4.9-star average across 1500+ reviews." } },
-        { "type": "stat", "settings": { "icon": "📋", "number": "12+", "label": "Clinical Studies", "description": "Published in peer-reviewed dermatology journals worldwide." } }
+        { "type": "stat", "settings": { "number": "95%", "label": "Clinical Efficacy", "description": "Average results across all product lines in independent trials." } },
+        { "type": "stat", "settings": { "number": "5+", "label": "Countries Served", "description": "Trusted by customers on every continent." } },
+        { "type": "stat", "settings": { "number": "1500+", "label": "Happy Customers", "description": "With a 4.9-star average across 1500+ reviews." } },
+        { "type": "stat", "settings": { "number": "12+", "label": "Clinical Studies", "description": "Published in peer-reviewed dermatology journals worldwide." } }
       ]
     }
   ]

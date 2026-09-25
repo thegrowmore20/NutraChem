@@ -23,8 +23,6 @@
                 <span class="about-values__icon" aria-hidden="true">
                   {{ block.settings.icon_image | image_url: width: 84 | image_tag: loading: 'lazy', widths: '32, 42, 64, 84', sizes: '(min-width: 990px) 42px, 32px', width: 42, height: 42, alt: '' }}
                 </span>
-              {%- elsif block.settings.icon != blank -%}
-                <span class="about-values__icon" aria-hidden="true">{{ block.settings.icon }}</span>
               {%- endif -%}
             </div>
             {%- if block.settings.heading != blank -%}
@@ -140,8 +138,7 @@
       "type": "value",
       "name": "Value",
       "settings": [
-        { "type": "text", "id": "icon", "label": "Icon (emoji)", "default": "🔬" },
-        { "type": "image_picker", "id": "icon_image", "label": "Icon image", "info": "Overrides the emoji icon above when set." },
+        { "type": "image_picker", "id": "icon_image", "label": "Icon image" },
         { "type": "text", "id": "heading", "label": "Heading", "default": "Science First" },
         { "type": "textarea", "id": "text", "label": "Text" }
       ]
@@ -151,12 +148,12 @@
     {
       "name": "About values",
       "blocks": [
-        { "type": "value", "settings": { "icon": "🔬", "heading": "Science First", "text": "Every formula starts in the lab, not the marketing suite. If it cannot be clinically proven, it does not get made." } },
-        { "type": "value", "settings": { "icon": "💎", "heading": "Uncompromised Purity", "text": "No fillers, no artificial fragrances, no greenwashing. Every ingredient earns its place at clinical-grade concentrations." } },
-        { "type": "value", "settings": { "icon": "🌿", "heading": "Planet Positive", "text": "Cruelty-free, vegan, and sustainably packaged. We believe premium and responsibility are not mutually exclusive." } },
-        { "type": "value", "settings": { "icon": "🤝", "heading": "Radical Transparency", "text": "Full ingredient lists, clinical data, and honest photography. We hide nothing because we have nothing to hide." } },
-        { "type": "value", "settings": { "icon": "♾️", "heading": "Continuous Research", "text": "Our lab never stops. We reinvest into dermatological research every year to ensure our formulas stay at the scientific frontier." } },
-        { "type": "value", "settings": { "icon": "❤️", "heading": "Community Trust", "text": "We earn trust through results, not promises. Our Glow Guarantee exists because we believe every customer should see a real difference." } }
+        { "type": "value", "settings": { "heading": "Science First", "text": "Every formula starts in the lab, not the marketing suite. If it cannot be clinically proven, it does not get made." } },
+        { "type": "value", "settings": { "heading": "Uncompromised Purity", "text": "No fillers, no artificial fragrances, no greenwashing. Every ingredient earns its place at clinical-grade concentrations." } },
+        { "type": "value", "settings": { "heading": "Planet Positive", "text": "Cruelty-free, vegan, and sustainably packaged. We believe premium and responsibility are not mutually exclusive." } },
+        { "type": "value", "settings": { "heading": "Radical Transparency", "text": "Full ingredient lists, clinical data, and honest photography. We hide nothing because we have nothing to hide." } },
+        { "type": "value", "settings": { "heading": "Continuous Research", "text": "Our lab never stops. We reinvest into dermatological research every year to ensure our formulas stay at the scientific frontier." } },
+        { "type": "value", "settings": { "heading": "Community Trust", "text": "We earn trust through results, not promises. Our Glow Guarantee exists because we believe every customer should see a real difference." } }
       ]
     }
   ]
