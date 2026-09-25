@@ -511,15 +511,29 @@ body:not(:has(.banner--transparent-header)) {
   transition: transform 0.2s ease, color 0.2s ease;
 }
 
+/* The wishlist and cart count badges grow with their icon. They use the
+   standalone `scale` property instead of `transform`, so it composes with any
+   transform the Vensa app applies to position its own badge. */
+.header__icons .vensa-wl-badge,
+.header__icons .cart-icon-bubble {
+  transition: scale 0.2s ease;
+}
+
 @media (hover: hover) and (pointer: fine) {
   .header__icons :is(a, button, shopify-account):hover svg {
     color: var(--color-secondary);
     transform: scale(1.12);
   }
+
+  .header__icons :is(a, button):hover :is(.vensa-wl-badge, .cart-icon-bubble) {
+    scale: 1.12;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .header__icons svg {
+  .header__icons svg,
+  .header__icons .vensa-wl-badge,
+  .header__icons .cart-icon-bubble {
     transition: none;
   }
 }
