@@ -1405,10 +1405,12 @@ class HeaderMenu {
       if (this.#openPanel) this.#close(this.#openTrigger, this.#openPanel)
     })
 
+    let firstMenu = null
     for (const item of this.#items) {
       const trigger = item.querySelector('.header__menu-trigger')
       const panel = item.querySelector('.header__menu-panel')
       if (!trigger || !panel) continue
+      firstMenu ??= { trigger, panel }
 
       trigger.addEventListener('click', (event) => {
         if (this.#desktopQuery.matches) return
@@ -1433,6 +1435,28 @@ class HeaderMenu {
         window.clearTimeout(this.#closeTimer)
         this.#closeTimer = window.setTimeout(() => this.#close(trigger, panel), 150)
       })
+    }
+
+    // Hovering the logo or the header icons opens the first mega-menu panel
+    // too, so the whole header behaves as one hover target. Moving on to a
+    // nav item swaps to that item's panel (its mouseenter above), and moving
+    // between logo and icons keeps whatever is open (the pending close below
+    // is cancelled by the next mouseenter).
+    if (firstMenu) {
+      for (const area of document.querySelectorAll('.header__logo, .header__icons')) {
+        area.addEventListener('mouseenter', () => {
+          if (!this.#desktopQuery.matches) return
+          window.clearTimeout(this.#closeTimer)
+          if (!this.#openPanel) this.#open(firstMenu.trigger, firstMenu.panel)
+        })
+        area.addEventListener('mouseleave', () => {
+          if (!this.#desktopQuery.matches) return
+          window.clearTimeout(this.#closeTimer)
+          this.#closeTimer = window.setTimeout(() => {
+            if (this.#openPanel) this.#close(this.#openTrigger, this.#openPanel)
+          }, 150)
+        })
+      }
     }
 
     document.addEventListener('click', (event) => this.#onOutsideClick(event))
