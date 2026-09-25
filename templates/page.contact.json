@@ -99,6 +99,7 @@
     },
     "map": {
       "type": "custom-section",
+      "disabled": true,
       "settings": {
         "heading": "",
         "link_text": "",
