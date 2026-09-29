@@ -385,7 +385,7 @@ h2[class] {
 
 .product-card__title {
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 500;
   font-family: var(--font-accent);
   color: var(--color-primary);
   margin: 0px;
@@ -618,4 +618,8 @@ summary:focus-visible {
    Two classes beat the app's one, so no !important is needed. */
 .vensa-wl-drawer:not(.open) {
   box-shadow: none;
+}
+
+.AirReviews-Widget .AirReviews-Widget__FloatButtonWrapper {
+  display: none !important
 }

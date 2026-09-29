@@ -43,6 +43,163 @@
         "padding_bottom": 40
       }
     },
+    "animated_pharmacies_qEMVb4": {
+      "type": "animated-pharmacies",
+      "blocks": {
+        "logo_7kxHXM": {
+          "type": "logo",
+          "settings": {
+            "image": "shopify://shop_images/9.png",
+            "name": "Bashir Sons Pharmacy",
+            "link": ""
+          }
+        },
+        "logo_h7dr8Y": {
+          "type": "logo",
+          "settings": {
+            "image": "shopify://shop_images/Al_Noor_Pharmacy.png",
+            "name": "Al Noor Pharmacy",
+            "link": ""
+          }
+        },
+        "logo_htT7yp": {
+          "type": "logo",
+          "settings": {
+            "image": "shopify://shop_images/Servaid_Pharmacy.png",
+            "name": "Servaid Pharmacy",
+            "link": ""
+          }
+        },
+        "logo_ACHDCp": {
+          "type": "logo",
+          "settings": {
+            "image": "shopify://shop_images/FDPP_Pharmacy.png",
+            "name": "Fazal Deen Pharmacy",
+            "link": ""
+          }
+        },
+        "logo_CF7tnc": {
+          "type": "logo",
+          "settings": {
+            "image": "shopify://shop_images/Mahmood_Sons_Pharmacy.png",
+            "name": "Mahmood & Sons Pharmacy",
+            "link": ""
+          }
+        },
+        "logo_TjHVXG": {
+          "type": "logo",
+          "settings": {
+            "image": "shopify://shop_images/Clinix_Pharmacy.png",
+            "name": "Clinix Pharmacy",
+            "link": ""
+          }
+        },
+        "logo_E3bcbh": {
+          "type": "logo",
+          "settings": {
+            "image": "shopify://shop_images/Nova_Pharmacy.png",
+            "name": "Nova Pharmacy",
+            "link": ""
+          }
+        },
+        "logo_thP3P6": {
+          "type": "logo",
+          "settings": {
+            "image": "shopify://shop_images/Get_Well_Pharmacy.png",
+            "name": "Get Well Pharmacy",
+            "link": ""
+          }
+        },
+        "logo_Xmyx3f": {
+          "type": "logo",
+          "settings": {
+            "image": "shopify://shop_images/Green_Pharmacy.png",
+            "name": "Green Pharmacy",
+            "link": ""
+          }
+        },
+        "logo_xeLDar": {
+          "type": "logo",
+          "settings": {
+            "image": "shopify://shop_images/New_Mahmood_Pharmacy.png",
+            "name": "New Mahmood Pharmacy",
+            "link": ""
+          }
+        },
+        "logo_yDWnTp": {
+          "type": "logo",
+          "settings": {
+            "image": "shopify://shop_images/National_Pharmacy.png",
+            "name": "National Pharmacy",
+            "link": ""
+          }
+        },
+        "logo_tjmVFH": {
+          "type": "logo",
+          "settings": {
+            "image": "shopify://shop_images/2.png",
+            "name": "Impluse Pharmacy",
+            "link": ""
+          }
+        },
+        "logo_W67Gt8": {
+          "type": "logo",
+          "settings": {
+            "image": "shopify://shop_images/Healthzone_Pharmacy.png",
+            "name": "Health Zone Pharmacy",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "logo_7kxHXM",
+        "logo_h7dr8Y",
+        "logo_htT7yp",
+        "logo_ACHDCp",
+        "logo_CF7tnc",
+        "logo_TjHVXG",
+        "logo_E3bcbh",
+        "logo_thP3P6",
+        "logo_Xmyx3f",
+        "logo_xeLDar",
+        "logo_yDWnTp",
+        "logo_tjmVFH",
+        "logo_W67Gt8"
+      ],
+      "name": "Trusted partners",
+      "settings": {
+        "subheading": "Trusted Retail Partners",
+        "heading": "Available On Pharmacies Near You",
+        "content_alignment": "center",
+        "show_names": true,
+        "background_color": "#ffffff",
+        "subheading_color": "#008fa3",
+        "heading_color": "#18252B",
+        "border_color": "rgba(0,0,0,0)",
+        "show_top_border": false,
+        "show_divider": false,
+        "show_bottom_border": false,
+        "padding_top_desktop": 40,
+        "padding_bottom_desktop": 40,
+        "padding_top_mobile": 20,
+        "padding_bottom_mobile": 20,
+        "heading_spacing_desktop": 32,
+        "heading_spacing_mobile": 16,
+        "subheading_size_desktop": 16,
+        "subheading_size_mobile": 14,
+        "heading_size_desktop": 42,
+        "heading_size_mobile": 28,
+        "logo_height_desktop": 48,
+        "logo_height_mobile": 32,
+        "logo_gap_desktop": 56,
+        "logo_gap_mobile": 28,
+        "grayscale_logos": false,
+        "enable_animation": true,
+        "animation_direction": "left",
+        "animation_speed": 30,
+        "pause_on_hover": true
+      }
+    },
     "shop-by-concern": {
       "type": "collection-list",
       "blocks": {
@@ -305,7 +462,7 @@
             "air_allReviewsBlock_summaryBgColor": "#f8f8f8",
             "air_allReviewsBlock_bgColor": "#ffffff",
             "air_allReviewsBlock_onlyMedia": false,
-            "air_allReviewsBlock_mediaFirst": false,
+            "air_allReviewsBlock_mediaFirst": true,
             "air_allReviewsBlock_onlyPositive": false,
             "air_allReviewsBlock_hideProductThumbnails": false,
             "air_allReviewsBlock_selectedProduct": []
@@ -376,6 +533,7 @@
   "order": [
     "hero",
     "best-sellers",
+    "animated_pharmacies_qEMVb4",
     "shop-by-concern",
     "ingredients",
     "comparison_table_QYKVLT",
