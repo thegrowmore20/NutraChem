@@ -1,34 +1,17 @@
 {% comment %}
   Trusted Partners / Logo Bar section
-  - Fully standalone: no theme CSS classes, snippets or JS libraries required.
-  - Fonts intentionally use `inherit` so headings/text pick up whatever font-family
-    the theme already sets on <body> — no fonts are hardcoded here.
   - Animation is pure CSS (infinite marquee), so there is zero JS payload.
-  - All spacing/typography is controlled separately for mobile vs desktop via
-    the theme editor, using CSS custom properties swapped at a 750px breakpoint.
+  - Heading uses the shared section-header snippet and spacing uses the
+    shared section-padding class, matching every other section in the theme.
 {% endcomment %}
 
-<div
+<section
   id="TrustedPartners-{{ section.id }}"
-  class="tp-section{% if section.settings.grayscale_logos %} tp-grayscale{% endif %}"
-  style="background-color: {{ section.settings.background_color }};"
+  class="tp-section section-padding{% if section.settings.grayscale_logos %} tp-grayscale{% endif %}"
+  style="--padding-top: {{ section.settings.padding_top }}px; --padding-bottom: {{ section.settings.padding_bottom }}px;"
 >
-  <div class="tp-inner">
-
-    {%- if section.settings.subheading != blank or section.settings.heading != blank -%}
-      <div class="tp-header tp-align-{{ section.settings.content_alignment }}">
-        {%- if section.settings.subheading != blank -%}
-          <p class="tp-subheading">{{ section.settings.subheading | escape }}</p>
-        {%- endif -%}
-        {%- if section.settings.heading != blank -%}
-          <h2 class="tp-heading">{{ section.settings.heading | escape }}</h2>
-        {%- endif -%}
-      </div>
-    {%- endif -%}
-
-    {%- if section.settings.show_divider -%}
-      <div class="tp-divider"></div>
-    {%- endif -%}
+  <div class="{% unless section.settings.full_width %}container{% endunless %}">
+    {% render 'section-header', eyebrow: section.settings.eyebrow, heading: section.settings.heading %}
 
     <div class="tp-track-wrap">
       <div
@@ -79,93 +62,26 @@
         {%- endif -%}
       </div>
     </div>
-
   </div>
-</div>
+</section>
 
 {% style %}
   #TrustedPartners-{{ section.id }} {
-    --tp-pad-top: {{ section.settings.padding_top_mobile }}px;
-    --tp-pad-bottom: {{ section.settings.padding_bottom_mobile }}px;
-    --tp-header-gap: {{ section.settings.heading_spacing_mobile }}px;
-    --tp-subheading-size: {{ section.settings.subheading_size_mobile }}px;
-    --tp-heading-size: {{ section.settings.heading_size_mobile }}px;
     --tp-logo-height: {{ section.settings.logo_height_mobile }}px;
     --tp-gap: {{ section.settings.logo_gap_mobile }}px;
     --tp-duration: {{ section.settings.animation_speed }}s;
-
-    box-sizing: border-box;
-    width: 100%;
-    color: {{ section.settings.heading_color }};
   }
 
   @media screen and (min-width: 750px) {
     #TrustedPartners-{{ section.id }} {
-      --tp-pad-top: {{ section.settings.padding_top_desktop }}px;
-      --tp-pad-bottom: {{ section.settings.padding_bottom_desktop }}px;
-      --tp-header-gap: {{ section.settings.heading_spacing_desktop }}px;
-      --tp-subheading-size: {{ section.settings.subheading_size_desktop }}px;
-      --tp-heading-size: {{ section.settings.heading_size_desktop }}px;
       --tp-logo-height: {{ section.settings.logo_height_desktop }}px;
       --tp-gap: {{ section.settings.logo_gap_desktop }}px;
     }
   }
 
-  #TrustedPartners-{{ section.id }} * {
-    box-sizing: border-box;
-  }
-
-  #TrustedPartners-{{ section.id }} .tp-inner {
-    width: 100%;
-    padding-top: var(--tp-pad-top);
-    padding-bottom: var(--tp-pad-bottom);
-    padding-left: clamp(16px, 4vw, 48px);
-    padding-right: clamp(16px, 4vw, 48px);
-  }
-
-  #TrustedPartners-{{ section.id }} .tp-header {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin-bottom: var(--tp-header-gap);
-  }
-
-  #TrustedPartners-{{ section.id }} .tp-align-center { align-items: center; text-align: center; }
-  #TrustedPartners-{{ section.id }} .tp-align-left { align-items: flex-start; text-align: left; }
-
-  #TrustedPartners-{{ section.id }} .tp-subheading {
-    margin: 0;
-    font-family: inherit;
-    font-size: var(--tp-subheading-size);
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: {{ section.settings.subheading_color }};
-  }
-
-  #TrustedPartners-{{ section.id }} .tp-heading {
-    margin: 0;
-    font-family: var(--font-heading);
-    font-weight: 500;
-    font-size: var(--tp-heading-size);
-    line-height: 1.2;
-    color: {{ section.settings.heading_color }};
-  }
-
-  #TrustedPartners-{{ section.id }} .tp-divider {
-    width: 100%;
-    height: 1px;
-    background-color: {{ section.settings.border_color }};
-    margin-bottom: var(--tp-header-gap);
-  }
-
   #TrustedPartners-{{ section.id }} .tp-track-wrap {
     width: 100%;
     overflow: hidden;
-    {% if section.settings.show_top_border %}border-top: 1px solid {{ section.settings.border_color }};{% endif %}
-    {% if section.settings.show_bottom_border %}border-bottom: 1px solid {{ section.settings.border_color }};{% endif %}
-    padding-top: calc(var(--tp-header-gap) / 2);
-    padding-bottom: calc(var(--tp-header-gap) / 2);
   }
 
   #TrustedPartners-{{ section.id }} .tp-track {
@@ -231,7 +147,7 @@
     font-family: inherit;
     font-size: 13px;
     font-weight: 500;
-    color: {{ section.settings.heading_color }};
+    color: var(--color-text);
     text-align: center;
     white-space: nowrap;
   }
@@ -255,42 +171,14 @@
   "name": "Trusted partners",
   "settings": [
     { "type": "header", "content": "Content" },
-    { "type": "text", "id": "subheading", "label": "Subheading", "default": "Trusted Retail Partners" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Trusted Retail Partners" },
     { "type": "text", "id": "heading", "label": "Heading", "default": "Available On Pharmacies Near You" },
-    {
-      "type": "select",
-      "id": "content_alignment",
-      "label": "Content alignment",
-      "options": [
-        { "value": "center", "label": "Center" },
-        { "value": "left", "label": "Left" }
-      ],
-      "default": "center"
-    },
     { "type": "checkbox", "id": "show_names", "label": "Show partner name under each logo", "default": false },
+    { "type": "checkbox", "id": "full_width", "label": "Full width (edge to edge)", "default": false },
 
-    { "type": "header", "content": "Colors & borders" },
-    { "type": "color", "id": "background_color", "label": "Background color", "default": "#FAF9F6" },
-    { "type": "color", "id": "subheading_color", "label": "Subheading color", "default": "#3B5BDB" },
-    { "type": "color", "id": "heading_color", "label": "Heading color", "default": "#1A1A1A" },
-    { "type": "color", "id": "border_color", "label": "Border/divider color", "default": "#E5E2DC" },
-    { "type": "checkbox", "id": "show_top_border", "label": "Show top border", "default": true },
-    { "type": "checkbox", "id": "show_divider", "label": "Show line under heading", "default": true },
-    { "type": "checkbox", "id": "show_bottom_border", "label": "Show bottom border", "default": true },
-
-    { "type": "header", "content": "Section spacing" },
-    { "type": "range", "id": "padding_top_desktop", "min": 0, "max": 150, "step": 5, "unit": "px", "label": "Top padding — desktop", "default": 80 },
-    { "type": "range", "id": "padding_bottom_desktop", "min": 0, "max": 150, "step": 5, "unit": "px", "label": "Bottom padding — desktop", "default": 80 },
-    { "type": "range", "id": "padding_top_mobile", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Top padding — mobile", "default": 40 },
-    { "type": "range", "id": "padding_bottom_mobile", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Bottom padding — mobile", "default": 40 },
-    { "type": "range", "id": "heading_spacing_desktop", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Space below heading — desktop", "info": "Gap between the heading block and the logo row", "default": 48 },
-    { "type": "range", "id": "heading_spacing_mobile", "min": 0, "max": 80, "step": 4, "unit": "px", "label": "Space below heading — mobile", "default": 28 },
-
-    { "type": "header", "content": "Heading typography" },
-    { "type": "range", "id": "subheading_size_desktop", "min": 10, "max": 24, "step": 1, "unit": "px", "label": "Subheading size — desktop", "default": 14 },
-    { "type": "range", "id": "subheading_size_mobile", "min": 10, "max": 20, "step": 1, "unit": "px", "label": "Subheading size — mobile", "default": 12 },
-    { "type": "range", "id": "heading_size_desktop", "min": 20, "max": 60, "step": 1, "unit": "px", "label": "Heading size — desktop", "default": 36 },
-    { "type": "range", "id": "heading_size_mobile", "min": 16, "max": 40, "step": 1, "unit": "px", "label": "Heading size — mobile", "default": 24 },
+    { "type": "header", "content": "Section padding" },
+    { "type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 40 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 40 },
 
     { "type": "header", "content": "Logos" },
     { "type": "range", "id": "logo_height_desktop", "min": 24, "max": 100, "step": 2, "unit": "px", "label": "Logo height — desktop", "default": 48 },
