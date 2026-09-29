@@ -124,7 +124,6 @@
 {% javascript %}
 class ProductRecommendations extends HTMLElement {
   #observer
-  #reviewTimer
   #request
 
   connectedCallback() {
@@ -143,22 +142,11 @@ class ProductRecommendations extends HTMLElement {
   disconnectedCallback() {
     this.#observer?.disconnect()
     this.#request?.abort()
-    clearTimeout(this.#reviewTimer)
-  }
-
-  #refreshReviews(attempt = 0) {
-    if (!this.isConnected) return
-    if (typeof window.avadaAirReviewRerender === 'function') {
-      window.avadaAirReviewRerender()
-    } else if (attempt < 20) {
-      this.#reviewTimer = setTimeout(() => this.#refreshReviews(attempt + 1), 500)
-    }
   }
 
   async #load() {
     try {
       this.#request?.abort()
-      clearTimeout(this.#reviewTimer)
       this.#request = new AbortController()
       const response = await fetch(`${this.dataset.url}&product_id=${this.dataset.productId}`, {
         signal: this.#request.signal,
@@ -170,7 +158,11 @@ class ProductRecommendations extends HTMLElement {
       const newContent = doc.querySelector('product-recs')
       if (newContent && newContent.innerHTML.trim().length) {
         this.innerHTML = newContent.innerHTML
-        this.#refreshReviews()
+        // Product cards now render Loox's .loox-rating markup instead of
+        // Air Reviews, which doesn't expose a documented global to re-scan
+        // freshly injected DOM the way avadaAirReviewRerender did - stars
+        // on lazy-loaded recommendations may stay empty until Loox ships
+        // one (see the same note in main-collection-product-grid.liquid).
       }
     } catch (error) {
       if (error.name === 'AbortError') return

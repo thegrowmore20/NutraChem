@@ -26,8 +26,16 @@
       <a href="{{ product.url | default: routes.all_products_collection_url }}">{{ product.title | default: 'Creamy Face Wash - Gluta Cure' }}</a>
     </h3>
     {%- if product != blank -%}
-      <div class="ProductPage-StarRating" style="display: flex; align-items: center; gap: 10px;"><div class="AirReviews-Widget AirReviews-Widget--Stars" data-review-avg="{{ product.metafields.air_reviews_product.review_avg }}"
-    data-review-count="{{ product.metafields.air_reviews_product.review_count }}"></div><span>{{ product.metafields.air_reviews_product.review_avg }} ({{ product.metafields.air_reviews_product.review_count }})</span></div>
+      <div class="card-product-rating" aria-label="Rated {{ product.metafields.loox.avg_rating }} out of 5 based on {{ product.metafields.loox.num_reviews }} reviews">
+        <div class="loox-rating"
+          data-pattern="[rating] ([count])"
+          data-show-empty-stars="true"
+          data-id="{{ product.id }}"
+          data-rating="{{ product.metafields.loox.avg_rating }}"
+          data-raters="{{ product.metafields.loox.num_reviews }}"
+          data-floating-product-reviews-enabled="true">
+        </div>
+      </div>
     {%- else -%}
       <div class="product-card__rating">
         {% render 'star-rating', rating: rating %}

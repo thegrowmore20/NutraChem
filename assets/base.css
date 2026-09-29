@@ -586,9 +586,20 @@ summary:focus-visible {
 /* The star-rating widget (rendered via a Custom Liquid block right under the
    product title) starts empty and is populated by the AirReviews app's own
    script after load, so its box grows from 0 to ~29px - this reserves that
-   height upfront to avoid a layout shift (CLS) when it populates. */
+   height upfront to avoid a layout shift (CLS) when it populates. Kept
+   (though unused now that product-card/mega-menu-card render Loox markup
+   instead) since the AirReviews app embed is still enabled - see
+   .card-product-rating below for the Loox equivalent. */
 .ProductPage-StarRating,
 .AirReviews-Widget--Stars {
+  min-height: 29px;
+}
+
+/* Same CLS reservation as above, for the Loox star-rating widget that now
+   renders in product-card.liquid and mega-menu-product-card.liquid - it
+   also populates asynchronously via Loox's own script after load. */
+.card-product-rating,
+.loox-rating {
   min-height: 29px;
 }
 

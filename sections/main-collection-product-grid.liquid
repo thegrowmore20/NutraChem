@@ -993,10 +993,12 @@ class CollectionResults extends HTMLElement {
       const newGrid = doc.querySelector('[data-grid-container]')
       if (newGrid && this.#grid) {
         this.#grid.innerHTML = newGrid.innerHTML
-        // The Air Reviews app star-rating widgets only self-initialize on the
-        // original page load; freshly swapped-in product cards need this app
-        // global to re-scan the DOM, or their stars stay empty.
-        window.avadaAirReviewRerender?.()
+        // Product cards now render Loox's .loox-rating markup instead of
+        // Air Reviews. Unlike Air Reviews, Loox doesn't expose a documented
+        // global to re-scan freshly swapped-in DOM (their script only scans
+        // once on page load), so stars on filtered-in cards may stay empty
+        // until Loox ships one - verify this after filtering and, if blank,
+        // ask Loox support for the equivalent of avadaAirReviewRerender.
       }
 
       const newCount = doc.querySelector('[data-product-count]')

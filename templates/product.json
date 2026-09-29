@@ -22,8 +22,24 @@
         },
         "custom_liquid": {
           "type": "custom_liquid",
+          "disabled": true,
           "settings": {
             "custom_liquid": "<div class=\"ProductPage-StarRating\" style=\"display: flex; align-items: center; gap: 10px;\"><div class=\"AirReviews-Widget AirReviews-Widget--Stars\"></div><span>{{ product.metafields.air_reviews_product.review_avg }} ({{ product.metafields.air_reviews_product.review_count }})</span></div>"
+          }
+        },
+        "loox_reviews_loox_rating_LA6YPf": {
+          "type": "shopify://apps/loox-reviews/blocks/loox-rating/5c3b337f-fd14-4df5-b1d6-80ec13e6e28e",
+          "settings": {
+            "contentSize": 16,
+            "pattern": "[rating] ([count])",
+            "hideText": false,
+            "alignment": "",
+            "layout": "",
+            "textColor": "",
+            "starColor": "",
+            "showAllReviews": false,
+            "looxOpenFloatingWidget": true,
+            "emptyRatingWidget": true
           }
         },
         "price": {
@@ -151,6 +167,7 @@
       "block_order": [
         "title",
         "custom_liquid",
+        "loox_reviews_loox_rating_LA6YPf",
         "price",
         "variant-picker",
         "quantity-buy-buttons",
@@ -181,18 +198,22 @@
     "custom_section_BcGjnE": {
       "type": "custom-section",
       "blocks": {
-        "ag_product_reviews_app_block_review_list_FYDhAk": {
-          "type": "shopify://apps/ag-product-reviews/blocks/app-block-review-list/c4e1e9ca-4d46-4e76-bc39-7e42417cb327",
+        "loox_reviews_loox_dynamic_section_FppkiQ": {
+          "type": "shopify://apps/loox-reviews/blocks/loox-dynamic-section/5c3b337f-fd14-4df5-b1d6-80ec13e6e28e",
           "settings": {
-            "air_blockreviews_summaryHeading": "",
-            "air_blockreviews_layout": "grid",
-            "air_blockreviews_singleStarColor": "#008fa3",
-            "air_blockreviews_primaryColor": "#121212"
+            "reviews_to_display": "",
+            "default_tab": "automatic",
+            "only_photos": false,
+            "aggregated": false,
+            "limit": 4,
+            "hide_thumbnails": false,
+            "maxwidth": 1080,
+            "is_sample": true
           }
         }
       },
       "block_order": [
-        "ag_product_reviews_app_block_review_list_FYDhAk"
+        "loox_reviews_loox_dynamic_section_FppkiQ"
       ],
       "name": "Custom section",
       "settings": {

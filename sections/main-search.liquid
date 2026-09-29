@@ -1018,7 +1018,10 @@ class SearchResults extends HTMLElement {
       const newGrid = doc.querySelector('[data-grid-container]')
       if (newGrid && this.#grid) {
         this.#grid.innerHTML = newGrid.innerHTML
-        window.avadaAirReviewRerender?.()
+        // Product cards now render Loox's .loox-rating markup instead of
+        // Air Reviews, which doesn't expose a documented global to re-scan
+        // freshly swapped-in DOM - see the matching comment in
+        // main-collection-product-grid.liquid.
       }
 
       const newCount = doc.querySelector('[data-product-count]')
