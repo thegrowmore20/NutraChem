@@ -109,11 +109,6 @@
     },
     "content_for_index": [],
     "blocks": {
-      "14710238943034738919": {
-        "type": "shopify://apps/ag-product-reviews/blocks/app-embed/c4e1e9ca-4d46-4e76-bc39-7e42417cb327",
-        "disabled": false,
-        "settings": {}
-      },
       "16462826257733288596": {
         "type": "shopify://apps/vensa-wishlist-back-in-stock/blocks/wishlist-loader/019f9be2-4682-783c-bf16-0376fe0b8d5d",
         "disabled": false,
@@ -133,6 +128,13 @@
         "type": "shopify://apps/microsoft-clarity/blocks/clarity_js/31c3d126-8116-4b4a-8ba1-baeda7c4aeea",
         "disabled": false,
         "settings": {}
+      },
+      "14710238943034738919": {
+        "type": "shopify://apps/ag-product-reviews/blocks/app-embed/c4e1e9ca-4d46-4e76-bc39-7e42417cb327",
+        "disabled": true,
+        "settings": {
+          "air_reviews_json_ld_v3": ""
+        }
       }
     }
   }

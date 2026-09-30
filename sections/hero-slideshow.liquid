@@ -1,0 +1,595 @@
+{%- comment -%}
+  Hero Slideshow - a multi-slide version of hero-banner.liquid. Each slide is
+  its own image + optional content overlay; slides crossfade with autoplay,
+  arrows and dots. banner--transparent-header is a page-level flag, not a
+  style: sections/header.liquid looks for it with body:has(.banner--transparent-header)
+  to make the header transparent and overlay the active slide.
+{%- endcomment -%}
+<section
+  id="HeroSlideshow-{{ section.id }}"
+  class="hero-slideshow hero-slideshow--height-{{ section.settings.height }} hero-slideshow--height-mobile-{{ section.settings.mobile_height | default: section.settings.height }}{% if section.settings.transparent_header %} banner--transparent-header{% endif %}"
+  style="
+    {%- if section.settings.height == 'custom' %}--hero-height: {{ section.settings.custom_height }}px;{% endif -%}
+    {%- if section.settings.mobile_height == 'custom' %}--hero-height-mobile: {{ section.settings.custom_height_mobile }}px;{% endif -%}
+  "
+>
+  <hero-slideshow-el
+    class="hero-slideshow__wrapper hero-slideshow__wrapper--x-{{ section.settings.content_position_x }} hero-slideshow__wrapper--y-{{ section.settings.content_position_y }} hero-slideshow__wrapper--x-mobile-{{ section.settings.content_position_x_mobile }} hero-slideshow__wrapper--y-mobile-{{ section.settings.content_position_y_mobile }}"
+    data-autoplay="{{ section.settings.autoplay }}"
+    data-autoplay-speed="{{ section.settings.autoplay_speed | times: 1000 }}"
+    role="region"
+    aria-roledescription="carousel"
+    aria-label="{{ section.settings.heading | default: 'Featured' | escape }} slideshow"
+  >
+    <div class="hero-slideshow__track" data-slideshow-track>
+      {%- for block in section.blocks -%}
+        {%- liquid
+          assign slide_image = block.settings.image | default: block.settings.mobile_image
+          assign has_text_content = false
+          if block.settings.eyebrow != blank or block.settings.heading != blank or block.settings.content != blank
+            assign has_text_content = true
+          endif
+          assign slide_loading = 'lazy'
+          assign slide_priority = 'auto'
+          if forloop.first and section.index == 1
+            assign slide_loading = 'eager'
+            assign slide_priority = 'high'
+          endif
+          assign slide_alt = slide_image.alt | default: ''
+          assign slide_h = 3200 | divided_by: slide_image.aspect_ratio | round
+          assign show_slide_link = false
+          if has_text_content == false and block.settings.link != blank
+            assign show_slide_link = true
+          endif
+        -%}
+        <div
+          class="hero-slideshow__slide{% if forloop.first %} is-active{% endif %}"
+          data-slideshow-slide
+          role="group"
+          aria-roledescription="slide"
+          aria-label="{{ forloop.index }} of {{ forloop.length }}"
+          {% unless forloop.first %}inert{% endunless %}
+          {{ block.shopify_attributes }}
+        >
+          {%- if show_slide_link -%}
+            <a href="{{ block.settings.link }}" class="hero-slideshow__slide-link" aria-label="{{ block.settings.heading | default: block.settings.eyebrow | strip_html | escape }}">
+          {%- endif -%}
+
+          {%- if slide_image -%}
+            <picture class="hero-slideshow__picture">
+              {%- if block.settings.mobile_image -%}
+                <source
+                  media="(max-width: 749px)"
+                  srcset="{{ block.settings.mobile_image | image_url: width: 375 }} 375w, {{ block.settings.mobile_image | image_url: width: 550 }} 550w, {{ block.settings.mobile_image | image_url: width: 750 }} 750w, {{ block.settings.mobile_image | image_url: width: 1100 }} 1100w, {{ block.settings.mobile_image | image_url: width: 1500 }} 1500w"
+                  sizes="100vw"
+                  width="{{ block.settings.mobile_image.width }}"
+                  height="{{ block.settings.mobile_image.height }}"
+                >
+              {%- endif -%}
+              {{
+                slide_image
+                | image_url: width: 3200
+                | image_tag:
+                  loading: slide_loading,
+                  fetchpriority: slide_priority,
+                  sizes: '100vw',
+                  widths: '750, 990, 1200, 1500, 1920, 2400, 3200',
+                  width: 3200,
+                  height: slide_h,
+                  class: 'hero-slideshow__image',
+                  alt: slide_alt
+              }}
+            </picture>
+          {%- else -%}
+            <picture class="hero-slideshow__picture">
+              {{ 'collection-1' | placeholder_svg_tag: 'hero-slideshow__image' }}
+            </picture>
+          {%- endif -%}
+
+          {%- if section.settings.show_overlay -%}
+            <div class="hero-slideshow__overlay" style="background: {{ section.settings.overlay_color }};"></div>
+          {%- endif -%}
+
+          {%- if has_text_content or block.settings.button_label != blank -%}
+            <div class="hero-slideshow__content-wrap container">
+              <div class="hero-slideshow__content">
+                {%- if block.settings.eyebrow != blank -%}
+                  <p class="hero-slideshow__eyebrow">{{ block.settings.eyebrow | escape }}</p>
+                {%- endif -%}
+                {%- if block.settings.heading != blank -%}
+                  <h2 class="hero-slideshow__heading {{ block.settings.heading_size }}" style="color: {{ block.settings.heading_color }};">{{ block.settings.heading | escape }}</h2>
+                {%- endif -%}
+                {%- if block.settings.content != blank -%}
+                  <div class="hero-slideshow__text">{{ block.settings.content }}</div>
+                {%- endif -%}
+                {%- if block.settings.button_label != blank -%}
+                  <a href="{{ block.settings.link | default: routes.all_products_collection_url }}" class="u-inline-flex button hero-slideshow__button">
+                    {{ block.settings.button_label }}
+                  </a>
+                {%- endif -%}
+                {%- if block.settings.ratings != blank -%}
+                  <div class="hero-slideshow__ratings">{{ block.settings.ratings }}</div>
+                {%- endif -%}
+              </div>
+            </div>
+          {%- endif -%}
+
+          {%- if show_slide_link -%}
+            </a>
+          {%- endif -%}
+        </div>
+      {%- endfor -%}
+    </div>
+
+    {%- if section.blocks.size > 1 -%}
+      <div class="hero-slideshow__controls" data-slideshow-controls>
+        <button type="button" class="hero-slideshow__arrow hero-slideshow__arrow--prev" aria-label="Previous slide">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+        </button>
+        <button type="button" class="hero-slideshow__arrow hero-slideshow__arrow--next" aria-label="Next slide">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+        </button>
+        <div class="hero-slideshow__dots" data-slideshow-dots>
+          {%- for block in section.blocks -%}
+            <button type="button" class="hero-slideshow__dot{% if forloop.first %} is-active{% endif %}" aria-label="Go to slide {{ forloop.index }}" data-index="{{ forloop.index0 }}"></button>
+          {%- endfor -%}
+        </div>
+      </div>
+    {%- endif -%}
+  </hero-slideshow-el>
+</section>
+
+{%- if section.settings.custom_css != blank -%}
+  <style>{{ section.settings.custom_css }}</style>
+{%- endif -%}
+
+{% stylesheet %}
+.hero-slideshow {
+  position: relative;
+  overflow: hidden;
+  display: block;
+}
+
+.hero-slideshow--height-full { min-height: 100vh; min-height: 100svh; }
+.hero-slideshow--height-small { min-height: 410px; }
+.hero-slideshow--height-medium { min-height: 550px; }
+.hero-slideshow--height-large { min-height: 640px; }
+.hero-slideshow--height-custom { min-height: var(--hero-height, 640px); }
+
+.hero-slideshow__wrapper {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+.hero-slideshow__track {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.hero-slideshow__slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.6s ease;
+}
+
+.hero-slideshow__slide.is-active {
+  opacity: 1;
+  visibility: visible;
+  z-index: 1;
+}
+
+.hero-slideshow__slide-link {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+}
+
+.hero-slideshow__picture,
+.hero-slideshow__image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.hero-slideshow__image {
+  object-fit: cover;
+  object-position: center;
+}
+
+.hero-slideshow__overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.hero-slideshow__content-wrap {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding-block: 48px;
+}
+
+.hero-slideshow__wrapper--x-left .hero-slideshow__content-wrap { justify-content: flex-start; }
+.hero-slideshow__wrapper--x-center .hero-slideshow__content-wrap { justify-content: center; text-align: center; }
+.hero-slideshow__wrapper--x-right .hero-slideshow__content-wrap { justify-content: flex-end; }
+
+.hero-slideshow__wrapper--y-top .hero-slideshow__content-wrap { align-items: flex-start; padding-top: 48px; }
+.hero-slideshow__wrapper--y-center .hero-slideshow__content-wrap { align-items: center; }
+.hero-slideshow__wrapper--y-bottom .hero-slideshow__content-wrap { align-items: flex-end; padding-bottom: 48px; }
+
+.hero-slideshow__content {
+  max-width: 520px;
+  line-height: normal;
+}
+
+.hero-slideshow__eyebrow {
+  margin: 0 0 var(--space-2);
+  font-size: 12px;
+  font-weight: 600;
+  font-family: var(--font-accent);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-secondary-a11y, var(--color-secondary));
+}
+
+.hero-slideshow__heading {
+  margin: 0 0 var(--space-4);
+}
+
+.hero-slideshow__text {
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--color-text);
+  margin: 0 0 var(--space-6);
+}
+
+.hero-slideshow__button {
+  background: var(--color-secondary-a11y, var(--color-secondary));
+  color: #fff;
+}
+
+.hero-slideshow__ratings {
+  margin-top: var(--space-4);
+}
+
+/* Arrows: 40x40, white background, positioned symmetrically without
+   overflowing the slideshow's own edges (there's no container to bleed past
+   on a full-bleed hero). */
+.hero-slideshow__arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  background: #ffffff;
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-primary);
+  cursor: pointer;
+  z-index: 3;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.hero-slideshow__arrow--prev { left: 10px; }
+.hero-slideshow__arrow--next { right: 10px; }
+
+@media (hover: hover) and (pointer: fine) {
+  .hero-slideshow__arrow:hover {
+    background: var(--color-primary);
+    color: #ffffff;
+  }
+}
+
+.hero-slideshow__dots {
+  position: absolute;
+  left: 50%;
+  bottom: 20px;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 4px;
+  z-index: 3;
+}
+
+.hero-slideshow__dot {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.hero-slideshow__dot::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.6);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15);
+  transition: background 0.2s ease;
+}
+
+.hero-slideshow__dot.is-active::before {
+  background: #ffffff;
+}
+
+@media screen and (max-width: 749px) {
+  .hero-slideshow--height-mobile-full { min-height: 100vh; min-height: 100svh; }
+  .hero-slideshow--height-mobile-small { min-height: 300px; }
+  .hero-slideshow--height-mobile-medium { min-height: 400px; }
+  .hero-slideshow--height-mobile-large { min-height: 500px; }
+  .hero-slideshow--height-mobile-custom { min-height: var(--hero-height-mobile, 400px); }
+
+  .hero-slideshow__content { max-width: 320px; }
+
+  .hero-slideshow__wrapper--x-mobile-left .hero-slideshow__content-wrap { justify-content: flex-start; }
+  .hero-slideshow__wrapper--x-mobile-center .hero-slideshow__content-wrap { justify-content: center; text-align: center; }
+  .hero-slideshow__wrapper--x-mobile-right .hero-slideshow__content-wrap { justify-content: flex-end; }
+
+  .hero-slideshow__wrapper--y-mobile-top .hero-slideshow__content-wrap { align-items: flex-start; padding-top: 48px; padding-bottom: 0; }
+  .hero-slideshow__wrapper--y-mobile-center .hero-slideshow__content-wrap { align-items: center; padding-block: 0; }
+  .hero-slideshow__wrapper--y-mobile-bottom .hero-slideshow__content-wrap { align-items: flex-end; padding-bottom: 0; padding-top: 0; }
+
+  .hero-slideshow__text { margin-bottom: var(--space-4); }
+
+  .hero-slideshow__arrow { width: 32px; height: 32px; }
+  .hero-slideshow__arrow svg { width: 16px; height: 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-slideshow__slide { transition: none; }
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Hero slideshow",
+  "settings": [
+    { "type": "header", "content": "Slideshow height" },
+    {
+      "type": "select",
+      "id": "height",
+      "label": "Minimum height",
+      "options": [
+        { "value": "full", "label": "Full height" },
+        { "value": "small", "label": "Small (410px)" },
+        { "value": "medium", "label": "Medium (550px)" },
+        { "value": "large", "label": "Large (640px)" },
+        { "value": "custom", "label": "Custom" }
+      ],
+      "default": "full"
+    },
+    { "type": "range", "id": "custom_height", "label": "Custom height", "min": 300, "max": 1000, "step": 10, "unit": "px", "default": 640, "visible_if": "{{ section.settings.height == 'custom' }}" },
+    {
+      "type": "select",
+      "id": "mobile_height",
+      "label": "Minimum height (mobile)",
+      "options": [
+        { "value": "full", "label": "Full height" },
+        { "value": "small", "label": "Small (300px)" },
+        { "value": "medium", "label": "Medium (400px)" },
+        { "value": "large", "label": "Large (500px)" },
+        { "value": "custom", "label": "Custom" }
+      ],
+      "default": "full"
+    },
+    { "type": "range", "id": "custom_height_mobile", "label": "Custom height (mobile)", "min": 200, "max": 800, "step": 10, "unit": "px", "default": 400, "visible_if": "{{ section.settings.mobile_height == 'custom' }}" },
+    { "type": "checkbox", "id": "transparent_header", "label": "Transparent header", "info": "The header overlays the slideshow until the page is scrolled. Otherwise the header is solid.", "default": false },
+
+    { "type": "header", "content": "Content position" },
+    {
+      "type": "select",
+      "id": "content_position_x",
+      "label": "Content horizontal position",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "select",
+      "id": "content_position_y",
+      "label": "Content vertical position",
+      "options": [
+        { "value": "top", "label": "Top" },
+        { "value": "center", "label": "Center" },
+        { "value": "bottom", "label": "Bottom" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "select",
+      "id": "content_position_x_mobile",
+      "label": "Content horizontal position (mobile)",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "select",
+      "id": "content_position_y_mobile",
+      "label": "Content vertical position (mobile)",
+      "options": [
+        { "value": "top", "label": "Top" },
+        { "value": "center", "label": "Center" },
+        { "value": "bottom", "label": "Bottom" }
+      ],
+      "default": "top"
+    },
+
+    { "type": "header", "content": "Overlay" },
+    { "type": "checkbox", "id": "show_overlay", "label": "Show overlay", "default": false },
+    { "type": "color_background", "id": "overlay_color", "label": "Overlay color", "default": "rgba(0, 0, 0, 0.4)" },
+
+    { "type": "header", "content": "Autoplay" },
+    { "type": "checkbox", "id": "autoplay", "label": "Autoplay slides", "default": true },
+    { "type": "range", "id": "autoplay_speed", "label": "Autoplay speed", "min": 3, "max": 15, "step": 1, "unit": "s", "default": 5 },
+
+    { "type": "header", "content": "Custom CSS" },
+    { "type": "liquid", "id": "custom_css", "label": "Custom CSS", "info": "Applies only to this section. Written as-is, so scope your own selectors." }
+  ],
+  "blocks": [
+    {
+      "type": "slide",
+      "name": "Slide",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Image" },
+        { "type": "image_picker", "id": "mobile_image", "label": "Image (mobile)", "info": "Optional. Uses the main image when left empty." },
+        { "type": "header", "content": "Optional content overlay" },
+        { "type": "text", "id": "eyebrow", "label": "Eyebrow text" },
+        { "type": "text", "id": "heading", "label": "Heading" },
+        { "type": "color", "id": "heading_color", "label": "Heading color", "default": "#008FA3" },
+        {
+          "type": "select",
+          "id": "heading_size",
+          "label": "Heading size",
+          "options": [
+            { "value": "h0", "label": "H0" },
+            { "value": "h1", "label": "H1" },
+            { "value": "h2", "label": "H2" },
+            { "value": "h3", "label": "H3" },
+            { "value": "h4", "label": "H4" },
+            { "value": "h5", "label": "H5" },
+            { "value": "h6", "label": "H6" }
+          ],
+          "default": "h0"
+        },
+        { "type": "richtext", "id": "content", "label": "Content" },
+        { "type": "text", "id": "button_label", "label": "Button label" },
+        { "type": "url", "id": "link", "label": "Link", "info": "Used by the button above, or as the slide's click-through link when no text content is set." },
+        { "type": "html", "id": "ratings", "label": "Ratings", "info": "Optional. Paste a review app's rating widget snippet (e.g. Loox) to show it under the content." }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero slideshow",
+      "blocks": [
+        {
+          "type": "slide",
+          "settings": {
+            "heading": "Where Beauty Begins with care",
+            "content": "<p>We combine natural extracts with clinical research to give you skin results you can actually see. No fillers, just pure potency.</p>",
+            "button_label": "Shop Now"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
+
+{% javascript %}
+class HeroSlideshow extends HTMLElement {
+  #track
+  #slides
+  #dots
+  #prevBtn
+  #nextBtn
+  #index = 0
+  #autoplayTimer
+  #autoplayDelay
+  #autoplayEnabled
+  #reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  #pointerStartX
+
+  connectedCallback() {
+    this.#track = this.querySelector('[data-slideshow-track]')
+    this.#slides = Array.from(this.querySelectorAll('[data-slideshow-slide]'))
+    this.#dots = Array.from(this.querySelectorAll('.hero-slideshow__dot'))
+    this.#prevBtn = this.querySelector('.hero-slideshow__arrow--prev')
+    this.#nextBtn = this.querySelector('.hero-slideshow__arrow--next')
+    this.#autoplayDelay = Number(this.dataset.autoplaySpeed) || 5000
+    this.#autoplayEnabled = this.dataset.autoplay === 'true' && this.#slides.length > 1 && !this.#reducedMotion
+
+    if (this.#slides.length < 2) return
+
+    this.#prevBtn?.addEventListener('click', () => this.#userGoTo(this.#index - 1))
+    this.#nextBtn?.addEventListener('click', () => this.#userGoTo(this.#index + 1))
+    for (const dot of this.#dots) {
+      dot.addEventListener('click', () => this.#userGoTo(Number(dot.dataset.index)))
+    }
+
+    this.addEventListener('pointerdown', (event) => (this.#pointerStartX = event.clientX))
+    this.addEventListener('pointerup', (event) => this.#onSwipeEnd(event))
+    this.addEventListener('mouseenter', () => this.#stopAutoplay())
+    this.addEventListener('mouseleave', () => this.#startAutoplay())
+    this.addEventListener('focusin', () => this.#stopAutoplay())
+    this.addEventListener('focusout', () => this.#startAutoplay())
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) this.#stopAutoplay()
+      else this.#startAutoplay()
+    })
+
+    this.#startAutoplay()
+  }
+
+  disconnectedCallback() {
+    this.#stopAutoplay()
+  }
+
+  #onSwipeEnd(event) {
+    if (this.#pointerStartX === undefined) return
+    const deltaX = event.clientX - this.#pointerStartX
+    this.#pointerStartX = undefined
+    if (Math.abs(deltaX) < 40) return
+    this.#userGoTo(deltaX < 0 ? this.#index + 1 : this.#index - 1)
+  }
+
+  #userGoTo(index) {
+    this.#goTo(index)
+    this.#stopAutoplay()
+    this.#startAutoplay()
+  }
+
+  #goTo(index) {
+    const nextIndex = (index + this.#slides.length) % this.#slides.length
+    if (nextIndex === this.#index) return
+
+    const current = this.#slides[this.#index]
+    const next = this.#slides[nextIndex]
+    current.classList.remove('is-active')
+    current.inert = true
+    next.classList.add('is-active')
+    next.inert = false
+
+    this.#dots[this.#index]?.classList.remove('is-active')
+    this.#dots[nextIndex]?.classList.add('is-active')
+
+    this.#index = nextIndex
+  }
+
+  #startAutoplay() {
+    if (!this.#autoplayEnabled || this.#autoplayTimer) return
+    this.#autoplayTimer = window.setInterval(() => this.#goTo(this.#index + 1), this.#autoplayDelay)
+  }
+
+  #stopAutoplay() {
+    window.clearInterval(this.#autoplayTimer)
+    this.#autoplayTimer = undefined
+  }
+}
+
+if (!customElements.get('hero-slideshow-el')) {
+  customElements.define('hero-slideshow-el', HeroSlideshow)
+}
+{% endjavascript %}

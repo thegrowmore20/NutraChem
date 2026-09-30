@@ -11,6 +11,7 @@
   "sections": {
     "hero": {
       "type": "hero-banner",
+      "disabled": true,
       "settings": {
         "image": "shopify://shop_images/Banner.webp",
         "mobile_image": "shopify://shop_images/Homepage_Banner_Mobile.webp",
@@ -31,6 +32,38 @@
         "text": "<p>We combine natural extracts with clinical research to give you skin results you can actually see. No fillers, just pure potency.</p>",
         "button_label": "Shop Now",
         "button_link": "/collections/all"
+      }
+    },
+    "hero_slideshow_nutrachem": {
+      "type": "hero-slideshow",
+      "blocks": {
+        "slide_1": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/Banner.webp",
+            "mobile_image": "shopify://shop_images/Homepage_Banner_Mobile.webp",
+            "heading": "Where Beauty Begins with care",
+            "content": "<p>We combine natural extracts with clinical research to give you skin results you can actually see. No fillers, just pure potency.</p>",
+            "button_label": "Shop Now",
+            "link": "/collections/all"
+          }
+        }
+      },
+      "block_order": ["slide_1"],
+      "settings": {
+        "height": "large",
+        "custom_height": 640,
+        "mobile_height": "custom",
+        "custom_height_mobile": 600,
+        "transparent_header": true,
+        "content_position_x": "left",
+        "content_position_y": "center",
+        "content_position_x_mobile": "center",
+        "content_position_y_mobile": "top",
+        "show_overlay": false,
+        "overlay_color": "rgba(0, 0, 0, 0.2)",
+        "autoplay": true,
+        "autoplay_speed": 5
       }
     },
     "best-sellers": {
@@ -515,6 +548,7 @@
     }
   },
   "order": [
+    "hero_slideshow_nutrachem",
     "hero",
     "best-sellers",
     "animated_pharmacies_qEMVb4",

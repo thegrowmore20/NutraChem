@@ -15,6 +15,12 @@
           {%- endif -%}
         </a>
 
+        {% if section.settings.footer_brand_content != blank %}
+          <div class="footer-brand-text">
+            {{ section.settings.footer_brand_content }}
+          </div>
+        {% endif %}
+
         <p class="footer__newsletter-title">Subscribe newsletter</p>
         {%- comment -%}
           Shopify's `form` tag auto-applies class="contact-form" when no
@@ -54,6 +60,9 @@
             </p>
           {%- endif -%}
         {%- endform -%}
+
+        
+
       </div>
 
       <div class="footer__col footer__col--social">
@@ -185,6 +194,11 @@
   .footer__brand,
   .footer__col--policies {
     grid-column: 1 / -1;
+  }
+
+  .footer-brand-text {
+    font-size: 14px;
+    max-width: 340px;
   }
 
   @media screen and (min-width: 601px) {
@@ -377,6 +391,11 @@
   {
     "name": "Footer",
     "settings": [
+      {
+        "type": "richtext",
+        "id": "footer_brand_content",
+        "label": "Brand Content"
+      },
       {
         "type": "text",
         "id": "social_heading",

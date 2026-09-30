@@ -25,7 +25,7 @@
         "content_position_y": "center",
         "content_position_x_mobile": "center",
         "content_position_y_mobile": "top",
-        "heading": "{{ page.title }}",
+        "heading": "Reviews",
         "heading_color": "#008fa3",
         "heading_size": "h0",
         "text": "",
@@ -36,6 +36,8 @@
     "main": {
       "type": "main-page",
       "settings": {
+        "show_title": true,
+        "show_content": true,
         "padding_top": 80,
         "padding_bottom": 0
       }
@@ -43,24 +45,23 @@
     "1790154364d536c960": {
       "type": "apps",
       "blocks": {
-        "ag_product_reviews_app_block_all_review_nXcYaN": {
-          "type": "shopify://apps/ag-product-reviews/blocks/app-block-all-review/c4e1e9ca-4d46-4e76-bc39-7e42417cb327",
+        "loox_reviews_loox_agg_section_eryfjW": {
+          "type": "shopify://apps/loox-reviews/blocks/loox-agg-section/5c3b337f-fd14-4df5-b1d6-80ec13e6e28e",
           "settings": {
-            "air_allReviewsBlock_heading": "All reviews page",
-            "air_allReviewsBlock_useSimpleSummary": false,
-            "air_allReviewsBlock_maxReview": 20,
-            "air_allReviewsBlock_summaryBgColor": "#f8f8f8",
-            "air_allReviewsBlock_bgColor": "#ffffff",
-            "air_allReviewsBlock_onlyMedia": false,
-            "air_allReviewsBlock_mediaFirst": false,
-            "air_allReviewsBlock_onlyPositive": false,
-            "air_allReviewsBlock_hideProductThumbnails": false,
-            "air_allReviewsBlock_selectedProduct": []
+            "reviews_to_display": "",
+            "default_tab": "automatic",
+            "only_photos": false,
+            "hide_thumbnails": false,
+            "product_handle": "",
+            "aggregated": true,
+            "data-limit": 20,
+            "maxwidth": 1080,
+            "is_sample": true
           }
         }
       },
       "block_order": [
-        "ag_product_reviews_app_block_all_review_nXcYaN"
+        "loox_reviews_loox_agg_section_eryfjW"
       ],
       "settings": {}
     }

@@ -14,6 +14,7 @@
     "footer": {
       "type": "footer",
       "settings": {
+        "footer_brand_content": "<p>Science-infused premium skincare. Every formula is crafted to deliver visible, clinically-proven results without compromise.</p>",
         "social_heading": "Social Media",
         "pages_heading": "Products",
         "policies_heading": "Quick links",
