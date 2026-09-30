@@ -305,8 +305,8 @@
 .hero-slideshow__dot {
   display: grid;
   place-items: center;
-  width: 24px;
-  height: 24px;
+  width: 16px;
+  height: 16px;
   background: none;
   border: none;
   padding: 0;
@@ -318,13 +318,13 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.6);
+  background: color-mix(in srgb, var(--button-primary, var(--color-secondary)) 40%, white);
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15);
   transition: background 0.2s ease;
 }
 
 .hero-slideshow__dot.is-active::before {
-  background: #ffffff;
+  background: var(--button-primary, var(--color-secondary));
 }
 
 @media screen and (max-width: 749px) {
