@@ -269,7 +269,7 @@
   transform: translateY(-50%);
   width: 40px;
   height: 40px;
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.4);
   border: none;
   border-radius: 50%;
   display: flex;
@@ -318,13 +318,14 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: color-mix(in srgb, var(--button-primary, var(--color-secondary)) 40%, white);
+  background: var(--button-primary, var(--color-secondary));
+  opacity: 0.45;
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15);
-  transition: background 0.2s ease;
+  transition: opacity 0.2s ease;
 }
 
 .hero-slideshow__dot.is-active::before {
-  background: var(--button-primary, var(--color-secondary));
+  opacity: 1;
 }
 
 @media screen and (max-width: 749px) {
