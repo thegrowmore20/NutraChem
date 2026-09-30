@@ -18,6 +18,7 @@
         class="tp-track{% if section.settings.enable_animation and section.blocks.size > 0 %} is-marquee{% if section.settings.animation_direction == 'right' %} direction-reverse{% endif %}{% if section.settings.pause_on_hover %} pause-on-hover{% endif %}{% else %} is-static{% endif %}"
       >
         {%- for block in section.blocks -%}
+          {%- assign logo_alt = block.settings.image.alt | default: block.settings.name | escape -%}
           <div class="tp-logo-item" {{ block.shopify_attributes }}>
             {%- if block.settings.link != blank -%}<a href="{{ block.settings.link }}" class="tp-logo-link">{%- endif -%}
             {%- if block.settings.image -%}
@@ -28,7 +29,7 @@
                   widths: '150, 300, 450',
                   sizes: '200px',
                   class: 'tp-logo-img',
-                  alt: block.settings.image.alt | default: block.settings.name | escape
+                  alt: logo_alt
               }}
             {%- else -%}
               {{ 'image' | placeholder_svg_tag: 'tp-logo-img tp-logo-placeholder' }}
