@@ -23,12 +23,13 @@
             "heading_size": "h0",
             "content": "<p>We combine natural extracts with clinical research to give you skin results you can actually see. No fillers, just pure potency.</p>",
             "button_label": "Shop Now",
-            "link": "/collections/all",
-            "ratings": ""
+            "link": "shopify://collections/products",
+            "ratings": "{% if shop.metafields.loox[\"global_stats\"] %}\n                    {% assign looxstats = shop.metafields.loox[\"global_stats\"] | split: ',' %} \n                    <div class=\"loox-rating loox-rating-hp\" data-rating=\"{{ looxstats[0] }}\" data-raters=\"{{ looxstats[1] }}\" data-pattern=\"[rating] ([count])\"></div> \n                    {% endif %}"
           }
         },
         "slide_RdnJCb": {
           "type": "slide",
+          "disabled": true,
           "settings": {
             "image": "shopify://shop_images/Desktop_2.webp",
             "mobile_image": "shopify://shop_images/Mobile_2.webp",
@@ -44,6 +45,7 @@
         },
         "slide_86jfiA": {
           "type": "slide",
+          "disabled": true,
           "settings": {
             "image": "shopify://shop_images/Desktop_3.webp",
             "mobile_image": "shopify://shop_images/Mobile_3.webp",
@@ -76,8 +78,7 @@
         "show_overlay": true,
         "overlay_color": "rgba(0, 0, 0, 0.1)",
         "autoplay": true,
-        "autoplay_speed": 10,
-        "custom_css": ""
+        "autoplay_speed": 10
       }
     },
     "hero": {

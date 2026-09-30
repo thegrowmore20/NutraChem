@@ -139,10 +139,6 @@
   </hero-slideshow-el>
 </section>
 
-{%- if section.settings.custom_css != blank -%}
-  <style>{{ section.settings.custom_css }}</style>
-{%- endif -%}
-
 {% stylesheet %}
 .hero-slideshow {
   position: relative;
@@ -443,10 +439,7 @@
 
     { "type": "header", "content": "Autoplay" },
     { "type": "checkbox", "id": "autoplay", "label": "Autoplay slides", "default": true },
-    { "type": "range", "id": "autoplay_speed", "label": "Autoplay speed", "min": 3, "max": 15, "step": 1, "unit": "s", "default": 5 },
-
-    { "type": "header", "content": "Custom CSS" },
-    { "type": "liquid", "id": "custom_css", "label": "Custom CSS", "info": "Applies only to this section. Written as-is, so scope your own selectors." }
+    { "type": "range", "id": "autoplay_speed", "label": "Autoplay speed", "min": 3, "max": 15, "step": 1, "unit": "s", "default": 5 }
   ],
   "blocks": [
     {
@@ -477,7 +470,7 @@
         { "type": "richtext", "id": "content", "label": "Content" },
         { "type": "text", "id": "button_label", "label": "Button label" },
         { "type": "url", "id": "link", "label": "Link", "info": "Used by the button above, or as the slide's click-through link when no text content is set." },
-        { "type": "html", "id": "ratings", "label": "Ratings", "info": "Optional. Paste a review app's rating widget snippet (e.g. Loox) to show it under the content." }
+        { "type": "liquid", "id": "ratings", "label": "Ratings", "info": "Optional. Paste a review app's rating widget snippet (e.g. Loox) to show it under the content." }
       ]
     }
   ],
