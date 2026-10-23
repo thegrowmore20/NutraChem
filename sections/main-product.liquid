@@ -1115,7 +1115,7 @@ h1.product-title {
   width: 44px;
   height: 38px;
   border-radius: var(--radius-s, 6px);
-  background: var(--color-primary);
+  background: var(--button-primary, var(--color-secondary));
   transition: background-color 0.15s ease;
 }
 
@@ -1136,7 +1136,7 @@ h1.product-title {
 }
 
 .product-sample-addons__toggle-check {
-  color: var(--color-primary);
+  color: var(--button-primary, var(--color-secondary));
   opacity: 0;
   transform: scale(0.6);
 }
@@ -1148,7 +1148,7 @@ h1.product-title {
 
 .product-sample-addons__checkbox:checked ~ .product-sample-addons__toggle-shell {
   background: #ffffff;
-  border: 2px solid var(--color-primary);
+  border: 2px solid var(--button-primary, var(--color-secondary));
 }
 
 .product-sample-addons__checkbox:checked ~ .product-sample-addons__toggle-shell .product-sample-addons__toggle-plus {
