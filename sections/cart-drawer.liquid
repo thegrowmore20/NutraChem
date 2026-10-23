@@ -102,19 +102,17 @@
                   {%- endfor -%}
                 </div>
               {%- endif -%}
-              <div class="u-flex u-items-center u-justify-between cart-drawer__item-bottom-row">
-                <div class="u-flex cart-drawer__item-price">
-                  {%- if is_free_sample -%}
-                    <span class="price-item price-item--regular">{{ 'general.cart.free_sample' | t }}</span>
-                  {%- else -%}
+              <div class="u-flex u-items-center{% unless is_free_sample %} u-justify-between{% endunless %} cart-drawer__item-bottom-row">
+                {%- unless is_free_sample -%}
+                  <div class="u-flex cart-drawer__item-price">
                     <span class="price-item price-item--regular">{{ item.final_line_price | money }}</span>
                     {%- if item.variant.compare_at_price > item.variant.price -%}
                       {%- assign line_compare_at = item.variant.compare_at_price | times: item.quantity -%}
                       <s class="price-item price-item--compare">{{ line_compare_at | money }}</s>
                       <span class="cart-drawer__save-badge">Save {{ line_compare_at | minus: item.final_line_price | money }}</span>
                     {%- endif -%}
-                  {%- endif -%}
-                </div>
+                  </div>
+                {%- endunless -%}
                 {%- if is_free_sample -%}
                   <span class="cart-drawer__qty-static">{{ 'general.cart.quantity' | t }}: {{ item.quantity }}</span>
                 {%- else -%}
