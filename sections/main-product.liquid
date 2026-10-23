@@ -1036,38 +1036,27 @@ h1.product-title {
   color: var(--color-primary);
 }
 
+/* Desktop/default: a plain stacked list, one full-width row per sample. */
 .product-sample-addons__list {
   display: flex;
-  gap: var(--space-3);
-  overflow-x: auto;
-  scroll-snap-type: x proximity;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-  padding-bottom: 2px;
+  flex-direction: column;
+  gap: 2px;
   min-width: 0;
-}
-
-.product-sample-addons__list::-webkit-scrollbar {
-  display: none;
 }
 
 .product-sample-addons__item {
   display: flex;
   align-items: center;
-  gap: var(--space-2);
-  flex: 0 0 auto;
-  scroll-snap-align: start;
-  max-width: 220px;
-  padding: var(--space-2);
-  border: 1px solid color-mix(in srgb, var(--color-primary) 12%, transparent);
-  border-radius: var(--radius-s, 8px);
+  gap: var(--space-3);
+  padding: var(--space-2) 6px;
+  border-radius: var(--radius-s, 6px);
 }
 
 .product-sample-addons__thumb {
   flex-shrink: 0;
-  width: 44px;
-  height: 44px;
-  border-radius: var(--radius-s, 8px);
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-s, 6px);
   overflow: hidden;
   background: var(--color-surface, #f5f5f5);
 }
@@ -1083,13 +1072,16 @@ h1.product-title {
 .product-sample-addons__name {
   flex: 1 1 auto;
   min-width: 0;
-  font-size: 13px;
+  font-size: 14px;
   color: var(--color-text);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
+/* Toggle: a pill button whose content crossfades between a "+" (unchecked)
+   and a checkmark (checked) - no price shown, so there's nothing to swap
+   between other than those two states. */
 .product-sample-addons__toggle {
   position: relative;
   flex-shrink: 0;
@@ -1105,33 +1097,90 @@ h1.product-title {
   margin: 0;
   opacity: 0;
   cursor: pointer;
+  z-index: 1;
 }
 
 .product-sample-addons__toggle-shell {
-  display: grid;
-  place-items: center;
-  width: 24px;
-  height: 24px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 38px;
   border-radius: var(--radius-s, 6px);
-  border: 2px solid color-mix(in srgb, var(--color-primary) 30%, transparent);
-  color: transparent;
-  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  background: var(--color-primary);
+  transition: background-color 0.15s ease;
 }
 
-.product-sample-addons__toggle-shell svg {
-  width: 14px;
-  height: 14px;
+.product-sample-addons__toggle-plus,
+.product-sample-addons__toggle-check {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.product-sample-addons__toggle-plus {
+  color: #ffffff;
+  font-size: 20px;
+  line-height: 1;
+}
+
+.product-sample-addons__toggle-check {
+  color: var(--color-primary);
+  opacity: 0;
+  transform: scale(0.6);
+}
+
+.product-sample-addons__toggle-check svg {
+  width: 16px;
+  height: 16px;
 }
 
 .product-sample-addons__checkbox:checked ~ .product-sample-addons__toggle-shell {
-  background: var(--button-primary, var(--color-secondary));
-  border-color: var(--button-primary, var(--color-secondary));
-  color: #ffffff;
+  background: #ffffff;
+  border: 2px solid var(--color-primary);
+}
+
+.product-sample-addons__checkbox:checked ~ .product-sample-addons__toggle-shell .product-sample-addons__toggle-plus {
+  opacity: 0;
+  transform: scale(0.6);
+}
+
+.product-sample-addons__checkbox:checked ~ .product-sample-addons__toggle-shell .product-sample-addons__toggle-check {
+  opacity: 1;
+  transform: scale(1);
 }
 
 .product-sample-addons__checkbox:focus-visible ~ .product-sample-addons__toggle-shell {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
+}
+
+/* Mobile: the stacked list becomes a one-row-per-screen swipeable slider
+   (native scroll-snap, no JS) instead of a vertical stack - there usually
+   isn't room to show every sample's full row at once on a small screen. */
+@media screen and (max-width: 749px) {
+  .product-sample-addons__list {
+    flex-direction: row;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 2px;
+  }
+
+  .product-sample-addons__list::-webkit-scrollbar {
+    display: none;
+  }
+
+  .product-sample-addons__item {
+    flex: 1 0 100%;
+    width: 100%;
+    scroll-snap-align: start;
+  }
 }
 {% endstylesheet %}
 

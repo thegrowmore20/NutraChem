@@ -62,7 +62,8 @@
                 value="{{ sample_variant.id }}"
               >
               <span class="product-sample-addons__toggle-shell" aria-hidden="true">
-                {%- render 'icon', name: 'check' -%}
+                <span class="product-sample-addons__toggle-plus">+</span>
+                <span class="product-sample-addons__toggle-check">{%- render 'icon', name: 'check' -%}</span>
               </span>
             </label>
           </div>
