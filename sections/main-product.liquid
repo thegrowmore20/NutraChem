@@ -1034,8 +1034,8 @@ h1.product-title {
 }
 
 .product-sample-addons__title {
-  margin: 0 0 var(--space-2);
   font-weight: 600;
+  text-transform: capitalize;
   color: var(--color-primary);
 }
 
@@ -1051,7 +1051,7 @@ h1.product-title {
   display: flex;
   align-items: center;
   gap: var(--space-3);
-  padding: var(--space-2) 6px;
+  padding: var(--space-1);
   border-radius: var(--radius-s, 6px);
 }
 
@@ -1165,9 +1165,25 @@ h1.product-title {
   outline-offset: 2px;
 }
 
+/* Hidden by default (desktop is a stacked list, not a slider - nothing to
+   navigate). This has to come BEFORE the @media override below: both rules
+   share the same 0-1-0 specificity, so whichever is later in the
+   stylesheet wins once the media query is active - defining this one
+   first is what lets the mobile rule's display: flex actually take over
+   instead of being overridden straight back to none. */
+.product-sample-addons__controls {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+}
+
 /* Mobile: the stacked list becomes a one-row-per-screen swipeable slider
-   (native scroll-snap, no JS) instead of a vertical stack - there usually
-   isn't room to show every sample's full row at once on a small screen. */
+   (native scroll-snap) instead of a vertical stack - there usually isn't
+   room to show every sample's full row at once on a small screen. The
+   prev/next/dots row is driven by ProductInfo's #onSampleAddonsScroll and
+   the click handlers in #onClick, mirroring swipe so either works. */
 @media screen and (max-width: 749px) {
   .product-sample-addons__list {
     flex-direction: row;
@@ -1187,6 +1203,60 @@ h1.product-title {
     width: 100%;
     scroll-snap-align: start;
   }
+
+  .product-sample-addons__controls {
+    display: flex;
+  }
+}
+
+.product-sample-addons__arrow {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: var(--button-primary, var(--color-secondary));
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+}
+
+.product-sample-addons__arrow:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.product-sample-addons__dots {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.product-sample-addons__dot {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.product-sample-addons__dot::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--button-primary, var(--color-secondary)) 30%, transparent);
+  transition: background-color 0.15s ease;
+}
+
+.product-sample-addons__dot.is-active::before {
+  background: var(--button-primary, var(--color-secondary));
 }
 {% endstylesheet %}
 
@@ -1200,6 +1270,12 @@ class ProductInfo extends HTMLElement {
   #form
   #variantIdInput
   #sampleAddonInput
+  #sampleAddonsList
+  #sampleAddonsItems
+  #sampleAddonsDots
+  #sampleAddonsPrevBtn
+  #sampleAddonsNextBtn
+  #sampleAddonsScrollTimer
   #variants
   #currentVariant
   #sectionId
@@ -1218,6 +1294,7 @@ class ProductInfo extends HTMLElement {
 
     this.#variantIdInput = this.#form.querySelector('[data-product-form-variant-id]')
     this.#sampleAddonInput = this.#form.querySelector('[data-sample-addon-value]')
+    this.#sampleAddonsList = this.#form.querySelector('[data-sample-addons-list]')
     this.#sectionId = this.dataset.sectionId
     this.#url = this.dataset.productUrl
     this.#moneyFormat = this.dataset.moneyFormat || DEFAULT_MONEY_FORMAT
@@ -1244,6 +1321,23 @@ class ProductInfo extends HTMLElement {
 
     this.#initStickyCartBar()
     this.#syncQuantityButtonStates()
+    this.#initSampleAddonsSlider()
+  }
+
+  // Dots/arrows only ever matter on mobile (the list is a stacked,
+  // non-scrolling column on desktop - see the @media rule in this
+  // section's stylesheet), but the listener is cheap to keep attached
+  // unconditionally rather than wiring/unwiring it across a resize.
+  #initSampleAddonsSlider() {
+    if (!this.#sampleAddonsList) return
+    this.#sampleAddonsItems = Array.from(this.#sampleAddonsList.querySelectorAll('[data-sample-addons-item]'))
+    this.#sampleAddonsDots = Array.from(this.querySelectorAll('[data-sample-addons-dot]'))
+    this.#sampleAddonsPrevBtn = this.querySelector('[data-sample-addons-prev]')
+    this.#sampleAddonsNextBtn = this.querySelector('[data-sample-addons-next]')
+    if (this.#sampleAddonsItems.length < 2) return
+
+    this.#sampleAddonsList.addEventListener('scroll', () => this.#onSampleAddonsScroll(), { passive: true })
+    this.#updateSampleAddonsControls(0)
   }
 
   #onClick(event) {
@@ -1265,7 +1359,56 @@ class ProductInfo extends HTMLElement {
     const accordionTrigger = event.target.closest('[data-accordion-trigger]')
     if (accordionTrigger) {
       this.#onAccordionTriggerClick(accordionTrigger)
+      return
     }
+    const prevBtn = event.target.closest('[data-sample-addons-prev]')
+    if (prevBtn) {
+      this.#scrollSampleAddonsBy(-1)
+      return
+    }
+    const nextBtn = event.target.closest('[data-sample-addons-next]')
+    if (nextBtn) {
+      this.#scrollSampleAddonsBy(1)
+      return
+    }
+    const dot = event.target.closest('[data-sample-addons-dot]')
+    if (dot) {
+      this.#scrollSampleAddonsTo(Number(dot.dataset.index))
+    }
+  }
+
+  #scrollSampleAddonsBy(direction) {
+    const current = this.#sampleAddonsItems.findIndex((item) => this.#isSampleAddonsItemActive(item))
+    this.#scrollSampleAddonsTo((current === -1 ? 0 : current) + direction)
+  }
+
+  #scrollSampleAddonsTo(index) {
+    const clamped = Math.max(0, Math.min(this.#sampleAddonsItems.length - 1, index))
+    const item = this.#sampleAddonsItems[clamped]
+    if (!item) return
+    this.#sampleAddonsList.scrollTo({ left: item.offsetLeft - this.#sampleAddonsList.offsetLeft, behavior: 'smooth' })
+  }
+
+  #isSampleAddonsItemActive(item) {
+    const listRect = this.#sampleAddonsList.getBoundingClientRect()
+    const itemRect = item.getBoundingClientRect()
+    return Math.abs(itemRect.left - listRect.left) < itemRect.width / 2
+  }
+
+  #onSampleAddonsScroll() {
+    clearTimeout(this.#sampleAddonsScrollTimer)
+    this.#sampleAddonsScrollTimer = setTimeout(() => {
+      const index = this.#sampleAddonsItems.findIndex((item) => this.#isSampleAddonsItemActive(item))
+      this.#updateSampleAddonsControls(index === -1 ? 0 : index)
+    }, 100)
+  }
+
+  #updateSampleAddonsControls(index) {
+    for (const [i, dot] of this.#sampleAddonsDots.entries()) {
+      dot.classList.toggle('is-active', i === index)
+    }
+    if (this.#sampleAddonsPrevBtn) this.#sampleAddonsPrevBtn.disabled = index === 0
+    if (this.#sampleAddonsNextBtn) this.#sampleAddonsNextBtn.disabled = index === this.#sampleAddonsItems.length - 1
   }
 
   #onAccordionTriggerClick(trigger) {

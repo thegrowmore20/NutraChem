@@ -29,10 +29,11 @@
     <p class="product-sample-addons__title">{{ 'products.product.sample_addon_heading' | t }}</p>
 
     <div class="product-sample-addons__list" data-sample-addons-list>
+      {%- assign dot_index = 0 -%}
       {%- for item in sample_items -%}
         {%- assign sample_variant = item.selected_or_first_available_variant -%}
         {%- if sample_variant and sample_variant.available -%}
-          <div class="product-sample-addons__item">
+          <div class="product-sample-addons__item" data-sample-addons-item data-index="{{ dot_index }}">
             <span class="product-sample-addons__thumb">
               {%- if item.featured_image -%}
                 {{
@@ -67,9 +68,33 @@
               </span>
             </label>
           </div>
+          {%- assign dot_index = dot_index | plus: 1 -%}
         {%- endif -%}
       {%- endfor -%}
     </div>
+
+    {%- if sample_count > 1 -%}
+      {%- comment -%} Mobile only - see main-product.liquid's @media rule {%- endcomment -%}
+      <div class="product-sample-addons__controls" data-sample-addons-controls>
+        <button type="button" class="product-sample-addons__arrow product-sample-addons__arrow--prev" data-sample-addons-prev aria-label="{{ 'products.product.sample_addon_previous' | t }}">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 16 16" width="14" height="14"><polyline points="10 12 6 8 10 4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></polyline></svg>
+        </button>
+        <div class="product-sample-addons__dots" data-sample-addons-dots>
+          {%- for i in (1..sample_count) -%}
+            <button
+              type="button"
+              class="product-sample-addons__dot{% if forloop.first %} is-active{% endif %}"
+              data-sample-addons-dot
+              data-index="{{ forloop.index0 }}"
+              aria-label="{{ 'products.product.sample_addon_go_to' | t: index: forloop.index }}"
+            ></button>
+          {%- endfor -%}
+        </div>
+        <button type="button" class="product-sample-addons__arrow product-sample-addons__arrow--next" data-sample-addons-next aria-label="{{ 'products.product.sample_addon_next' | t }}">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 16 16" width="14" height="14"><polyline points="6 4 10 8 6 12" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></polyline></svg>
+        </button>
+      </div>
+    {%- endif -%}
 
     <input type="hidden" name="properties[_sample_variant_id]" value="" data-sample-addon-value>
   </div>
