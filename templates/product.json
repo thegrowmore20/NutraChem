@@ -53,6 +53,10 @@
           "type": "variant_picker",
           "settings": {}
         },
+        "sample-addons": {
+          "type": "sample_addons",
+          "settings": {}
+        },
         "quantity-buy-buttons": {
           "type": "quantity_buy_buttons",
           "settings": {
@@ -170,6 +174,7 @@
         "loox_reviews_loox_rating_LA6YPf",
         "price",
         "variant-picker",
+        "sample-addons",
         "quantity-buy-buttons",
         "icons-with-text",
         "accordion-description",

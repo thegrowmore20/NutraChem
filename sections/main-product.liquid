@@ -230,6 +230,14 @@
   }
 }
 
+.product-layout__info {
+  /* A bare 1fr grid track defaults to minmax(auto, 1fr), not minmax(0, 1fr),
+     so without this the column sizes to its widest unwrapped descendant
+     (the sample-addons horizontal scroll row) instead of the grid's own
+     available width, pushing the whole page wider than the viewport. */
+  min-width: 0;
+}
+
 /* Gallery */
 .product-gallery {
   display: flex;
@@ -1013,6 +1021,14 @@ h1.product-title {
   white-space: nowrap;
 }
 
+.product-sample-addons {
+  /* Belt-and-suspenders alongside .product-layout__info's min-width: 0 -
+     the actual fix for the column-stretching bug lives there (see its
+     comment); this just keeps this wrapper from re-introducing the same
+     problem if it's ever nested somewhere else that also auto-sizes. */
+  min-width: 0;
+}
+
 .product-sample-addons__title {
   margin: 0 0 var(--space-2);
   font-size: 14px;
@@ -1028,6 +1044,7 @@ h1.product-title {
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
   padding-bottom: 2px;
+  min-width: 0;
 }
 
 .product-sample-addons__list::-webkit-scrollbar {
