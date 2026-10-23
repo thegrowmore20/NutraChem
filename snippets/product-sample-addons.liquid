@@ -1,0 +1,75 @@
+{%- comment -%}
+  Free-sample picker. Reads product.metafields.custom.sample_addons (list of
+  products) and lists only items whose variant is actually available right
+  now - variant.available already accounts for inventory_policy, so a
+  continue-selling variant still shows at 0 on hand, while a deny-policy
+  variant at 0 does not. Renders nothing if no sample is currently available.
+
+  Markup only, no styling/behavior of its own - this section's own
+  {% stylesheet %}/{% javascript %} blocks in main-product.liquid own both,
+  matching how product-variant-picker.liquid is rendered from there too.
+  Single-select is enforced by ProductInfo's delegated change listener: this
+  snippet only needs to render one checkbox per sample and the hidden
+  properties input they write into.
+
+  Accepts: product
+{%- endcomment -%}
+{%- liquid
+  assign sample_items = product.metafields.custom.sample_addons.value
+  assign sample_count = 0
+  for item in sample_items
+    assign sample_variant = item.selected_or_first_available_variant
+    if sample_variant and sample_variant.available
+      assign sample_count = sample_count | plus: 1
+    endif
+  endfor
+-%}
+{%- if sample_count > 0 -%}
+  <div class="product-sample-addons" data-sample-addons>
+    <p class="product-sample-addons__title">{{ 'products.product.sample_addon_heading' | t }}</p>
+
+    <div class="product-sample-addons__list" data-sample-addons-list>
+      {%- for item in sample_items -%}
+        {%- assign sample_variant = item.selected_or_first_available_variant -%}
+        {%- if sample_variant and sample_variant.available -%}
+          <div class="product-sample-addons__item">
+            <span class="product-sample-addons__thumb">
+              {%- if item.featured_image -%}
+                {{
+                  item.featured_image
+                  | image_url: width: 160
+                  | image_tag:
+                    widths: '80, 120, 160',
+                    sizes: '64px',
+                    width: 80,
+                    height: 80,
+                    loading: 'lazy',
+                    alt: item.featured_image.alt | default: item.title
+                }}
+              {%- else -%}
+                {{ 'product-1' | placeholder_svg_tag: 'product-sample-addons__placeholder' }}
+              {%- endif -%}
+            </span>
+            <span class="product-sample-addons__name">{{ item.title | escape }}</span>
+            <label
+              class="product-sample-addons__toggle"
+              aria-label="{{ 'products.product.sample_addon_select' | t: title: item.title | escape }}"
+            >
+              <input
+                type="checkbox"
+                class="product-sample-addons__checkbox"
+                data-sample-addon-checkbox
+                value="{{ sample_variant.id }}"
+              >
+              <span class="product-sample-addons__toggle-shell" aria-hidden="true">
+                {%- render 'icon', name: 'check' -%}
+              </span>
+            </label>
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+
+    <input type="hidden" name="properties[_sample_variant_id]" value="" data-sample-addon-value>
+  </div>
+{%- endif -%}

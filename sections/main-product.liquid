@@ -82,6 +82,11 @@
                     {%- render 'product-variant-picker', product: product -%}
                   </div>
 
+                {%- when 'sample_addons' -%}
+                  <div {{ block.shopify_attributes }}>
+                    {%- render 'product-sample-addons', product: product -%}
+                  </div>
+
                 {%- when 'quantity_buy_buttons' -%}
                   <div {{ block.shopify_attributes }}>
                     {%- render 'product-buy-buttons',
@@ -1007,6 +1012,110 @@ h1.product-title {
 .sticky-cart-bar__action {
   white-space: nowrap;
 }
+
+.product-sample-addons__title {
+  margin: 0 0 var(--space-2);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+.product-sample-addons__list {
+  display: flex;
+  gap: var(--space-3);
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding-bottom: 2px;
+}
+
+.product-sample-addons__list::-webkit-scrollbar {
+  display: none;
+}
+
+.product-sample-addons__item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+  max-width: 220px;
+  padding: var(--space-2);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 12%, transparent);
+  border-radius: var(--radius-s, 8px);
+}
+
+.product-sample-addons__thumb {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-s, 8px);
+  overflow: hidden;
+  background: var(--color-surface, #f5f5f5);
+}
+
+.product-sample-addons__thumb img,
+.product-sample-addons__placeholder {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.product-sample-addons__name {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 13px;
+  color: var(--color-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.product-sample-addons__toggle {
+  position: relative;
+  flex-shrink: 0;
+  display: inline-flex;
+  cursor: pointer;
+}
+
+.product-sample-addons__checkbox {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.product-sample-addons__toggle-shell {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-s, 6px);
+  border: 2px solid color-mix(in srgb, var(--color-primary) 30%, transparent);
+  color: transparent;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.product-sample-addons__toggle-shell svg {
+  width: 14px;
+  height: 14px;
+}
+
+.product-sample-addons__checkbox:checked ~ .product-sample-addons__toggle-shell {
+  background: var(--button-primary, var(--color-secondary));
+  border-color: var(--button-primary, var(--color-secondary));
+  color: #ffffff;
+}
+
+.product-sample-addons__checkbox:focus-visible ~ .product-sample-addons__toggle-shell {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
 {% endstylesheet %}
 
 {% javascript %}
@@ -1018,6 +1127,7 @@ const DEFAULT_MONEY_FORMAT = '$' + String.fromCharCode(123, 123) + 'amount' + St
 class ProductInfo extends HTMLElement {
   #form
   #variantIdInput
+  #sampleAddonInput
   #variants
   #currentVariant
   #sectionId
@@ -1035,6 +1145,7 @@ class ProductInfo extends HTMLElement {
     if (!this.#form) return
 
     this.#variantIdInput = this.#form.querySelector('[data-product-form-variant-id]')
+    this.#sampleAddonInput = this.#form.querySelector('[data-sample-addon-value]')
     this.#sectionId = this.dataset.sectionId
     this.#url = this.dataset.productUrl
     this.#moneyFormat = this.dataset.moneyFormat || DEFAULT_MONEY_FORMAT
@@ -1104,6 +1215,28 @@ class ProductInfo extends HTMLElement {
     if (event.target.matches('[data-quantity-input]')) {
       this.#clampQuantityInput(event.target)
       this.#clearCartError()
+    }
+    if (event.target.matches('[data-sample-addon-checkbox]')) {
+      this.#onSampleAddonChange(event.target)
+    }
+  }
+
+  // Checkboxes, not radios: a native radio can't be unchecked by re-clicking
+  // it, and "no sample selected" needs to stay reachable. This keeps exactly
+  // one checked (or none) and mirrors the pick into the hidden
+  // properties[_sample_variant_id] input that rides along on the next
+  // /cart/add.js submit - see the reconciliation logic in global.js for how
+  // that single property on the parent line drives the whole feature.
+  #onSampleAddonChange(checkbox) {
+    if (!this.#sampleAddonInput) return
+    const group = checkbox.closest('[data-sample-addons-list]')
+    if (checkbox.checked) {
+      for (const other of group.querySelectorAll('[data-sample-addon-checkbox]')) {
+        if (other !== checkbox) other.checked = false
+      }
+      this.#sampleAddonInput.value = checkbox.value
+    } else {
+      this.#sampleAddonInput.value = ''
     }
   }
 
@@ -1325,6 +1458,15 @@ class ProductInfo extends HTMLElement {
     if (!this.#pendingSubmit) return
     this.#pendingSubmit = false
     this.#clearCartError()
+    this.#resetSampleAddon()
+  }
+
+  #resetSampleAddon() {
+    if (!this.#sampleAddonInput) return
+    this.#sampleAddonInput.value = ''
+    for (const checkbox of this.querySelectorAll('[data-sample-addon-checkbox]')) {
+      checkbox.checked = false
+    }
   }
 
   #onCartError(event) {
@@ -1730,6 +1872,11 @@ if (!customElements.get('product-info')) {
     {
       "type": "variant_picker",
       "name": "Variant picker",
+      "settings": []
+    },
+    {
+      "type": "sample_addons",
+      "name": "Free sample addons",
       "settings": []
     },
     {

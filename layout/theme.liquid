@@ -2,6 +2,18 @@
 <html lang="{{ request.locale.iso_code }}">
   <head>
 
+    {%- comment -%}
+      Sample-addon products are tagged sample_addons and unpublished from the
+      Online Store channel so they have no normal storefront path - this is a
+      belt-and-suspenders redirect for anyone who still reaches the URL
+      directly (cached link, admin preview, etc). Liquid can't issue a real
+      HTTP redirect (the response is already a 200 by the time Liquid runs),
+      so this fires as early as possible in <head> instead.
+    {%- endcomment -%}
+    {%- if product and product.tags contains 'sample_addons' -%}
+      <script>window.location.replace({{ routes.all_products_collection_url | json }});</script>
+    {%- endif -%}
+
   {%- if settings.favicon != blank -%}
       <link
         rel="icon"
@@ -119,6 +131,7 @@
 
     <script>
       window.routes = {
+        cartUrl: {{ routes.cart_url | json }},
         cartAddUrl: {{ routes.cart_add_url | json }},
         cartChangeUrl: {{ routes.cart_change_url | json }},
         predictiveSearchUrl: {{ routes.predictive_search_url | json }}

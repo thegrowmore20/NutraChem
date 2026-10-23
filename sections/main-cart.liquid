@@ -13,7 +13,11 @@
           </div>
 
           {%- for item in cart.items -%}
-            <div class="u-grid u-items-center cart-page__row" role="row" data-cart-item data-line="{{ forloop.index }}">
+            {%- assign is_free_sample = false -%}
+            {%- if item.properties._is_free_sample == 'true' -%}
+              {%- assign is_free_sample = true -%}
+            {%- endif -%}
+            <div class="u-grid u-items-center cart-page__row{% if is_free_sample %} cart-page__row--sample{% endif %}" role="row" data-cart-item data-line="{{ forloop.index }}">
               <div class="u-flex cart-page__product" role="cell">
                 <a href="{{ item.url }}" class="cart-page__product-media">
                   {%- if item.image -%}
@@ -25,6 +29,12 @@
                 </a>
                 <div class="cart-page__product-body">
                   <a href="{{ item.url }}" class="cart-page__product-title">{{ item.product.title }}</a>
+                  {%- if is_free_sample -%}
+                    <p class="u-inline-flex u-items-center cart-page__sample-badge">
+                      {% render 'icon', name: 'gift' %}
+                      {{ 'general.cart.free_sample' | t }}
+                    </p>
+                  {%- endif -%}
                   {%- if item.product.has_only_default_variant == false -%}
                     <p class="cart-page__product-variant">{{ item.variant.title }}</p>
                   {%- endif -%}
@@ -38,35 +48,51 @@
                       {%- endfor -%}
                     </div>
                   {%- endif -%}
-                  <button type="button" class="cart-page__remove" data-cart-remove aria-label="{{ 'general.cart.remove' | t: title: item.product.title }}">
-                    {{ 'general.cart.remove_label' | t }}
-                  </button>
+                  {%- unless is_free_sample -%}
+                    <button type="button" class="cart-page__remove" data-cart-remove aria-label="{{ 'general.cart.remove' | t: title: item.product.title }}">
+                      {{ 'general.cart.remove_label' | t }}
+                    </button>
+                  {%- endunless -%}
                 </div>
               </div>
               <div class="u-flex cart-page__price" role="cell">
-                <span class="price-item price-item--regular">{{ item.price | money }}</span>
-                {%- if item.variant.compare_at_price > item.variant.price -%}
-                  <s class="price-item price-item--compare">{{ item.variant.compare_at_price | money }}</s>
-                  <span class="cart-page__save-badge">Save {{ item.variant.compare_at_price | minus: item.price | money }}</span>
+                {%- if is_free_sample -%}
+                  <span class="price-item price-item--regular">{{ 'general.cart.free_sample' | t }}</span>
+                {%- else -%}
+                  <span class="price-item price-item--regular">{{ item.price | money }}</span>
+                  {%- if item.variant.compare_at_price > item.variant.price -%}
+                    <s class="price-item price-item--compare">{{ item.variant.compare_at_price | money }}</s>
+                    <span class="cart-page__save-badge">Save {{ item.variant.compare_at_price | minus: item.price | money }}</span>
+                  {%- endif -%}
                 {%- endif -%}
               </div>
               <div class="cart-page__quantity" role="cell">
-                <div class="u-flex u-items-center cart-page__qty" role="group" aria-label="{{ 'general.cart.quantity' | t }}">
-                  <button type="button" class="cart-page__qty-btn" data-cart-qty-decrease aria-label="{{ 'general.cart.decrease_quantity' | t }}">&minus;</button>
-                  <input
-                    type="number"
-                    id="CartPageQuantity-{{ section.id }}-{{ forloop.index }}"
-                    name="updates[]"
-                    data-cart-qty-input
-                    value="{{ item.quantity }}"
-                    min="0"
-                    class="cart-page__qty-input"
-                    aria-label="{{ 'general.cart.quantity' | t }}: {{ item.product.title | escape }}"
-                  >
-                  <button type="button" class="cart-page__qty-btn" data-cart-qty-increase aria-label="{{ 'general.cart.increase_quantity' | t }}">+</button>
-                </div>
+                {%- if is_free_sample -%}
+                  <span class="cart-page__qty-static">{{ item.quantity }}</span>
+                {%- else -%}
+                  <div class="u-flex u-items-center cart-page__qty" role="group" aria-label="{{ 'general.cart.quantity' | t }}">
+                    <button type="button" class="cart-page__qty-btn" data-cart-qty-decrease aria-label="{{ 'general.cart.decrease_quantity' | t }}">&minus;</button>
+                    <input
+                      type="number"
+                      id="CartPageQuantity-{{ section.id }}-{{ forloop.index }}"
+                      name="updates[]"
+                      data-cart-qty-input
+                      value="{{ item.quantity }}"
+                      min="0"
+                      class="cart-page__qty-input"
+                      aria-label="{{ 'general.cart.quantity' | t }}: {{ item.product.title | escape }}"
+                    >
+                    <button type="button" class="cart-page__qty-btn" data-cart-qty-increase aria-label="{{ 'general.cart.increase_quantity' | t }}">+</button>
+                  </div>
+                {%- endif -%}
               </div>
-              <div class="cart-page__line-total" role="cell">{{ item.final_line_price | money }}</div>
+              <div class="cart-page__line-total" role="cell">
+                {%- if is_free_sample -%}
+                  {{ 'general.cart.free_sample' | t }}
+                {%- else -%}
+                  {{ item.final_line_price | money }}
+                {%- endif -%}
+              </div>
             </div>
           {%- endfor -%}
         </div>
@@ -257,6 +283,24 @@
   font-size: 11px;
   padding: 3px var(--space-2);
   border-radius: var(--radius-s);
+}
+
+.cart-page__sample-badge {
+  gap: var(--space-1);
+  margin: var(--space-1) 0;
+  color: var(--color-secondary-a11y, var(--color-secondary));
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.cart-page__sample-badge svg {
+  width: 14px;
+  height: 14px;
+}
+
+.cart-page__qty-static {
+  font-size: 14px;
+  color: var(--color-text);
 }
 
 .cart-page__qty {

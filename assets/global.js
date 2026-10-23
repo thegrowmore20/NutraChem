@@ -143,3 +143,141 @@ document.addEventListener('change', (event) => {
   if (!input) return
   updateCartLine(input.closest('[data-cart-item]'), Math.max(0, Number(input.value)))
 })
+
+/* Free sample addons: a product's form can carry a hidden
+   properties[_sample_variant_id] input (see snippets/product-sample-addons.liquid)
+   recording which sample the shopper picked. That property lives on the PARENT
+   line only - the sample's own line is added with just properties[_is_free_sample]
+   and nothing parent-specific, so Shopify recognizes the same sample picked via
+   two different products as the same line and merges their quantity naturally.
+   After every cart:updated, reconcileSampleAddons() recomputes from a fresh
+   /cart.js read how many parent lines currently reference each sample variant
+   and brings that sample's line quantity to match - this is what adds the
+   sample on the shopper's first pick, merges a second product's matching pick
+   into the same line, and removes/shrinks it when a parent is removed, all
+   through the one mechanism. It never calls /cart/add.js for a sample that
+   already has a line (only /cart/change.js with an absolute quantity on a
+   freshly-read line position), so it doesn't depend on Shopify's add-to-cart
+   merge behavior for anything but the very first add. */
+const sampleAddonReconcile = { running: false, queued: false }
+
+function sampleAddonSections() {
+  const sections = new Set(['cart-drawer', 'header'])
+  const cartSectionsAttr = document.querySelector('[data-cart-sections]')?.dataset.cartSections
+  if (cartSectionsAttr) {
+    for (const id of cartSectionsAttr.split(',')) sections.add(id)
+  }
+  return Array.from(sections)
+}
+
+async function sampleAddonChangeLine(line, quantity) {
+  const response = await fetch(window.routes.cartChangeUrl, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+    body: JSON.stringify({
+      line,
+      quantity,
+      sections: sampleAddonSections(),
+      sections_url: window.location.pathname,
+    }),
+  })
+  return response.json()
+}
+
+async function sampleAddonAddLine(variantId, quantity) {
+  const response = await fetch(window.routes.cartAddUrl, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+    body: JSON.stringify({
+      items: [{ id: variantId, quantity, properties: { _is_free_sample: 'true' } }],
+      sections: sampleAddonSections(),
+      sections_url: window.location.pathname,
+    }),
+  })
+  return response.json()
+}
+
+function sampleAddonDispatchUpdate(json) {
+  if (!json || json.status) {
+    console.error('Sample addon reconcile error:', json?.description || json?.message || json)
+    return
+  }
+  document.dispatchEvent(new CustomEvent('cart:updated', { detail: { sections: json.sections, openDrawer: false } }))
+}
+
+/* Applies at most one correction per pass, then returns - the cart:updated
+   dispatch from that correction re-triggers reconcileSampleAddons(), which
+   re-reads the now-current cart and either finds the next mismatch or finds
+   none and stops. Doing it this way (one change, re-fetch, repeat) means every
+   decision is always based on freshly-read line positions, never a position
+   assumed from before another line in the same pass was removed. */
+async function runSampleAddonReconcilePass() {
+  const cartResponse = await fetch(`${window.routes.cartUrl}.js`, { headers: { Accept: 'application/json' } })
+  const cart = await cartResponse.json()
+
+  const desiredBySampleVariant = new Map()
+  for (const line of cart.items) {
+    const sampleVariantId = line.properties?._sample_variant_id
+    if (!sampleVariantId) continue
+    const key = String(sampleVariantId)
+    desiredBySampleVariant.set(key, (desiredBySampleVariant.get(key) || 0) + 1)
+  }
+
+  const sampleLines = []
+  cart.items.forEach((line, index) => {
+    if (line.properties?._is_free_sample === 'true') {
+      sampleLines.push({ line, position: index + 1 })
+    }
+  })
+
+  // Self-heal: if the same sample variant somehow has more than one line,
+  // zero out everything past the first and let the next pass re-tally it.
+  const seenVariants = new Set()
+  for (const entry of sampleLines) {
+    const variantId = String(entry.line.variant_id)
+    if (seenVariants.has(variantId)) {
+      sampleAddonDispatchUpdate(await sampleAddonChangeLine(entry.position, 0))
+      return
+    }
+    seenVariants.add(variantId)
+  }
+
+  // Bring each existing sample line to the quantity its parent lines call for.
+  for (const entry of sampleLines) {
+    const variantId = String(entry.line.variant_id)
+    const wanted = desiredBySampleVariant.get(variantId) || 0
+    desiredBySampleVariant.delete(variantId)
+    if (entry.line.quantity !== wanted) {
+      sampleAddonDispatchUpdate(await sampleAddonChangeLine(entry.position, wanted))
+      return
+    }
+  }
+
+  // Anything left wants a sample that has no line yet.
+  for (const [variantId, wanted] of desiredBySampleVariant) {
+    if (wanted <= 0) continue
+    sampleAddonDispatchUpdate(await sampleAddonAddLine(Number(variantId), wanted))
+    return
+  }
+}
+
+async function reconcileSampleAddons() {
+  if (sampleAddonReconcile.running) {
+    sampleAddonReconcile.queued = true
+    return
+  }
+  sampleAddonReconcile.running = true
+  try {
+    await runSampleAddonReconcilePass()
+  } catch (error) {
+    console.error('Sample addon reconcile error:', error)
+  } finally {
+    sampleAddonReconcile.running = false
+    if (sampleAddonReconcile.queued) {
+      sampleAddonReconcile.queued = false
+      reconcileSampleAddons()
+    }
+  }
+}
+
+document.addEventListener('cart:updated', () => reconcileSampleAddons())

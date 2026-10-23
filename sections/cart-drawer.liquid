@@ -66,17 +66,29 @@
       <ul class="u-flex u-flex-col cart-drawer__items" role="list">
         {%- for item in cart.items -%}
           {%- assign item_alt = item.image.alt | default: item.product.title -%}
-          <li class="u-grid cart-drawer__item" data-cart-item data-line="{{ forloop.index }}">
+          {%- assign is_free_sample = false -%}
+          {%- if item.properties._is_free_sample == 'true' -%}
+            {%- assign is_free_sample = true -%}
+          {%- endif -%}
+          <li class="u-grid cart-drawer__item{% if is_free_sample %} cart-drawer__item--sample{% endif %}" data-cart-item data-line="{{ forloop.index }}">
             <a href="{{ item.url }}" class="cart-drawer__item-media">
               {{ item.image | image_url: width: 140 | image_tag: loading: 'lazy', widths: '70, 105, 140', width: 70, height: 70, alt: item_alt }}
             </a>
             <div class="cart-drawer__item-body">
               <div class="u-flex u-justify-between cart-drawer__item-title-row">
                 <a href="{{ item.url }}" class="cart-drawer__item-title">{{ item.product.title }}</a>
-                <button type="button" class="u-inline-flex u-items-center u-justify-center cart-drawer__remove" data-cart-remove aria-label="{{ 'general.cart.remove' | t: title: item.product.title }}">
-                  {% render 'icon', name: 'trash' %}
-                </button>
+                {%- unless is_free_sample -%}
+                  <button type="button" class="u-inline-flex u-items-center u-justify-center cart-drawer__remove" data-cart-remove aria-label="{{ 'general.cart.remove' | t: title: item.product.title }}">
+                    {% render 'icon', name: 'trash' %}
+                  </button>
+                {%- endunless -%}
               </div>
+              {%- if is_free_sample -%}
+                <p class="u-inline-flex u-items-center cart-drawer__sample-badge">
+                  {% render 'icon', name: 'gift' %}
+                  {{ 'general.cart.free_sample' | t }}
+                </p>
+              {%- endif -%}
               {%- if item.product.has_only_default_variant == false -%}
                 <p class="cart-drawer__item-variant">{{ item.variant.title }}</p>
               {%- endif -%}
@@ -92,18 +104,26 @@
               {%- endif -%}
               <div class="u-flex u-items-center u-justify-between cart-drawer__item-bottom-row">
                 <div class="u-flex cart-drawer__item-price">
-                  <span class="price-item price-item--regular">{{ item.final_line_price | money }}</span>
-                  {%- if item.variant.compare_at_price > item.variant.price -%}
-                    {%- assign line_compare_at = item.variant.compare_at_price | times: item.quantity -%}
-                    <s class="price-item price-item--compare">{{ line_compare_at | money }}</s>
-                    <span class="cart-drawer__save-badge">Save {{ line_compare_at | minus: item.final_line_price | money }}</span>
+                  {%- if is_free_sample -%}
+                    <span class="price-item price-item--regular">{{ 'general.cart.free_sample' | t }}</span>
+                  {%- else -%}
+                    <span class="price-item price-item--regular">{{ item.final_line_price | money }}</span>
+                    {%- if item.variant.compare_at_price > item.variant.price -%}
+                      {%- assign line_compare_at = item.variant.compare_at_price | times: item.quantity -%}
+                      <s class="price-item price-item--compare">{{ line_compare_at | money }}</s>
+                      <span class="cart-drawer__save-badge">Save {{ line_compare_at | minus: item.final_line_price | money }}</span>
+                    {%- endif -%}
                   {%- endif -%}
                 </div>
-                <div class="u-flex u-items-center cart-drawer__qty" role="group" aria-label="{{ 'general.cart.quantity' | t }}">
-                  <button type="button" class="cart-drawer__qty-btn" data-cart-qty-decrease aria-label="{{ 'general.cart.decrease_quantity' | t }}">&minus;</button>
-                  <input type="number" id="CartDrawerQuantity-{{ section.id }}-{{ forloop.index }}" name="updates[]" class="cart-drawer__qty-input" data-cart-qty-input value="{{ item.quantity }}" min="0" step="1" aria-label="{{ 'general.cart.quantity' | t }}: {{ item.product.title | escape }}">
-                  <button type="button" class="cart-drawer__qty-btn" data-cart-qty-increase aria-label="{{ 'general.cart.increase_quantity' | t }}">+</button>
-                </div>
+                {%- if is_free_sample -%}
+                  <span class="cart-drawer__qty-static">{{ 'general.cart.quantity' | t }}: {{ item.quantity }}</span>
+                {%- else -%}
+                  <div class="u-flex u-items-center cart-drawer__qty" role="group" aria-label="{{ 'general.cart.quantity' | t }}">
+                    <button type="button" class="cart-drawer__qty-btn" data-cart-qty-decrease aria-label="{{ 'general.cart.decrease_quantity' | t }}">&minus;</button>
+                    <input type="number" id="CartDrawerQuantity-{{ section.id }}-{{ forloop.index }}" name="updates[]" class="cart-drawer__qty-input" data-cart-qty-input value="{{ item.quantity }}" min="0" step="1" aria-label="{{ 'general.cart.quantity' | t }}: {{ item.product.title | escape }}">
+                    <button type="button" class="cart-drawer__qty-btn" data-cart-qty-increase aria-label="{{ 'general.cart.increase_quantity' | t }}">+</button>
+                  </div>
+                {%- endif -%}
               </div>
             </div>
           </li>
@@ -310,6 +330,24 @@
   font-family: var(--font-accent);
   padding: 3px var(--space-2);
   border-radius: var(--radius-s);
+}
+
+.cart-drawer__sample-badge {
+  gap: var(--space-1);
+  margin-bottom: var(--space-2);
+  color: var(--color-secondary-a11y, var(--color-secondary));
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.cart-drawer__sample-badge svg {
+  width: 14px;
+  height: 14px;
+}
+
+.cart-drawer__qty-static {
+  font-size: 13px;
+  color: var(--color-text);
 }
 
 .cart-drawer__qty {

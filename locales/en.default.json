@@ -31,7 +31,8 @@
       "update": "Update Cart",
       "product": "Product",
       "price": "Price",
-      "total": "Total"
+      "total": "Total",
+      "free_sample": "Free sample"
     },
     "accessibility": {
       "skip_to_content": "Skip to content",
@@ -76,7 +77,9 @@
       "cart_error": "Something went wrong, please try again.",
       "view_gallery_image": "View image {{ index }} of {{ count }}",
       "previous_image": "Previous image",
-      "next_image": "Next image"
+      "next_image": "Next image",
+      "sample_addon_heading": "Add a free sample",
+      "sample_addon_select": "Add {{ title }} as a free sample"
     },
     "facets": {
       "heading": "Products",
