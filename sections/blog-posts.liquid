@@ -73,7 +73,12 @@
    Native overflow-x + scroll-snap already supports touch drag - no JS
    needed since this only applies below the tablet breakpoint. */
 @media screen and (max-width: 749px) {
+  /* position: relative makes the row the containing block for the cards'
+     absolutely-positioned .visually-hidden "Read more - title" text. Without
+     it that text belongs to the page, so the cards scrolled off to the right
+     push the whole page wider than the screen (horizontal page overflow). */
   .blogs-section__grid {
+    position: relative;
     display: flex;
     overflow-x: auto;
     overscroll-behavior-x: contain;
