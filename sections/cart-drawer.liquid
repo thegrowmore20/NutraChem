@@ -71,12 +71,22 @@
             {%- assign is_free_sample = true -%}
           {%- endif -%}
           <li class="u-grid cart-drawer__item{% if is_free_sample %} cart-drawer__item--sample{% endif %}" data-cart-item data-line="{{ forloop.index }}">
-            <a href="{{ item.url }}" class="cart-drawer__item-media">
-              {{ item.image | image_url: width: 140 | image_tag: loading: 'lazy', widths: '70, 105, 140', width: 70, height: 70, alt: item_alt }}
-            </a>
+            {%- if is_free_sample -%}
+              <span class="cart-drawer__item-media">
+                {{ item.image | image_url: width: 140 | image_tag: loading: 'lazy', widths: '70, 105, 140', width: 70, height: 70, alt: item_alt }}
+              </span>
+            {%- else -%}
+              <a href="{{ item.url }}" class="cart-drawer__item-media">
+                {{ item.image | image_url: width: 140 | image_tag: loading: 'lazy', widths: '70, 105, 140', width: 70, height: 70, alt: item_alt }}
+              </a>
+            {%- endif -%}
             <div class="cart-drawer__item-body">
               <div class="u-flex u-justify-between cart-drawer__item-title-row">
-                <a href="{{ item.url }}" class="cart-drawer__item-title">{{ item.product.title }}</a>
+                {%- if is_free_sample -%}
+                  <span class="cart-drawer__item-title">{{ item.product.title }}</span>
+                {%- else -%}
+                  <a href="{{ item.url }}" class="cart-drawer__item-title">{{ item.product.title }}</a>
+                {%- endif -%}
                 {%- unless is_free_sample -%}
                   <button type="button" class="u-inline-flex u-items-center u-justify-center cart-drawer__remove" data-cart-remove aria-label="{{ 'general.cart.remove' | t: title: item.product.title }}">
                     {% render 'icon', name: 'trash' %}

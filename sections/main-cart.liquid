@@ -19,16 +19,31 @@
             {%- endif -%}
             <div class="u-grid u-items-center cart-page__row{% if is_free_sample %} cart-page__row--sample{% endif %}" role="row" data-cart-item data-line="{{ forloop.index }}">
               <div class="u-flex cart-page__product" role="cell">
-                <a href="{{ item.url }}" class="cart-page__product-media">
-                  {%- if item.image -%}
-                    {{ item.image | image_url: width: 140 | image_tag: loading: 'lazy', widths: '70, 140', sizes: '70px', width: 70, height: 70, alt: item.product.title }}
-                  {%- else -%}
-                    <span class="visually-hidden">{{ item.product.title | escape }}</span>
-                    {{ 'product-1' | placeholder_svg_tag }}
-                  {%- endif -%}
-                </a>
+                {%- if is_free_sample -%}
+                  <span class="cart-page__product-media">
+                    {%- if item.image -%}
+                      {{ item.image | image_url: width: 140 | image_tag: loading: 'lazy', widths: '70, 140', sizes: '70px', width: 70, height: 70, alt: item.product.title }}
+                    {%- else -%}
+                      <span class="visually-hidden">{{ item.product.title | escape }}</span>
+                      {{ 'product-1' | placeholder_svg_tag }}
+                    {%- endif -%}
+                  </span>
+                {%- else -%}
+                  <a href="{{ item.url }}" class="cart-page__product-media">
+                    {%- if item.image -%}
+                      {{ item.image | image_url: width: 140 | image_tag: loading: 'lazy', widths: '70, 140', sizes: '70px', width: 70, height: 70, alt: item.product.title }}
+                    {%- else -%}
+                      <span class="visually-hidden">{{ item.product.title | escape }}</span>
+                      {{ 'product-1' | placeholder_svg_tag }}
+                    {%- endif -%}
+                  </a>
+                {%- endif -%}
                 <div class="cart-page__product-body">
-                  <a href="{{ item.url }}" class="cart-page__product-title">{{ item.product.title }}</a>
+                  {%- if is_free_sample -%}
+                    <span class="cart-page__product-title">{{ item.product.title }}</span>
+                  {%- else -%}
+                    <a href="{{ item.url }}" class="cart-page__product-title">{{ item.product.title }}</a>
+                  {%- endif -%}
                   {%- if is_free_sample -%}
                     <p class="u-inline-flex u-items-center cart-page__sample-badge">
                       {% render 'icon', name: 'gift' %}
