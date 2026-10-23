@@ -1034,6 +1034,8 @@ h1.product-title {
 }
 
 .product-sample-addons__title {
+  margin: 0 0 var(--space-2);
+  font-size: 16px;
   font-weight: 600;
   text-transform: capitalize;
   color: var(--color-primary);
@@ -1175,7 +1177,7 @@ h1.product-title {
   display: none;
   align-items: center;
   justify-content: center;
-  gap: var(--space-3);
+  gap: 4px;
   margin-top: var(--space-2);
 }
 
@@ -1238,8 +1240,8 @@ h1.product-title {
 .product-sample-addons__dot {
   display: grid;
   place-items: center;
-  width: 20px;
-  height: 20px;
+  width: 12px;
+  height: 12px;
   background: none;
   border: none;
   padding: 0;
@@ -1386,6 +1388,13 @@ class ProductInfo extends HTMLElement {
     const clamped = Math.max(0, Math.min(this.#sampleAddonsItems.length - 1, index))
     const item = this.#sampleAddonsItems[clamped]
     if (!item) return
+    // Update the dot/arrow state immediately rather than waiting for the
+    // smooth-scroll animation to finish and #onSampleAddonsScroll to pick
+    // it up - a click is an explicit "go here" intent, so there's no
+    // reason for the indicator to lag behind it the way it reasonably
+    // does for a swipe (where the destination isn't known until the
+    // gesture settles).
+    this.#updateSampleAddonsControls(clamped)
     this.#sampleAddonsList.scrollTo({ left: item.offsetLeft - this.#sampleAddonsList.offsetLeft, behavior: 'smooth' })
   }
 
@@ -1396,11 +1405,14 @@ class ProductInfo extends HTMLElement {
   }
 
   #onSampleAddonsScroll() {
+    // Only covers swipe - #scrollSampleAddonsTo already updates immediately
+    // for arrow/dot clicks. 40ms is just enough to avoid thrashing between
+    // two items mid-drag without feeling laggy once the swipe settles.
     clearTimeout(this.#sampleAddonsScrollTimer)
     this.#sampleAddonsScrollTimer = setTimeout(() => {
       const index = this.#sampleAddonsItems.findIndex((item) => this.#isSampleAddonsItemActive(item))
       this.#updateSampleAddonsControls(index === -1 ? 0 : index)
-    }, 100)
+    }, 40)
   }
 
   #updateSampleAddonsControls(index) {
