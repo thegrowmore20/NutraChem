@@ -1027,6 +1027,10 @@ h1.product-title {
      comment); this just keeps this wrapper from re-introducing the same
      problem if it's ever nested somewhere else that also auto-sizes. */
   min-width: 0;
+  /* Matches h1.product-title's bottom margin below, so the gap above this
+     block (price -> "Add a free sample") reads the same as the gap below
+     the title (title -> rating). */
+  margin-top: var(--space-3);
 }
 
 .product-sample-addons__title {
@@ -1056,6 +1060,7 @@ h1.product-title {
   flex-shrink: 0;
   width: 48px;
   height: 48px;
+  border: 1px solid color-mix(in srgb, var(--color-primary) 15%, transparent);
   border-radius: var(--radius-s, 6px);
   overflow: hidden;
   background: var(--color-surface, #f5f5f5);
@@ -1073,10 +1078,12 @@ h1.product-title {
   flex: 1 1 auto;
   min-width: 0;
   font-size: 14px;
+  line-height: 1.3;
   color: var(--color-text);
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
 
 /* Toggle: a pill button whose content crossfades between a "+" (unchecked)
