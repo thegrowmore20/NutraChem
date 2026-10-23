@@ -12,13 +12,29 @@
     "hero_slideshow_nutrachem": {
       "type": "hero-slideshow",
       "blocks": {
+        "slide_niGUK8": {
+          "type": "slide",
+          "disabled": true,
+          "settings": {
+            "image": "shopify://shop_images/1920x1000.jpg",
+            "mobile_image": "shopify://shop_images/720x1080.jpg",
+            "eyebrow": "",
+            "heading": "",
+            "heading_color": "#008fa3",
+            "heading_size": "h0",
+            "content": "",
+            "button_label": "",
+            "link": "",
+            "ratings": ""
+          }
+        },
         "slide_1": {
           "type": "slide",
           "settings": {
             "image": "shopify://shop_images/Desktop_1.webp",
-            "mobile_image": "shopify://shop_images/Mobile_1.webp",
+            "mobile_image": "shopify://shop_images/Bundle_web_banner_mbl_jpg.jpg",
             "eyebrow": "",
-            "heading": "Where Beauty Begins with care",
+            "heading": "Where beauty begins with care",
             "heading_color": "#008fa3",
             "heading_size": "h0",
             "content": "<p>We combine natural extracts with clinical research to give you skin results you can actually see. No fillers, just pure potency.</p>",
@@ -29,38 +45,37 @@
         },
         "slide_RdnJCb": {
           "type": "slide",
-          "disabled": true,
           "settings": {
             "image": "shopify://shop_images/Desktop_2.webp",
             "mobile_image": "shopify://shop_images/Mobile_2.webp",
             "eyebrow": "",
-            "heading": "",
+            "heading": "Beauty backed by science",
             "heading_color": "#008fa3",
             "heading_size": "h0",
-            "content": "",
-            "button_label": "",
-            "link": "",
-            "ratings": ""
+            "content": "<p>Natural extracts and powerful actives in advanced formulas to brighten, hydrate & protect for healthier-looking, radiant skin.</p>",
+            "button_label": "Shop Now",
+            "link": "shopify://collections/products",
+            "ratings": "{% if shop.metafields.loox[\"global_stats\"] %}\n                    {% assign looxstats = shop.metafields.loox[\"global_stats\"] | split: ',' %} \n                    <div class=\"loox-rating loox-rating-hp\" data-rating=\"{{ looxstats[0] }}\" data-raters=\"{{ looxstats[1] }}\" data-pattern=\"[rating] ([count])\"></div> \n                    {% endif %}"
           }
         },
         "slide_86jfiA": {
           "type": "slide",
-          "disabled": true,
           "settings": {
             "image": "shopify://shop_images/Desktop_3.webp",
             "mobile_image": "shopify://shop_images/Mobile_3.webp",
             "eyebrow": "",
-            "heading": "",
-            "heading_color": "#008fa3",
-            "heading_size": "h0",
-            "content": "",
-            "button_label": "",
-            "link": "",
-            "ratings": ""
+            "heading": "Ingredients with purpose",
+            "heading_color": "#ffffff",
+            "heading_size": "h1",
+            "content": "<p>From brightening actives to hydrating essentials, formula is created with carefully chosen ingredients & research-led approach.</p>",
+            "button_label": "Shop Now",
+            "link": "shopify://collections/best-sellers",
+            "ratings": "{% if shop.metafields.loox[\"global_stats\"] %}\n                    {% assign looxstats = shop.metafields.loox[\"global_stats\"] | split: ',' %} \n                    <div class=\"loox-rating loox-rating-hp\" data-rating=\"{{ looxstats[0] }}\" data-raters=\"{{ looxstats[1] }}\" data-pattern=\"[rating] ([count])\"></div> \n                    {% endif %}"
           }
         }
       },
       "block_order": [
+        "slide_niGUK8",
         "slide_1",
         "slide_RdnJCb",
         "slide_86jfiA"
@@ -261,30 +276,6 @@
     "shop-by-concern": {
       "type": "collection-list",
       "blocks": {
-        "c1": {
-          "type": "collection",
-          "settings": {
-            "product": "hydrating-mineral-sunscreen",
-            "image": "shopify://shop_images/sunblock_5a0f8b71-f91e-4f92-b78b-c6017525a780.webp",
-            "title": "Sunblock"
-          }
-        },
-        "c2": {
-          "type": "collection",
-          "settings": {
-            "product": "skin-brightening-serum",
-            "image": "shopify://shop_images/serum.webp",
-            "title": "Serum"
-          }
-        },
-        "c3": {
-          "type": "collection",
-          "settings": {
-            "product": "hair-serum",
-            "image": "shopify://shop_images/hair_seum.webp",
-            "title": "Hair Serum"
-          }
-        },
         "c4": {
           "type": "collection",
           "settings": {
@@ -300,14 +291,38 @@
             "image": "shopify://shop_images/brightening.webp",
             "title": "Brighting Cream"
           }
+        },
+        "c2": {
+          "type": "collection",
+          "settings": {
+            "product": "skin-brightening-serum",
+            "image": "shopify://shop_images/serum.webp",
+            "title": "Face Serum"
+          }
+        },
+        "c1": {
+          "type": "collection",
+          "settings": {
+            "product": "hydrating-mineral-sunscreen",
+            "image": "shopify://shop_images/sunblock_5a0f8b71-f91e-4f92-b78b-c6017525a780.webp",
+            "title": "Sunblock"
+          }
+        },
+        "c3": {
+          "type": "collection",
+          "settings": {
+            "product": "hair-serum",
+            "image": "shopify://shop_images/hair_seum.webp",
+            "title": "Hair Serum"
+          }
         }
       },
       "block_order": [
-        "c1",
-        "c2",
-        "c3",
         "c4",
-        "c5"
+        "c5",
+        "c2",
+        "c1",
+        "c3"
       ],
       "settings": {
         "heading": "Shop by Concern",
@@ -571,7 +586,6 @@
     },
     "blogs": {
       "type": "blog-posts",
-      "disabled": true,
       "settings": {
         "heading": "Blogs",
         "blog": "news",

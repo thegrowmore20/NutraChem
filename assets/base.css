@@ -634,3 +634,27 @@ summary:focus-visible {
 .AirReviews-Widget .AirReviews-Widget__FloatButtonWrapper {
   display: none !important
 }
+h2.hero-slideshow__heading.h1 + div p {
+    color: #fff !important;
+}
+
+span.loox-rating-label {}
+
+.hero-slideshow__content:has(.h1) span.loox-rating-label {
+    color: #fff;
+}
+span.product-card__badge {
+    display: none;
+}
+.mega-menu-card .hc-sale-tag {
+    transform: scale(0.8) rotate(30deg);
+}
+.mega-menu-card {
+  position: relative;
+}
+.collection-card__media .hc-sale-tag {
+    top: auto;
+    bottom: 20px;
+    transform: rotate(-35deg);
+    left: 20px;
+}

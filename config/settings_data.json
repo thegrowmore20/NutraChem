@@ -135,6 +135,11 @@
         "settings": {
           "air_reviews_json_ld_v3": ""
         }
+      },
+      "4608251692753025422": {
+        "type": "shopify://apps/sales-discounts/blocks/sale-labels/29205fb1-2e68-4d81-a905-d828a51c8413",
+        "disabled": true,
+        "settings": {}
       }
     }
   }
