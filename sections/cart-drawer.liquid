@@ -102,8 +102,8 @@
                   {%- endfor -%}
                 </div>
               {%- endif -%}
-              <div class="u-flex u-items-center{% unless is_free_sample %} u-justify-between{% endunless %} cart-drawer__item-bottom-row">
-                {%- unless is_free_sample -%}
+              {%- unless is_free_sample -%}
+                <div class="u-flex u-items-center u-justify-between cart-drawer__item-bottom-row">
                   <div class="u-flex cart-drawer__item-price">
                     <span class="price-item price-item--regular">{{ item.final_line_price | money }}</span>
                     {%- if item.variant.compare_at_price > item.variant.price -%}
@@ -112,17 +112,13 @@
                       <span class="cart-drawer__save-badge">Save {{ line_compare_at | minus: item.final_line_price | money }}</span>
                     {%- endif -%}
                   </div>
-                {%- endunless -%}
-                {%- if is_free_sample -%}
-                  <span class="cart-drawer__qty-static">{{ 'general.cart.quantity' | t }}: {{ item.quantity }}</span>
-                {%- else -%}
                   <div class="u-flex u-items-center cart-drawer__qty" role="group" aria-label="{{ 'general.cart.quantity' | t }}">
                     <button type="button" class="cart-drawer__qty-btn" data-cart-qty-decrease aria-label="{{ 'general.cart.decrease_quantity' | t }}">&minus;</button>
                     <input type="number" id="CartDrawerQuantity-{{ section.id }}-{{ forloop.index }}" name="updates[]" class="cart-drawer__qty-input" data-cart-qty-input value="{{ item.quantity }}" min="0" step="1" aria-label="{{ 'general.cart.quantity' | t }}: {{ item.product.title | escape }}">
                     <button type="button" class="cart-drawer__qty-btn" data-cart-qty-increase aria-label="{{ 'general.cart.increase_quantity' | t }}">+</button>
                   </div>
-                {%- endif -%}
-              </div>
+                </div>
+              {%- endunless -%}
             </div>
           </li>
         {%- endfor -%}
@@ -341,11 +337,6 @@
 .cart-drawer__sample-badge svg {
   width: 14px;
   height: 14px;
-}
-
-.cart-drawer__qty-static {
-  font-size: 13px;
-  color: var(--color-text);
 }
 
 .cart-drawer__qty {
