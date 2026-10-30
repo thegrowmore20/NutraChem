@@ -49,11 +49,18 @@
         endif
       -%}
       <div class="cart-drawer__shipping-bar">
-        <p class="cart-drawer__shipping-message">
-          {%- if remaining_cents > 0 -%}
-            {{ settings.free_shipping_message_before | replace: '[amount]', remaining_money }}
+        {%- assign shipping_icon = images['Fast_Shipping.svg'] -%}
+        <p class="cart-drawer__shipping-message{% if remaining_cents == 0 %} cart-drawer__shipping-message--unlocked{% endif %}">
+          {%- if shipping_icon != blank -%}
+            <span class="cart-drawer__shipping-icon" aria-hidden="true" style="--shipping-icon-url: url('{{ shipping_icon | image_url: width: 48 }}');"></span>
           {%- else -%}
-            {{ settings.free_shipping_message_after }}
+            <span class="cart-drawer__shipping-icon" aria-hidden="true">{%- render 'icon', name: 'truck' -%}</span>
+          {%- endif -%}
+          {%- if remaining_cents > 0 -%}
+            {%- capture remaining_money_bold -%}<strong>{{ remaining_money }}</strong>{%- endcapture -%}
+            {{ settings.free_shipping_message_before | replace: '[amount]', remaining_money_bold }}
+          {%- else -%}
+            <strong>{{ settings.free_shipping_message_after }}</strong>
           {%- endif -%}
         </p>
         <div class="cart-drawer__shipping-track" role="progressbar" aria-valuenow="{{ progress_percent | round }}" aria-valuemin="0" aria-valuemax="100" style="background: {{ settings.free_shipping_bar_track_color }};">
@@ -241,9 +248,27 @@
 }
 
 .cart-drawer__shipping-message {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   font-size: 13px;
   color: var(--color-primary);
-  margin: 0 0 10px;
+  margin: 0 0 5px;
+}
+
+.cart-drawer__shipping-icon {
+  display: inline-flex;
+  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
+  background: currentColor;
+  -webkit-mask: var(--shipping-icon-url) center / contain no-repeat;
+  mask: var(--shipping-icon-url) center / contain no-repeat;
+}
+
+.cart-drawer__shipping-icon svg {
+  width: 24px;
+  height: 24px;
 }
 
 .cart-drawer__shipping-track {
