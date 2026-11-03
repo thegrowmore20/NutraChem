@@ -40,29 +40,31 @@
     -%}
     {%- if show_shipping_bar and cart.item_count > 0 -%}
       {%- liquid
-        assign threshold_cents = settings.free_shipping_threshold | times: 100
-        assign remaining_cents = threshold_cents | minus: cart.total_price | at_least: 0
-        assign remaining_money = remaining_cents | money
-        assign progress_percent = 100
-        if threshold_cents > 0
-          assign progress_percent = cart.total_price | times: 100.0 | divided_by: threshold_cents | at_most: 100
+        assign show_gift_bar = settings.show_free_gift_bar
+        assign shipping_threshold_cents = settings.free_shipping_threshold | times: 100
+        assign gift_threshold_cents = settings.free_gift_threshold | times: 100
+
+        if shipping_threshold_cents > 0 and cart.total_price < shipping_threshold_cents
+          assign remaining_money = shipping_threshold_cents | minus: cart.total_price | money
+          assign progress_percent = cart.total_price | times: 100.0 | divided_by: shipping_threshold_cents
+          assign bar_message = settings.free_shipping_message_before | replace: '[amount]', remaining_money
+        elsif show_gift_bar and gift_threshold_cents > 0 and cart.total_price < gift_threshold_cents
+          assign remaining_money = gift_threshold_cents | minus: cart.total_price | money
+          assign progress_percent = cart.total_price | times: 100.0 | divided_by: gift_threshold_cents
+          assign bar_message = settings.free_gift_message_before | replace: '[amount]', remaining_money
+        else
+          assign progress_percent = 100
+          if show_gift_bar
+            assign bar_message = settings.free_gift_message_after
+          else
+            assign bar_message = settings.free_shipping_message_after
+          endif
         endif
+
+        assign progress_percent = progress_percent | at_most: 100
       -%}
       <div class="cart-drawer__shipping-bar">
-        {%- assign shipping_icon = images['Fast_Shipping.svg'] -%}
-        <p class="cart-drawer__shipping-message{% if remaining_cents == 0 %} cart-drawer__shipping-message--unlocked{% endif %}">
-          {%- if shipping_icon != blank -%}
-            <span class="cart-drawer__shipping-icon" aria-hidden="true" style="--shipping-icon-url: url('{{ shipping_icon | image_url: width: 48 }}');"></span>
-          {%- else -%}
-            <span class="cart-drawer__shipping-icon" aria-hidden="true">{%- render 'icon', name: 'truck' -%}</span>
-          {%- endif -%}
-          {%- if remaining_cents > 0 -%}
-            {%- capture remaining_money_bold -%}<strong>{{ remaining_money }}</strong>{%- endcapture -%}
-            {{ settings.free_shipping_message_before | replace: '[amount]', remaining_money_bold }}
-          {%- else -%}
-            <strong>{{ settings.free_shipping_message_after }}</strong>
-          {%- endif -%}
-        </p>
+        <p class="cart-drawer__shipping-message">{{ bar_message }}</p>
         <div class="cart-drawer__shipping-track" role="progressbar" aria-valuenow="{{ progress_percent | round }}" aria-valuemin="0" aria-valuemax="100" style="background: {{ settings.free_shipping_bar_track_color }};">
           <div class="cart-drawer__shipping-fill" style="width: {{ progress_percent }}%; background: {{ settings.free_shipping_bar_fill_color }};"></div>
         </div>
@@ -140,6 +142,31 @@
           </li>
         {%- endfor -%}
       </ul>
+
+      <cart-recs
+        class="cart-drawer__recs"
+        data-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&limit=6"
+        data-product-id="{{ cart.items.last.product.id }}"
+      >
+        {%- if recommendations.performed and recommendations.products_count > 0 -%}
+          <p class="cart-drawer__recs-heading">{{ 'general.cart.recommendations_heading' | t }}</p>
+          <div class="cart-drawer__recs-wrapper">
+            <div class="cart-drawer__recs-track" data-slider-track>
+              {%- for recommended_product in recommendations.products -%}
+                <div class="cart-drawer__recs-slide" data-slider-slide>
+                  {% render 'product-card', product: recommended_product %}
+                </div>
+              {%- endfor -%}
+            </div>
+            <button type="button" class="cart-drawer__recs-arrow cart-drawer__recs-arrow--prev" data-slider-prev aria-label="Previous products" disabled>
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="16" height="16"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+            </button>
+            <button type="button" class="cart-drawer__recs-arrow cart-drawer__recs-arrow--next" data-slider-next aria-label="Next products">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="16" height="16"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+            </button>
+          </div>
+        {%- endif -%}
+      </cart-recs>
     {%- else -%}
       <div class="u-flex u-items-center u-justify-center u-flex-col cart-drawer__empty">
         <p class="cart-drawer__empty-heading">{{ 'general.cart.empty_heading' | t }}</p>
@@ -179,7 +206,7 @@
   right: 0;
   bottom: 0;
   width: 90%;
-  max-width: 400px;
+  max-width: 440px;
   background: var(--color-background);
   z-index: 10011;
   transform: translateX(100%);
@@ -248,27 +275,9 @@
 }
 
 .cart-drawer__shipping-message {
-  display: flex;
-  align-items: center;
-  gap: 6px;
   font-size: 13px;
   color: var(--color-primary);
-  margin: 0 0 5px;
-}
-
-.cart-drawer__shipping-icon {
-  display: inline-flex;
-  flex: 0 0 auto;
-  width: 24px;
-  height: 24px;
-  background: currentColor;
-  -webkit-mask: var(--shipping-icon-url) center / contain no-repeat;
-  mask: var(--shipping-icon-url) center / contain no-repeat;
-}
-
-.cart-drawer__shipping-icon svg {
-  width: 24px;
-  height: 24px;
+  margin: 0 0 10px;
 }
 
 .cart-drawer__shipping-track {
@@ -439,6 +448,120 @@
   flex-shrink: 0;
 }
 
+.cart-drawer__recs {
+  display: block;
+  margin-top: var(--space-6);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--color-surface);
+}
+
+.cart-drawer__recs-heading {
+  font-size: 14px;
+  font-weight: 600;
+  font-family: var(--font-accent);
+  color: var(--color-primary);
+  margin: 0 0 var(--space-4);
+}
+
+.cart-drawer__recs-wrapper {
+  position: relative;
+}
+
+.cart-drawer__recs-track {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 46%;
+  gap: var(--space-3);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  margin: 0 calc(var(--space-5) * -1);
+  padding: 0 var(--space-5) var(--space-2);
+}
+
+.cart-drawer__recs-track::-webkit-scrollbar {
+  display: none;
+}
+
+.cart-drawer__recs-slide {
+  scroll-snap-align: start;
+  min-width: 0;
+}
+
+/* Compact override: the shared product-card snippet is sized for full-width
+   grids elsewhere, so it reads too large at the ~46%-width slide here -
+   shrink type/spacing without touching the snippet itself. */
+.cart-drawer__recs-slide .product-card__body {
+  padding: var(--space-2);
+}
+
+.cart-drawer__recs-slide .product-card__title {
+  font-size: 12px;
+  min-height: 0;
+  margin-bottom: 4px;
+}
+
+.cart-drawer__recs-slide .card-product-rating,
+.cart-drawer__recs-slide .product-card__rating {
+  font-size: 11px;
+  margin-bottom: 6px;
+  gap: 4px;
+}
+
+.cart-drawer__recs-slide .price {
+  font-size: 12px;
+  margin-bottom: 4px;
+  gap: 4px;
+}
+
+.cart-drawer__recs-slide .product-card .button {
+  font-size: 11px;
+  padding: 8px 10px;
+}
+
+.cart-drawer__recs-slide .product-card .button svg {
+  width: 14px;
+  height: 14px;
+}
+
+.cart-drawer__recs-arrow {
+  position: absolute;
+  top: 95px;
+  transform: translateY(-50%);
+  width: 30px;
+  height: 30px;
+  background: #ffffff;
+  border: none;
+  border-radius: 50%;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-primary);
+  cursor: pointer;
+  z-index: 2;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: opacity 0.2s ease;
+}
+
+.cart-drawer__recs-arrow--prev {
+  left: calc(var(--space-2) * -1);
+}
+
+.cart-drawer__recs-arrow--next {
+  right: calc(var(--space-2) * -1);
+}
+
+.cart-drawer__recs-arrow:disabled {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.cart-drawer__recs.has-arrows .cart-drawer__recs-arrow {
+  display: flex;
+}
+
 .cart-drawer__footer {
   flex-shrink: 0;
   padding: var(--space-5);
@@ -562,6 +685,91 @@ class CartDrawer {
 }
 
 document.addEventListener('DOMContentLoaded', () => new CartDrawer())
+
+class CartRecommendations extends HTMLElement {
+  #observer
+  #request
+  #track
+  #slides
+  #prevButton
+  #nextButton
+
+  connectedCallback() {
+    this.#observer?.disconnect()
+    this.#observer = new IntersectionObserver(
+      (entries, observer) => {
+        if (!entries[0].isIntersecting) return
+        observer.unobserve(this)
+        this.#load()
+      },
+      { rootMargin: '0px 0px 400px 0px' }
+    )
+    this.#observer.observe(this)
+  }
+
+  disconnectedCallback() {
+    this.#observer?.disconnect()
+    this.#request?.abort()
+  }
+
+  async #load() {
+    const productId = this.dataset.productId
+    if (!productId) return
+    try {
+      this.#request?.abort()
+      this.#request = new AbortController()
+      const response = await fetch(`${this.dataset.url}&product_id=${productId}`, {
+        signal: this.#request.signal,
+      })
+      if (!response.ok) throw new Error(`Cart recommendations request failed: ${response.status}`)
+      const text = await response.text()
+      if (!this.isConnected) return
+      const doc = new DOMParser().parseFromString(text, 'text/html')
+      const newContent = doc.querySelector('cart-recs')
+      if (newContent && newContent.innerHTML.trim().length) {
+        this.innerHTML = newContent.innerHTML
+        this.#initSlider()
+      }
+    } catch (error) {
+      if (error.name === 'AbortError') return
+      console.error('Cart recommendations error:', error)
+    }
+  }
+
+  #initSlider() {
+    this.#track = this.querySelector('[data-slider-track]')
+    if (!this.#track) return
+    this.#slides = Array.from(this.querySelectorAll('[data-slider-slide]'))
+    this.#prevButton = this.querySelector('[data-slider-prev]')
+    this.#nextButton = this.querySelector('[data-slider-next]')
+
+    this.#track.addEventListener('scroll', () => this.#updateArrows())
+
+    this.#prevButton?.addEventListener('click', () => this.#scrollByDirection(-1))
+    this.#nextButton?.addEventListener('click', () => this.#scrollByDirection(1))
+
+    const hasOverflow = this.#track.scrollWidth > this.#track.clientWidth + 2
+    this.classList.toggle('has-arrows', hasOverflow)
+    this.#updateArrows()
+  }
+
+  #updateArrows() {
+    if (!this.#track || !this.#prevButton || !this.#nextButton) return
+    this.#prevButton.disabled = this.#track.scrollLeft <= 2
+    this.#nextButton.disabled = this.#track.scrollLeft + this.#track.clientWidth >= this.#track.scrollWidth - 2
+  }
+
+  #scrollByDirection(direction) {
+    const slideWidth = this.#slides?.[0]?.clientWidth || 0
+    const gap = parseInt(window.getComputedStyle(this.#track).gap) || 0
+    this.#track.scrollBy({ left: (slideWidth + gap) * direction, behavior: 'smooth' })
+  }
+
+}
+
+if (!customElements.get('cart-recs')) {
+  customElements.define('cart-recs', CartRecommendations)
+}
 {% endjavascript %}
 
 {% schema %}

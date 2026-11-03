@@ -17,9 +17,6 @@
       "results_for": "Results for \"{{ terms }}\"",
       "enter_a_search_term": "Enter a search term above to find products"
     },
-    "pagination": {
-      "load_more": "Load more"
-    },
     "cart": {
       "title": "Cart",
       "subtotal": "Subtotal",
@@ -31,11 +28,12 @@
       "remove_label": "Remove",
       "empty_heading": "Your cart is empty",
       "empty_cta": "Continue shopping",
+      "recommendations_heading": "You may also like",
+      "free_sample": "Free sample",
       "update": "Update Cart",
       "product": "Product",
       "price": "Price",
-      "total": "Total",
-      "free_sample": "Free sample"
+      "total": "Total"
     },
     "accessibility": {
       "skip_to_content": "Skip to content",
@@ -85,7 +83,15 @@
       "sample_addon_select": "Add {{ title }} as a free sample",
       "sample_addon_previous": "Previous sample",
       "sample_addon_next": "Next sample",
-      "sample_addon_go_to": "Go to sample {{ index }}"
+      "sample_addon_go_to": "Go to sample {{ index }}",
+      "bundle_heading": "Frequently Bought Together",
+      "bundle_none_selected": "No item selected",
+      "bundle_one_selected": "1 item selected",
+      "bundle_many_selected": "{{ count }} items selected",
+      "bundle_select": "Select {{ title }}",
+      "bundle_loading": "Loading recommendations",
+      "bundle_previous": "Previous recommendation",
+      "bundle_next": "Next recommendation"
     },
     "facets": {
       "heading": "Products",
@@ -110,6 +116,10 @@
     }
   },
   "sections": {
+    "announcement_bar": {
+      "previous": "Previous announcement",
+      "next": "Next announcement"
+    },
     "image_comparison": {
       "slider_label": "Before and after image comparison. Use the left and right arrow keys to move the divider."
     },

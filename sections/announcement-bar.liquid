@@ -15,20 +15,38 @@
     data-interval="{{ section.settings.rotate_interval }}"
     style="--announcement-bg: {{ section.settings.background_color }}; --announcement-text: {{ section.settings.text_color }};"
   >
-    {%- for block in section.blocks -%}
-      <div
-        class="announcement-bar__slide{% if forloop.first %} is-active{% endif %}"
-        data-announcement-slide
-        {% unless forloop.first %}hidden{% endunless %}
-        {{ block.shopify_attributes }}
-      >
-        <div class="container announcement-bar__content rte">{{ block.settings.content }}</div>
-      </div>
-    {%- endfor -%}
+    <div class="announcement-bar__track">
+      {%- if section.blocks.size > 1 -%}
+        <button type="button" class="announcement-bar__arrow announcement-bar__arrow--prev" data-announcement-prev aria-label="{{ 'sections.announcement_bar.previous' | t }}">
+          <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="15 6 9 12 15 18"></polyline></svg>
+        </button>
+      {%- endif -%}
+      {%- for block in section.blocks -%}
+        <div
+          class="announcement-bar__slide{% if forloop.first %} is-active{% endif %}"
+          data-announcement-slide
+          {% unless forloop.first %}hidden{% endunless %}
+          {{ block.shopify_attributes }}
+        >
+          <div class="container announcement-bar__content rte">{{ block.settings.content }}</div>
+        </div>
+      {%- endfor -%}
+      {%- if section.blocks.size > 1 -%}
+        <button type="button" class="announcement-bar__arrow announcement-bar__arrow--next" data-announcement-next aria-label="{{ 'sections.announcement_bar.next' | t }}">
+          <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="9 6 15 12 9 18"></polyline></svg>
+        </button>
+      {%- endif -%}
+    </div>
   </announcement-bar>
 {%- endif -%}
 
 {% stylesheet %}
+/* Set a close approximation of the bar height so the header renders below
+   it on first paint before JS measures the real value (~40px: 10px padding
+   top + 19.5px text + 10px padding bottom). Without this, the header
+   starts at top:0 (CSS fallback) and jumps down once JS runs. */
+:root { --announcement-height: 40px; }
+
 .announcement-bar {
   position: fixed;
   top: 0;
@@ -39,7 +57,15 @@
   color: var(--announcement-text, #ffffff);
 }
 
+.announcement-bar__track {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .announcement-bar__slide {
+  flex: 0 1 auto;
+  min-width: 0;
   animation: announcement-bar-fade-in 0.3s ease;
 }
 
@@ -59,6 +85,13 @@
   line-height: 1.5;
 }
 
+/* When arrows are present, reduce side padding — arrows sit right next to the text */
+.announcement-bar__arrow ~ .announcement-bar__slide .announcement-bar__content,
+.announcement-bar__slide:has(~ .announcement-bar__arrow) .announcement-bar__content {
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
 .announcement-bar__content,
 .announcement-bar__content :is(p, a, strong, em, span) {
   color: inherit;
@@ -72,33 +105,63 @@
   text-decoration: underline;
   text-underline-offset: 2px;
 }
+
+.announcement-bar__arrow {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.15s ease;
+}
+
+.announcement-bar__arrow:hover,
+.announcement-bar__arrow:focus-visible {
+  opacity: 1;
+  outline: none;
+}
 {% endstylesheet %}
 
 {% javascript %}
 class AnnouncementBar extends HTMLElement {
-  #slides
+  #slides = []
   #index = 0
   #timer
 
   constructor() {
     super()
     this.#slides = Array.from(this.querySelectorAll('[data-announcement-slide]'))
-    if (this.#slides.length <= 1 || this.dataset.autoRotate !== 'true') return
+    if (this.#slides.length <= 1) return
 
-    const interval = (Number(this.dataset.interval) || 5) * 1000
-    this.#timer = window.setInterval(() => this.#next(), interval)
+    this.addEventListener('click', (event) => {
+      if (event.target.closest('[data-announcement-prev]')) this.#show(this.#index - 1)
+      if (event.target.closest('[data-announcement-next]')) this.#show(this.#index + 1)
+    })
+
+    if (this.dataset.autoRotate === 'true') {
+      const interval = (Number(this.dataset.interval) || 5) * 1000
+      this.#timer = window.setInterval(() => this.#show(this.#index + 1), interval)
+    }
   }
 
-  #next() {
-    const current = this.#slides[this.#index]
-    const nextIndex = (this.#index + 1) % this.#slides.length
-    const next = this.#slides[nextIndex]
+  disconnectedCallback() {
+    window.clearInterval(this.#timer)
+  }
 
-    current.hidden = true
-    current.classList.remove('is-active')
-    next.hidden = false
-    next.classList.add('is-active')
-    this.#index = nextIndex
+  #show(index) {
+    this.#index = (index + this.#slides.length) % this.#slides.length
+    this.#slides.forEach((slide, i) => {
+      const active = i === this.#index
+      slide.hidden = !active
+      slide.classList.toggle('is-active', active)
+    })
   }
 }
 

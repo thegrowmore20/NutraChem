@@ -55,10 +55,32 @@ document.addEventListener('submit', (event) => {
   const formData = new FormData(form)
   formData.append('sections_url', window.location.pathname)
 
+  const selectedAddons = Array.from(form.querySelectorAll('[data-addon-checkbox]:checked')).map((checkbox) => ({
+    id: Number(checkbox.value),
+    quantity: 1,
+  }))
+  let requestBody = formData
+  const requestHeaders = { Accept: 'application/javascript' }
+  if (selectedAddons.length > 0) {
+    const properties = {}
+    for (const [key, value] of formData.entries()) {
+      if (key.startsWith('properties[')) properties[key.slice(11, -1)] = value
+    }
+    requestBody = JSON.stringify({
+      items: [
+        { id: Number(formData.get('id')), quantity: Number(formData.get('quantity') || 1), properties },
+        ...selectedAddons,
+      ],
+      sections: ['cart-drawer', 'header'],
+      sections_url: window.location.pathname,
+    })
+    requestHeaders['Content-Type'] = 'application/json'
+  }
+
   fetch(window.routes.cartAddUrl, {
     method: 'POST',
-    headers: { Accept: 'application/javascript' },
-    body: formData,
+    headers: requestHeaders,
+    body: requestBody,
   })
     .then((response) => response.json())
     .then((json) => {

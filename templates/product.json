@@ -53,7 +53,7 @@
           "type": "variant_picker",
           "settings": {}
         },
-        "sample-addons": {
+        "sample_addons_7iPX7F": {
           "type": "sample_addons",
           "settings": {}
         },
@@ -82,7 +82,7 @@
             "heading_2": "Fast Shipping",
             "text_2": "",
             "icon_3": "shopify://shop_images/Multiple_Payment_Options.svg",
-            "heading_3": "Multiple Payment Options",
+            "heading_3": "Cash on Delivery",
             "text_3": "",
             "icon_4": "shopify://shop_images/Easy_Returns.svg",
             "heading_4": "Easy Return",
@@ -91,6 +91,7 @@
         },
         "accordion-description": {
           "type": "accordion",
+          "disabled": true,
           "settings": {
             "heading": "Product Description",
             "content": "{{ product.description }}",
@@ -174,7 +175,7 @@
         "loox_reviews_loox_rating_LA6YPf",
         "price",
         "variant-picker",
-        "sample-addons",
+        "sample_addons_7iPX7F",
         "quantity-buy-buttons",
         "icons-with-text",
         "accordion-description",
@@ -196,7 +197,7 @@
         "enable_sticky_info": true,
         "enable_sticky_info_mobile": false,
         "enable_sticky_cart": true,
-        "padding_top": 20,
+        "padding_top": 52,
         "padding_bottom": 40
       }
     },
@@ -329,6 +330,7 @@
         "trust_badge_3",
         "trust_badge_4"
       ],
+      "disabled": true,
       "settings": {
         "eyebrow": "Active Ingredients",
         "heading": "What's Inside",
@@ -344,6 +346,7 @@
     },
     "product-how-it-works": {
       "type": "product-how-it-works",
+      "disabled": true,
       "settings": {
         "eyebrow": "The Science",
         "heading": "How It Works",
@@ -355,6 +358,7 @@
     },
     "product-how-to-apply": {
       "type": "product-how-to-apply",
+      "disabled": true,
       "settings": {
         "eyebrow": "Application",
         "heading": "How to Apply",
@@ -428,6 +432,7 @@
     },
     "product-results": {
       "type": "product-results",
+      "disabled": true,
       "settings": {
         "eyebrow": "Clinical Results",
         "heading": "Visible Change. Proven Results.",

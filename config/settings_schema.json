@@ -77,14 +77,14 @@
         "type": "number",
         "id": "free_shipping_threshold",
         "label": "Free shipping threshold",
-        "default": 500,
+        "default": 1500,
         "info": "Amount in your store's currency, e.g. 75 for $75.00"
       },
       {
         "type": "text",
         "id": "free_shipping_message_before",
         "label": "Message before threshold is reached",
-        "default": "Spend [amount] more for free shipping!",
+        "default": "Spend [amount] more for Free Shipping!",
         "info": "[amount] is replaced with the remaining amount"
       },
       {
@@ -92,6 +92,32 @@
         "id": "free_shipping_message_after",
         "label": "Message once threshold is reached",
         "default": "You've unlocked free shipping!"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_free_gift_bar",
+        "label": "Show a second progress bar for a free gift after free shipping is unlocked",
+        "default": true
+      },
+      {
+        "type": "number",
+        "id": "free_gift_threshold",
+        "label": "Free gift threshold",
+        "default": 3000,
+        "info": "Amount in your store's currency. Shown as a second stage once the free shipping threshold above is reached."
+      },
+      {
+        "type": "text",
+        "id": "free_gift_message_before",
+        "label": "Message before free gift threshold is reached",
+        "default": "Spend [amount] more for a Free Item!",
+        "info": "[amount] is replaced with the remaining amount"
+      },
+      {
+        "type": "text",
+        "id": "free_gift_message_after",
+        "label": "Message once free gift threshold is reached",
+        "default": "You've unlocked a free gift!"
       },
       {
         "type": "color",

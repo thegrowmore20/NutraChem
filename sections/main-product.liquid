@@ -85,6 +85,7 @@
                 {%- when 'sample_addons' -%}
                   <div {{ block.shopify_attributes }}>
                     {%- render 'product-sample-addons', product: product -%}
+                    {%- render 'frequently-bought-together', product: product -%}
                   </div>
 
                 {%- when 'quantity_buy_buttons' -%}

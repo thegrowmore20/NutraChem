@@ -11,6 +11,34 @@
   "type": "header",
   "name": "Header",
   "sections": {
+    "announcement_bar_nxqJ4f": {
+      "type": "announcement-bar",
+      "blocks": {
+        "message_FnzpWb": {
+          "type": "message",
+          "settings": {
+            "content": "<p>Free shipping for all orders over Rs. 1500</p>"
+          }
+        },
+        "message_zz7k7C": {
+          "type": "message",
+          "settings": {
+            "content": "<p>Free gift for all orders over Rs. 3000</p>"
+          }
+        }
+      },
+      "block_order": [
+        "message_FnzpWb",
+        "message_zz7k7C"
+      ],
+      "name": "Announcement bar",
+      "settings": {
+        "enable_auto_rotate": true,
+        "rotate_interval": 5,
+        "background_color": "#008FA3",
+        "text_color": "#FFFFFF"
+      }
+    },
     "header": {
       "type": "header",
       "settings": {
@@ -23,6 +51,7 @@
     }
   },
   "order": [
+    "announcement_bar_nxqJ4f",
     "header"
   ]
 }

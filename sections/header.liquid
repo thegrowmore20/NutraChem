@@ -186,9 +186,10 @@ body:not(:has(.banner--transparent-header)) {
 
 .header {
   position: fixed;
-  /* Sits right below the announcement bar (0px when there isn't one) instead
-     of a hardcoded 0, so the two don't overlap - see HeaderScroll below,
-     which measures the announcement bar and sets this var. */
+  /* Sits right below the announcement bar (0px when there isn't one).
+     --announcement-height is updated dynamically in #onScroll as the bar
+     scrolls off screen, so the header tracks it smoothly and locks at top:0
+     once the bar is fully gone. */
   top: var(--announcement-height, 0px);
   left: 0;
   width: 100%;
@@ -1164,6 +1165,8 @@ class MobileNav {
 class HeaderScroll {
   #header
   #announcementBar
+  #announcementHeight = 0
+  #isTransparent = false
   #lastY = 0
   #ticking = false
   #resizeTimer
@@ -1199,26 +1202,28 @@ class HeaderScroll {
 
   #onEditorChange() {
     this.#announcementBar = document.querySelector('.announcement-bar')
+    this.#announcementHeight = 0
+    if (this.#announcementBar) {
+      this.#announcementBar.hidden = false
+      this.#announcementBar.style.transform = ''
+    }
     this.#updatePadding()
   }
 
   #updatePadding() {
     const announcementHeight = this.#announcementBar ? this.#announcementBar.offsetHeight : 0
-    const totalHeight = this.#header.offsetHeight + announcementHeight
+    const headerHeight = this.#header.offsetHeight
+    this.#announcementHeight = announcementHeight
 
-    // --announcement-height offsets .header itself below the announcement bar
-    // (0px when there isn't one). --header-height is the *combined* offset -
-    // used by body padding below, and by other sections (product page sticky
-    // info, the search popup) that just need "how far down does real content
-    // start", not the header's height specifically.
+    // --announcement-height drives .header { top } and .header--hidden transform.
+    // Updated dynamically in #onScroll as the bar moves off screen.
+    // --header-height: combined offset for body padding + other sections
+    //   (sticky product info, search popup). Also updated in #onScroll.
     document.documentElement.style.setProperty('--announcement-height', `${announcementHeight}px`)
-    document.documentElement.style.setProperty('--header-height', `${totalHeight}px`)
+    document.documentElement.style.setProperty('--header-height', `${headerHeight + announcementHeight}px`)
 
-    // A transparent header intentionally overlays hero content, but the
-    // announcement bar always has a solid background and isn't meant to - its
-    // own height still needs reserving even when the header's doesn't.
-    const isTransparent = document.querySelector('.banner--transparent-header') !== null
-    document.body.style.paddingTop = `${isTransparent ? announcementHeight : totalHeight}px`
+    this.#isTransparent = document.querySelector('.banner--transparent-header') !== null
+    document.body.style.paddingTop = `${this.#isTransparent ? announcementHeight : headerHeight + announcementHeight}px`
   }
 
   #onResize() {
@@ -1237,6 +1242,43 @@ class HeaderScroll {
 
   #onScroll() {
     const y = window.scrollY
+
+    // Scroll the announcement bar off screen proportionally to scroll position
+    // so it appears to be part of the normal page flow. Once fully gone, lock
+    // it hidden permanently — it never comes back on scroll-up.
+    // Guard: if offsetHeight measured as 0 (custom element not yet painted when
+    // HeaderScroll constructed), re-measure here before acting.
+    if (this.#announcementBar) {
+      // Re-measure on first scroll tick if #updatePadding ran before the bar had height
+      if (this.#announcementHeight === 0) {
+        this.#announcementHeight = this.#announcementBar.offsetHeight
+        if (this.#announcementHeight === 0) return
+        document.documentElement.style.setProperty('--announcement-height', `${this.#announcementHeight}px`)
+        document.documentElement.style.setProperty('--header-height', `${this.#header.offsetHeight + this.#announcementHeight}px`)
+        document.body.style.paddingTop = `${this.#isTransparent ? this.#announcementHeight : this.#header.offsetHeight + this.#announcementHeight}px`
+      }
+      if (y >= this.#announcementHeight) {
+        // Bar fully off screen — hide it for paint performance
+        if (!this.#announcementBar.hidden) {
+          this.#announcementBar.hidden = true
+          this.#announcementBar.style.transform = ''
+        }
+        document.documentElement.style.setProperty('--announcement-height', '0px')
+        document.documentElement.style.setProperty('--header-height', `${this.#header.offsetHeight}px`)
+        document.body.style.paddingTop = `${this.#isTransparent ? 0 : this.#header.offsetHeight}px`
+      } else {
+        // Bar partially or fully in view — restore and position proportionally
+        if (this.#announcementBar.hidden) {
+          this.#announcementBar.hidden = false
+        }
+        const remaining = this.#announcementHeight - y
+        this.#announcementBar.style.transform = y > 0 ? `translateY(-${y}px)` : ''
+        document.documentElement.style.setProperty('--announcement-height', `${remaining}px`)
+        document.documentElement.style.setProperty('--header-height', `${this.#header.offsetHeight + remaining}px`)
+        document.body.style.paddingTop = `${this.#isTransparent ? remaining : this.#header.offsetHeight + remaining}px`
+      }
+    }
+
     this.#header.classList.toggle('header--scrolled', y > 10)
 
     // .header__nav and .header__search-popup are position:fixed but nested

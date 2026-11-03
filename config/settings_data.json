@@ -14,7 +14,7 @@
     "font_body": "poppins_n4",
     "font_subheading": "poppins_n5",
     "font_accent": "poppins_n6",
-    "show_free_shipping_bar": false,
+    "show_free_shipping_bar": true,
     "color_primary": "#18252B",
     "color_secondary": "#008FA3",
     "color_dark": "#153342",

@@ -111,13 +111,21 @@
               {%- endfor -%}
             </ul>
 
-            {%- if section.settings.pagination_mode == 'load_more' and paginate.next -%}
-              <div class="u-flex u-items-center u-justify-center load-more" data-load-more-container>
-                <a href="{{ paginate.next.url }}" class="u-inline-flex button hero__button load-more__button" data-load-more>{{ 'general.pagination.load_more' | t }}</a>
-              </div>
-            {%- elsif section.settings.pagination_mode == 'pagination' and paginate.pages > 1 -%}
+            {%- if paginate.pages > 1 -%}
               <nav class="u-flex u-items-center u-justify-center pagination" aria-label="pagination">
-                {%- for part in paginate.parts -%}<a href="{{ part.url }}" class="pagination__link{% unless part.is_link %} pagination__link--current{% endunless %}">{{ part.title }}</a>{%- endfor -%}
+                {%- if paginate.previous -%}
+                  <a href="{{ paginate.previous.url }}" class="u-inline-flex u-items-center u-justify-center pagination__link pagination__link--prev" aria-label="{{ 'collections.general.pagination_previous' | t }}">{% render 'icon', name: 'chevron-right' %}</a>
+                {%- endif -%}
+                {%- for part in paginate.parts -%}
+                  {%- if part.is_link -%}
+                    <a href="{{ part.url }}" class="u-inline-flex u-items-center u-justify-center pagination__link">{{ part.title }}</a>
+                  {%- else -%}
+                    <span class="pagination__link{% if part.title == paginate.current_page %} pagination__link--current{% endif %}" {% if part.title == paginate.current_page %}aria-current="page"{% endif %}>{{ part.title }}</span>
+                  {%- endif -%}
+                {%- endfor -%}
+                {%- if paginate.next -%}
+                  <a href="{{ paginate.next.url }}" class="u-inline-flex u-items-center u-justify-center pagination__link" aria-label="{{ 'collections.general.pagination_next' | t }}">{% render 'icon', name: 'chevron-right' %}</a>
+                {%- endif -%}
               </nav>
             {%- endif -%}
           {%- endif -%}
@@ -716,37 +724,27 @@ details[open] > .facets__summary .facets__chevron--down {
   text-decoration: underline;
 }
 
-.load-more {
-  gap: var(--space-2);
-  margin-top: var(--space-8);
-}
-
-.load-more__button {
-  min-width: 142px;
-  color: #fff;
-}
-
-.load-more__button:hover {
-  color: #fff;
-}
-
 .pagination {
   gap: var(--space-2);
   margin-top: var(--space-8);
 }
 
 .pagination__link {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
   min-width: 36px;
   height: 36px;
+  padding: 0 6px;
+  border-radius: var(--radius-s);
   color: var(--color-primary);
+  font-size: 13px;
 }
 
 .pagination__link--current {
   background: var(--color-secondary);
   color: #fff;
+}
+
+.pagination__link--prev svg {
+  transform: scaleX(-1);
 }
 {% endstylesheet %}
 
@@ -937,14 +935,9 @@ class CollectionResults extends HTMLElement {
       return
     }
 
-    const loadMore = event.target.closest('[data-load-more]')
-    if (loadMore) {
-      event.preventDefault()
-      this.#loadMore(loadMore)
-      return
-    }
-
-    const link = event.target.closest('.active-filters__pill[href], .active-filters__clear-all[href]')
+    const link = event.target.closest(
+      '.active-filters__pill[href], .active-filters__clear-all[href], .pagination__link[href]'
+    )
     if (link) {
       event.preventDefault()
       this.#fetchAndRender(link.href)
@@ -978,26 +971,6 @@ class CollectionResults extends HTMLElement {
     const query = params.toString()
     const url = query ? `${window.location.pathname}?${query}` : window.location.pathname
     this.#fetchAndRender(url)
-  }
-
-  async #loadMore(link) {
-    const container = link.closest('[data-load-more-container]')
-    if (!container || !this.#grid) return
-    link.classList.add('is-loading')
-    link.setAttribute('aria-busy', 'true')
-    try {
-      const separator = link.href.includes('?') ? '&' : '?'
-      const response = await fetch(`${link.href}${separator}section_id=${this.#sectionId}`)
-      const doc = new DOMParser().parseFromString(await response.text(), 'text/html')
-      const nextGrid = doc.querySelector('[data-grid-container]')
-      if (nextGrid) this.#grid.insertAdjacentHTML('beforeend', nextGrid.innerHTML)
-      const nextLink = doc.querySelector('[data-load-more]')
-      if (nextLink) link.href = nextLink.href
-      else container.remove()
-    } finally {
-      link.classList.remove('is-loading')
-      link.removeAttribute('aria-busy')
-    }
   }
 
   async #fetchAndRender(url, pushHistory = true) {
@@ -1064,16 +1037,6 @@ customElements.define('collection-results', CollectionResults)
       "max": 36,
       "step": 4,
       "default": 16
-    },
-    {
-      "type": "select",
-      "id": "pagination_mode",
-      "label": "Collection navigation",
-      "options": [
-        { "value": "load_more", "label": "Load more" },
-        { "value": "pagination", "label": "Numbered pagination" }
-      ],
-      "default": "load_more"
     },
     {
       "type": "range",

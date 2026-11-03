@@ -1,0 +1,73 @@
+{% doc %}
+  Renders the Frequently Bought Together picker below the free sample picker.
+  Reads product.metafields.custom.bundle_products first, then loads up to four
+  available related products from Shopify's product recommendations endpoint.
+  @param {product} product - The product being purchased
+{% enddoc %}
+{%- assign bundle_products = product.metafields.custom.bundle_products.value -%}
+<frequently-bought-together class="product-bundle-addons" data-url="{{ routes.product_recommendations_url }}" data-product-id="{{ product.id }}" data-none="{{ 'products.product.bundle_none_selected' | t | escape }}" data-one="{{ 'products.product.bundle_one_selected' | t | escape }}" data-many="{{ 'products.product.bundle_many_selected' | t: count: '__COUNT__' | escape }}" data-select-label="{{ 'products.product.bundle_select' | t: title: '' | escape }}">
+  <p class="product-bundle-addons__heading">{{ 'products.product.bundle_heading' | t }}</p>
+  <div class="product-bundle-addons__loader" data-bundle-loader aria-label="{{ 'products.product.bundle_loading' | t }}"></div>
+  <div class="product-bundle-addons__list" data-bundle-list>
+    {%- assign bundle_count = 0 -%}
+    {%- for item in bundle_products -%}
+      {%- assign addon_variant = item.selected_or_first_available_variant -%}
+      {%- if addon_variant and addon_variant.available -%}
+        <div class="product-bundle-addons__item" data-price-cents="{{ addon_variant.price }}"><span class="product-bundle-addons__thumb">{%- if item.featured_image -%}{{ item.featured_image | image_url: width: 160 | image_tag: loading: 'lazy', width: 48, height: 48, alt: item.title }}{%- endif -%}</span><a class="product-bundle-addons__name" href="{{ item.url }}">{{ item.title | escape }}</a><label class="product-bundle-addons__toggle" aria-label="{{ 'products.product.bundle_select' | t: title: item.title | escape }}"><input type="checkbox" class="product-bundle-addons__checkbox" data-bundle-checkbox data-addon-checkbox value="{{ addon_variant.id }}" data-price="{{ addon_variant.price }}"><span class="product-bundle-addons__shell"><span class="product-bundle-addons__price">{{ addon_variant.price | money_without_trailing_zeros }}{%- if addon_variant.compare_at_price > addon_variant.price -%}<s>{{ addon_variant.compare_at_price | money_without_trailing_zeros }}</s>{%- endif -%}</span><span class="product-bundle-addons__tick" aria-hidden="true">✓</span></span></label></div>
+        {%- assign bundle_count = bundle_count | plus: 1 -%}
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+  <p class="product-bundle-addons__summary"><span data-bundle-summary>{{ 'products.product.bundle_none_selected' | t }}</span><strong data-bundle-total hidden></strong></p>
+  <div class="product-bundle-addons__controls" data-bundle-controls hidden><button type="button" data-bundle-prev aria-label="{{ 'products.product.bundle_previous' | t }}">&#8249;</button><div class="product-bundle-addons__dots" data-bundle-dots></div><button type="button" data-bundle-next aria-label="{{ 'products.product.bundle_next' | t }}">&#8250;</button></div>
+</frequently-bought-together>
+
+{% stylesheet %}
+.product-bundle-addons { display: block; margin-top: var(--space-5); }
+.product-bundle-addons__heading { margin: 0 0 var(--space-3); font-size: 16px; font-weight: 600; }
+.product-bundle-addons__list { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.product-bundle-addons__item { display: flex; align-items: center; gap: 10px; min-width: 0; min-height: 52px; }
+.product-bundle-addons__thumb { width: 48px; height: 48px; flex: 0 0 48px; background: var(--color-surface); }
+.product-bundle-addons__thumb img { width: 100%; height: 100%; object-fit: contain; }
+.product-bundle-addons__name { flex: 1 1 auto; min-width: 0; overflow: hidden; color: var(--color-primary); font-size: 13px; line-height: 1.35; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+.product-bundle-addons__toggle { position: relative; display: inline-flex; flex: 0 0 132px; width: 132px; height: 40px; cursor: pointer; }
+.product-bundle-addons__checkbox { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+.product-bundle-addons__shell { position: relative; display: flex; align-items: center; justify-content: center; width: 132px; min-width: 132px; height: 40px; box-sizing: border-box; padding: 0 var(--space-4); overflow: hidden; border: 2px solid var(--button-primary, var(--color-secondary)); border-radius: var(--radius-m); background: var(--button-primary, var(--color-secondary)); color: #fff; pointer-events: none; transition: background-color .18s, color .18s; }
+.product-bundle-addons__price, .product-bundle-addons__tick { display: flex; align-items: center; justify-content: center; gap: 5px; font-size: 13px; font-weight: 600; white-space: nowrap; transition: opacity .15s, transform .15s; }
+.product-bundle-addons__price s { color: rgba(255, 255, 255, .8); font-size: 11px; }
+.product-bundle-addons__tick { position: absolute; inset: 0; font-size: 18px; opacity: 0; transform: scale(.6); }
+.product-bundle-addons__checkbox:checked ~ .product-bundle-addons__shell { background: var(--color-background); color: var(--button-primary, var(--color-secondary)); }
+.product-bundle-addons__checkbox:checked ~ .product-bundle-addons__shell .product-bundle-addons__price { opacity: 0; transform: scale(.6); }
+.product-bundle-addons__checkbox:checked ~ .product-bundle-addons__shell .product-bundle-addons__tick { opacity: 1; transform: scale(1); }
+.product-bundle-addons__checkbox:focus-visible ~ .product-bundle-addons__shell { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+.product-bundle-addons__summary { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); margin: 8px 0 0; font-size: 13px; color: var(--color-text-muted); }
+.product-bundle-addons__summary strong { color: var(--color-primary); font-weight: 600; }
+.product-bundle-addons__loader { width: 20px; height: 20px; margin: 8px auto; border: 2px solid var(--color-surface); border-top-color: var(--button-primary, var(--color-secondary)); border-radius: 50%; animation: button-spin .6s linear infinite; }
+.product-bundle-addons__loader[hidden] { display: none; }
+.product-bundle-addons__controls { display: none; align-items: center; justify-content: center; gap: 12px; margin-top: 8px; }
+.product-bundle-addons__controls[hidden] { display: none; }
+.product-bundle-addons__controls > button { display: grid; place-items: center; width: 36px; height: 36px; padding: 0; border: 0; border-radius: 50%; background: var(--color-background); color: var(--color-primary); box-shadow: 0 2px 10px rgba(0, 0, 0, .12); font-size: 24px; line-height: 1; cursor: pointer; }
+.product-bundle-addons__dots { display: flex; align-items: center; gap: 4px; }
+.product-bundle-addons__dot { width: 14px; height: 14px; padding: 0; border: 0; background: transparent; cursor: pointer; }
+.product-bundle-addons__dot::before { content: ''; display: block; width: 8px; height: 8px; margin: 3px; border-radius: 50%; background: var(--color-border); }
+.product-bundle-addons__dot.is-active::before { background: var(--button-primary, var(--color-secondary)); }
+@media screen and (max-width: 768px) { .product-bundle-addons__list { flex-direction: row; gap: 0; margin-bottom: var(--space-2); overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; } .product-bundle-addons__list::-webkit-scrollbar { display: none; } .product-bundle-addons__item { flex: 0 0 100%; box-sizing: border-box; scroll-snap-align: start; } .product-bundle-addons__toggle, .product-bundle-addons__shell, .product-bundle-addons__price { flex-basis: 95px; width: 95px; min-width: 95px; } .product-bundle-addons__price s { display: none; } .product-bundle-addons__controls { display: flex; margin-bottom: var(--space-2); } }
+{% endstylesheet %}
+
+{% javascript %}
+class FrequentlyBoughtTogether extends HTMLElement {
+  constructor() { super(); this.list = this.querySelector('[data-bundle-list]'); this.loader = this.querySelector('[data-bundle-loader]'); this.index = 0; this.pending = false; this.addEventListener('click', (event) => this.onClick(event)); this.addEventListener('change', (event) => { if (event.target.matches('[data-bundle-checkbox]')) this.updateSummary() }); this.closest('form')?.addEventListener('submit', () => { this.pending = true }); document.addEventListener('cart:updated', () => { if (this.pending) { this.pending = false; this.reset() } }); if (this.list.children.length) { this.loader.hidden = true; this.updateControls() } else this.load() }
+  async load() { const url = new URL(this.dataset.url, window.location.origin); url.searchParams.set('product_id', this.dataset.productId); url.searchParams.set('limit', '4'); url.searchParams.set('intent', 'related'); try { const response = await fetch(url, { headers: { Accept: 'application/json' } }); const data = await response.json(); (data.products || []).filter((product) => product.id !== Number(this.dataset.productId)).filter((product) => product.available && product.variants?.some((variant) => variant.available)).slice(0, 4).forEach((product) => this.appendProduct(product)) } catch (error) {} this.loader.hidden = true; this.updateControls() }
+  appendProduct(product) { const variant = product.variants.find((candidate) => candidate.available); if (!variant) return; const item = document.createElement('div'); item.className = 'product-bundle-addons__item'; item.dataset.priceCents = String(variant.price); const image = product.featured_image || product.images?.[0] || ''; item.innerHTML = `<span class="product-bundle-addons__thumb">${image ? `<img src="${image}" alt="${this.escape(product.title)}" loading="lazy">` : ''}</span><a class="product-bundle-addons__name" href="/products/${encodeURIComponent(product.handle)}">${this.escape(product.title)}</a><label class="product-bundle-addons__toggle" aria-label="${this.escape(this.dataset.selectLabel)}"><input type="checkbox" class="product-bundle-addons__checkbox" data-bundle-checkbox data-addon-checkbox value="${variant.id}" data-price="${variant.price}"><span class="product-bundle-addons__shell"><span class="product-bundle-addons__price">${this.money(variant.price)}${variant.compare_at_price > variant.price ? `<s>${this.money(variant.compare_at_price)}</s>` : ''}</span><span class="product-bundle-addons__tick" aria-hidden="true">✓</span></span></label>`; this.list.append(item) }
+  onClick(event) { const dot = event.target.closest('[data-bundle-dot]'); if (dot) { this.scrollTo(Number(dot.dataset.index)); return } if (event.target.closest('[data-bundle-prev]')) this.scroll(-1); if (event.target.closest('[data-bundle-next]')) this.scroll(1) }
+  scroll(direction) { this.scrollTo(this.index + direction) }
+  scrollTo(index) { const items = [...this.list.children]; if (!items.length) return; this.index = Math.max(0, Math.min(items.length - 1, index)); items[this.index].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' }); this.updateDots() }
+  updateSummary() { const boxes = [...this.querySelectorAll('[data-bundle-checkbox]')]; const selected = boxes.filter((box) => box.checked); const count = selected.length; const total = selected.reduce((sum, box) => sum + Number(box.dataset.price || 0), 0); this.querySelector('[data-bundle-summary]').textContent = count === 0 ? this.dataset.none : count === 1 ? this.dataset.one : this.dataset.many.replace('__COUNT__', count); const totalElement = this.querySelector('[data-bundle-total]'); totalElement.hidden = count === 0; totalElement.textContent = `+${this.money(total)}` }
+  reset() { this.querySelectorAll('[data-bundle-checkbox]').forEach((box) => { box.checked = false }); this.updateSummary() }
+  updateControls() { const controls = this.querySelector('[data-bundle-controls]'); const dots = this.querySelector('[data-bundle-dots]'); const count = this.list.children.length; controls.hidden = count < 2; dots.innerHTML = Array.from({ length: count }, (_, index) => `<button type="button" class="product-bundle-addons__dot${index === 0 ? ' is-active' : ''}" data-bundle-dot data-index="${index}" aria-label="${index + 1}"></button>`).join('') }
+  updateDots() { this.querySelectorAll('[data-bundle-dot]').forEach((dot) => dot.classList.toggle('is-active', Number(dot.dataset.index) === this.index)) }
+  money(cents) { return `Rs.${Math.round(Number(cents) / 100).toLocaleString('en-IN')}` }
+  escape(value) { return String(value).replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[char]) }
+}
+if (!customElements.get('frequently-bought-together')) customElements.define('frequently-bought-together', FrequentlyBoughtTogether)
+{% endjavascript %}
