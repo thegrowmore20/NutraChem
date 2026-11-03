@@ -57,7 +57,7 @@
         else
           assign progress_percent = 100
           if show_gift_bar
-            assign bar_message = settings.free_gift_message_after | replace: 'free gift', '<strong>free gift</strong>'
+            assign bar_message = settings.free_gift_message_after | replace: 'free gift', '<strong>Free Gift</strong>'
           else
             assign bar_message = settings.free_shipping_message_after | replace: 'free shipping', '<strong>free shipping</strong>'
           endif
