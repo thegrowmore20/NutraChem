@@ -53,7 +53,7 @@
           assign remaining_money = gift_threshold_cents | minus: cart.total_price | money
           assign progress_percent = cart.total_price | times: 100.0 | divided_by: gift_threshold_cents
           assign bold_amount = '<strong>' | append: remaining_money | append: '</strong>'
-          assign bar_message = settings.free_gift_message_before | replace: '[amount]', bold_amount | replace: 'Free Item', '<strong>Free Item</strong>'
+          assign bar_message = settings.free_gift_message_before | replace: '[amount]', bold_amount | replace: 'Free Gift', '<strong>Free Gift</strong>'
         else
           assign progress_percent = 100
           if show_gift_bar

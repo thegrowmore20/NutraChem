@@ -110,7 +110,7 @@
         "type": "text",
         "id": "free_gift_message_before",
         "label": "Message before free gift threshold is reached",
-        "default": "Spend [amount] more for a Free Item!",
+        "default": "Spend [amount] more for a Free Gift!",
         "info": "[amount] is replaced with the remaining amount"
       },
       {
