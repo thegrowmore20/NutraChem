@@ -47,17 +47,19 @@
         if shipping_threshold_cents > 0 and cart.total_price < shipping_threshold_cents
           assign remaining_money = shipping_threshold_cents | minus: cart.total_price | money
           assign progress_percent = cart.total_price | times: 100.0 | divided_by: shipping_threshold_cents
-          assign bar_message = settings.free_shipping_message_before | replace: '[amount]', remaining_money
+          assign bold_amount = '<strong>' | append: remaining_money | append: '</strong>'
+          assign bar_message = settings.free_shipping_message_before | replace: '[amount]', bold_amount | replace: 'Free Shipping', '<strong>Free Shipping</strong>'
         elsif show_gift_bar and gift_threshold_cents > 0 and cart.total_price < gift_threshold_cents
           assign remaining_money = gift_threshold_cents | minus: cart.total_price | money
           assign progress_percent = cart.total_price | times: 100.0 | divided_by: gift_threshold_cents
-          assign bar_message = settings.free_gift_message_before | replace: '[amount]', remaining_money
+          assign bold_amount = '<strong>' | append: remaining_money | append: '</strong>'
+          assign bar_message = settings.free_gift_message_before | replace: '[amount]', bold_amount | replace: 'Free Item', '<strong>Free Item</strong>'
         else
           assign progress_percent = 100
           if show_gift_bar
-            assign bar_message = settings.free_gift_message_after
+            assign bar_message = settings.free_gift_message_after | replace: 'free gift', '<strong>free gift</strong>'
           else
-            assign bar_message = settings.free_shipping_message_after
+            assign bar_message = settings.free_shipping_message_after | replace: 'free shipping', '<strong>free shipping</strong>'
           endif
         endif
 
